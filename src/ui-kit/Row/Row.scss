@@ -1,0 +1,27 @@
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    .row-col {
+        flex: 1;
+        max-width: 100%;
+        margin-right: 1rem;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+.row__between {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+    .row-col {
+        flex: none;
+        max-width: 100%;
+        margin-right: 1rem;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

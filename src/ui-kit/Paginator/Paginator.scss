@@ -1,0 +1,21 @@
+.paginator {
+    display: flex;
+    align-items: center;
+    margin-top: -30px;
+    &__item {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s linear;
+        color: rgb(66, 66, 66);
+        border: 1px solid rgb(230, 230, 230);
+    }
+    &__item:hover {
+        background-color: #5C60F5;
+        color: white;
+    }
+    &__item:hover {}
+}

@@ -59,6 +59,15 @@ interface Props {
     onSubmit: (values: any) => void
 }
 
+export const generateInitialObject = (fieldsTemplate: TemplateFields[]) => {
+    let initialObject = {}
+    fieldsTemplate.map(field => {
+        initialObject = { ...initialObject, [field.name]: field.initialValue }
+    })
+
+    return initialObject
+}
+
 const FormikForm: FC<Props> = ({ fieldsTemplate, onSubmit, children, ...props }) => {
 
     const generateInitialObject = useMemo(() => {
@@ -76,41 +85,86 @@ const FormikForm: FC<Props> = ({ fieldsTemplate, onSubmit, children, ...props })
             onSubmit={onSubmit}
             {...props}
         >
-            <Form>
-                {fieldsTemplate.map(field => {
-                    if (field.type === TemplateTypes.TEXT) {
-                        return (
-                            <Row key={field.name}>
-                                <FormikField label={field.label} name={field.name} />
-                            </Row>
-                        )
-                    }
-                    else if (field.type === TemplateTypes.CHECKBOX) {
-                        return (
-                            <Row key={field.name}>
-                                <FormikCheckbox label={field.label} name={field.name} />
-                            </Row>
-                        )
-                    }
-                    else if (field.type === TemplateTypes.SELECT) {
-                        return (
-                            <Row key={field.name}>
-                                <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
-                            </Row>
-                        )
-                    }
-                    else if (field.type === TemplateTypes.IMAGE) {
-                        return (
-                            <Row key={field.name}>
-                                <FormikPhotoLoader label={field.label} name={field.name} />
-                            </Row>
-                        )
-                    }
-                })}
-                <Button type='submit'>Сохранить</Button>
-            </Form>
+            {children ?
+                <Form>{children}</Form>
+                :
+                <Form>
+                    {fieldsTemplate.map(field => {
+                        if (field.type === TemplateTypes.TEXT) {
+                            return (
+                                <Row key={field.name}>
+                                    <FormikField label={field.label} name={field.name} />
+                                </Row>
+                            )
+                        }
+                        else if (field.type === TemplateTypes.CHECKBOX) {
+                            return (
+                                <Row key={field.name}>
+                                    <FormikCheckbox label={field.label} name={field.name} />
+                                </Row>
+                            )
+                        }
+                        else if (field.type === TemplateTypes.SELECT) {
+                            return (
+                                <Row key={field.name}>
+                                    <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
+                                </Row>
+                            )
+                        }
+                        else if (field.type === TemplateTypes.IMAGE) {
+                            return (
+                                <Row key={field.name}>
+                                    <FormikPhotoLoader label={field.label} name={field.name} />
+                                </Row>
+                            )
+                        }
+                    })}
+                    <Button type='submit'>Сохранить</Button>
+                </Form>
+            }
         </Formik>
     )
 }
 
 export default FormikForm
+
+
+interface FormikFieldsTemplateProps {
+    fieldsTemplate: TemplateFields[]
+}
+export const FormikFieldsTemplate: FC<FormikFieldsTemplateProps> = ({ fieldsTemplate, }) => {
+
+    return (
+        <>
+            {fieldsTemplate.map(field => {
+                if (field.type === TemplateTypes.TEXT) {
+                    return (
+                        <Row key={field.name}>
+                            <FormikField label={field.label} name={field.name} />
+                        </Row>
+                    )
+                }
+                else if (field.type === TemplateTypes.CHECKBOX) {
+                    return (
+                        <Row key={field.name}>
+                            <FormikCheckbox label={field.label} name={field.name} />
+                        </Row>
+                    )
+                }
+                else if (field.type === TemplateTypes.SELECT) {
+                    return (
+                        <Row key={field.name}>
+                            <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
+                        </Row>
+                    )
+                }
+                else if (field.type === TemplateTypes.IMAGE) {
+                    return (
+                        <Row key={field.name}>
+                            <FormikPhotoLoader label={field.label} name={field.name} />
+                        </Row>
+                    )
+                }
+            })}
+        </>)
+}

@@ -4,11 +4,11 @@ import { useEffectOutsideClick } from '@/hooks/useEffectOutsideClick'
 
 interface Props {
     label?: string
-    selectedItem?: {
+    selectedItem: {
         value: string | number,
         content: string
     }
-    options: {
+    options?: {
         value: string | number,
         content: string
     }[]
@@ -19,7 +19,6 @@ interface Props {
 export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onChange }) => {
 
     const [isOpened, setIsOpened] = useState(false)
-    const [currentItem, setCurrentItem] = useState(selectedItem)
 
     useEffectOutsideClick("select", () => {
         if (isOpened) {
@@ -31,7 +30,6 @@ export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onC
         value: string | number,
         content: string
     }) => {
-        setCurrentItem(option)
         onChange(option)
     }
 
@@ -42,7 +40,7 @@ export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onC
 
             <div className={(isOpened ? 'select__input active' : 'select__input') + (isInvalid ? " error" : "")} >
 
-                <div className='select__value'>{currentItem?.content || options[0].content}</div>
+               { options && <div className='select__value'>{selectedItem.content || options[0]?.content}</div>}
                 {isOpened &&
                     <div className='select__options'>
                         {options?.map(option => (

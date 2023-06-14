@@ -1,69 +1,87 @@
 'use client'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import FormikForm, { FormikFieldsTemplate, TemplateFields, TemplateTypes, generateInitialObject } from '@/components/form/FormikForm'
-import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/categories'
+import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/api/propertyTypes'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory } from '@/types/models/types'
+import { ICategory, IPropertyType } from '@/types/models/types'
 import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
 import { Form, Formik } from 'formik'
-import { useCategoryPage } from '@/hooks/useCategoryPage'
 
 
 const CategoryEditPage = () => {
 
-    const router = useRouter()
     const params = useParams()
+    const router = useRouter()
 
-    const { data: categories, refetch: refetchCategories } = useFetchAllCategoriesQuery({})
+    const { data: propertyTypes, refetch: refetchPropertyTypes } = useFetchAllPropertyTypesQuery({ limit: 10, page: 0 })
+    const { data: propertyType, isSuccess, refetch: refetchPropertyType } = useFetchPropertyTypeByIdQuery(+params?.id)
 
-    const { data: category, refetch: refetchCategory } = useFetchCategoryByIdQuery(+params?.id)
+    const [updatePropertyType, { isLoading }] = useUpdatePropertyTypeMutation()
 
-    const [updateCategory, { isLoading }] = useUpdateCategoryMutation()
+    const fieldsTemplate = useCallback((propertyType?: IPropertyType): TemplateFields[] => [
+        {
+            label: "Название единицы измерения",
+            name: "type_name",
+            type: TemplateTypes.TEXT,
+            initialValue: propertyType?.type_name || ""
+        },
+        {
+            label: "Название категории",
+            name: "unit_type",
+            type: TemplateTypes.TEXT,
+            initialValue: propertyType?.unit_type || ""
+        },
+    ], [propertyType])
 
-    const [selectedTab, setSelectedTab] = useState(0)
-
-    const {
-        fieldsTemplateTab1, fieldsTemplateTab2, initialValues
-    } = useCategoryPage(category?.data, categories?.data)
-
+    const initialValues = useMemo(() => generateInitialObject(fieldsTemplate(propertyType?.data)), [fieldsTemplate])
 
     return (
         <div>
             <Row>
-                <h2>Редактирование категории товара - {category?.data?.name}({category?.data?.category_id})</h2>
+                <h1>Единицы измерения категорий - {propertyType?.data.type_name}({propertyType?.data.property_type_id})</h1>
             </Row>
             <Card>
                 <Col>
                     <Row>
                         <Tabs>
-                            <TabsItem active={selectedTab == 0} onClick={() => setSelectedTab(0)}>Основная информация</TabsItem>
-                            <TabsItem active={selectedTab == 1} onClick={() => setSelectedTab(1)}>Дополнительные данные</TabsItem>
+                            <TabsItem active>Основная информация</TabsItem>
                         </Tabs>
                     </Row>
-                    {category?.data && <Formik initialValues={initialValues}
-                        onSubmit={async (values: any) => {
-                            await updateCategory({
-                                category_id: category?.data?.category_id,
-                                name: values.name,
-                                is_end: values.is_end,
-                                photo: values.photo_full.file,
-                                desc:values.desc,
-                                is_active: values.is_active,
-                                parent_id: values.parent_category.value
+                    {!!propertyType?.data?.property_type_id && <FormikForm
+                        fieldsTemplate={fieldsTemplate(propertyType.data)}
+                        onSubmit={async (values) => {
+                            await updatePropertyType({
+                                property_type_id: propertyType?.data?.property_type_id,
+                                type_name: values.type_name,
+                                unit_type: values.unit_type,
                             })
-                            refetchCategory()
+                            refetchPropertyTypes()
+                            refetchPropertyType()
+                            router.back()
+                        }}
+                    />}
+                    {propertyType?.data && <Formik initialValues={initialValues}
+                        onSubmit={async (values: any) => {
+                            await updatePropertyType({
+                                property_type_id: propertyType?.data?.property_type_id,
+                                type_name: values.type_name,
+                                unit_type: values.unit_type,
+                            })
+                            refetchPropertyTypes()
+                            refetchPropertyType()
                             router.back()
                         }}
                     >
                         <Form>
-                            {selectedTab == 0 && <FormikFieldsTemplate fieldsTemplate={fieldsTemplateTab1(category?.data)} />}
-                            {selectedTab == 1 && <FormikFieldsTemplate fieldsTemplate={fieldsTemplateTab2(category?.data)} />}
+                            <FormikFieldsTemplate fieldsTemplate={fieldsTemplate(propertyType?.data)} />
                             <Button type='submit'>Сохранить</Button>
                         </Form>
                     </Formik>}
                 </Col>
+
             </Card>
         </div>
+
     )
 }
 

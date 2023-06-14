@@ -18,7 +18,7 @@ export const Aside = () => {
                     <div className="item__list">
                         <Link className="item__link" href="/categories">Категории товаров</Link>
                         <Link className="item__link" href="/property-types">Единицы измерения характеристик</Link>
-                        <a className="item__link" href="#">Категории товаров</a>
+                        <Link className="item__link" href="/properties">Характеристики</Link>
                         <a className="item__link" href="#">Категории товаров</a>
                         <a className="item__link" href="#">Категории товаров</a>
                         <a className="item__link" href="#">Категории товаров</a>

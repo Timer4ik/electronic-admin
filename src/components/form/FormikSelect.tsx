@@ -28,7 +28,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({ label, selectedItem, optio
             <Select
                 label={label}
                 onChange={handleChangeSelection}
-                selectedItem={selectedItem}
+                selectedItem={field.value}
                 options={options}
             />
         </div>

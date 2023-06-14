@@ -25,8 +25,8 @@ export const FormikPhotoLoader: FC<FormikPhotoLoader> = ({ label, name }) => {
         <Row>
             <PhotoLoader label={label} onChange={handleOnFileChange} />
             <Col>
-                {!!field.value.url && <Field noModify label={field.value.file?.name} value={Math.round(field.value.file?.size / 1024) + " кб"} />}
-                {!!field.value.url && <AdaptiveImage src={field.value.url} />}
+                {!!field?.value?.url && <Field noModify label={field?.value.file?.name} value={Math.round(field?.value.file?.size / 1024) + " кб"} />}
+                {!!field?.value?.url && <AdaptiveImage src={field?.value?.url} />}
             </Col>
         </Row>
 

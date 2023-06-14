@@ -8,11 +8,12 @@ interface TabsProps {
 interface TabsItem {
     children: ReactNode
     active?: boolean
+    onClick?:React.MouseEventHandler<HTMLLIElement>
 }
 
-export const TabsItem: FC<TabsItem> = ({ active, children, ...props }) => {
+export const TabsItem: FC<TabsItem> = ({ active, children, onClick,...props }) => {
     return (
-        <li className={active ? 'tabs__item active' : "tabs__item"} {...props}>
+        <li className={active ? 'tabs__item active' : "tabs__item"} onClick={onClick} {...props}>
             {children}
         </li>
     )

@@ -1,10 +1,15 @@
 'use client'
-import React, { useCallback, useEffect } from 'react'
-import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import FormikForm, { FormikFieldsTemplate, TemplateFields, TemplateTypes, generateInitialObject } from '@/components/form/FormikForm'
 import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation } from '@/api/categories'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory } from '@/types/models/types'
-import { Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { FormikField } from '@/components/form/FormikField'
+import { FormikCheckbox } from '@/components/form/FormikCheckbox'
+import { FormikSelect } from '@/components/form/FormikSelect'
+import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
+import { Form, Formik } from 'formik'
 
 
 const CategoryEditPage = () => {
@@ -17,19 +22,14 @@ const CategoryEditPage = () => {
 
     const [createCategory, { isLoading }] = useCreateCategoryMutation()
 
-    const fieldsTemplate = useCallback((category?: ICategory): TemplateFields[] => [
-       
+    const [selectedTab, setSelectedTab] = useState(0)
+
+    const fieldsTemplateTab1 = useCallback((): TemplateFields[] => [
         {
             label: "Название категории",
             name: "name",
             type: TemplateTypes.TEXT,
-            initialValue: category?.name || ""
-        },
-        {
-            label: "Крайняя категория?",
-            name: "is_end",
-            type: TemplateTypes.CHECKBOX,
-            initialValue: category?.is_end || false,
+            initialValue: ""
         },
         {
             label: "Выберите родительскую категорию",
@@ -43,26 +43,45 @@ const CategoryEditPage = () => {
                 ...categories?.data.map(cat => ({ value: cat.category_id, content: cat.name })) || []
             ],
             initialValue: {
-                value: category?.parent_id || 0,
-                content: categories?.data.find(cat => cat.category_id == category?.parent_id)?.name || "Не выбрано"
+                value: 0,
+                content: "Не выбрано"
             }
         },
         {
             label: "Активность",
             name: "is_active",
             type: TemplateTypes.CHECKBOX,
-            initialValue: category?.is_active || false
+            initialValue: false
         },
         {
             label: "Фото категории",
             name: "photo_full",
             type: TemplateTypes.IMAGE,
             initialValue: {
-                url: "http://localhost:5000/" + category?.photo,
+                url: "",
                 file: null,
             }
         },
-    ], [categories, category])
+    ], [categories])
+
+    const fieldsTemplateTab2 = useCallback((): TemplateFields[] => [
+        {
+            label: "Описание категории",
+            name: "desc",
+            type: TemplateTypes.TEXT,
+            initialValue: ""
+        },
+        {
+            label: "Крайняя категория?",
+            name: "is_end",
+            type: TemplateTypes.CHECKBOX,
+            initialValue: false,
+        },
+    ], [])
+
+    const initialValuesTab1 = useMemo(() => generateInitialObject(fieldsTemplateTab1()), [fieldsTemplateTab1])
+    const initialValuesTab2 = useMemo(() => generateInitialObject(fieldsTemplateTab2()), [fieldsTemplateTab2])
+
 
     return (
         <div>
@@ -72,27 +91,31 @@ const CategoryEditPage = () => {
             <Card>
                 <Col>
                     <Row>
-
                         <Tabs>
-                            <TabsItem active>Основная информация</TabsItem>
-                            <TabsItem>Дополнительная информация</TabsItem>
+                            <TabsItem active={selectedTab == 0} onClick={() => setSelectedTab(0)}>Основная информация</TabsItem>
+                            <TabsItem active={selectedTab == 1} onClick={() => setSelectedTab(1)}>Дополнительные данные</TabsItem>
                         </Tabs>
                     </Row>
-                    <FormikForm
-                        fieldsTemplate={fieldsTemplate()}
-                        onSubmit={async (values) => {
+                    <Formik initialValues={{ ...initialValuesTab1, ...initialValuesTab2 }}
+                        onSubmit={async (values:any) => {
                             await createCategory({
                                 name: values.name,
                                 is_end: values.is_end,
                                 photo: values.photo_full.file,
                                 parent_id: values.parent_category.value,
-                                is_active: values.is_active
+                                is_active: values.is_active,
+                                desc:values.desc,
                             })
                             refetchCategories()
-                            refetchCategory()
                             router.back()
                         }}
-                    />
+                    >
+                        <Form>
+                            {selectedTab == 0 && <FormikFieldsTemplate fieldsTemplate={fieldsTemplateTab1()} />}
+                            {selectedTab == 1 && <FormikFieldsTemplate fieldsTemplate={fieldsTemplateTab2()} />}
+                            <Button type='submit'>Сохранить</Button>
+                        </Form>
+                    </Formik>
                 </Col>
 
             </Card>

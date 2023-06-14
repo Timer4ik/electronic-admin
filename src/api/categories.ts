@@ -8,9 +8,10 @@ export const categoriesApi = createApi({
     endpoints: (build) => ({
         fetchAllCategories: build.query<{ data: ICategory[], message: string },  { page?: number, limit?: number }>({
             query: ({page,limit}) => ({
-                url: `/categories?extend=parent`,
+                url: `/categories?extendParent=true`,
                 params:{
-                    page,limit
+                    page:page || 0,
+                    limit:limit || 8
                 }
 
             }),
@@ -25,6 +26,7 @@ export const categoriesApi = createApi({
 
                 const formData = new FormData()
                 formData.append("name", category.name)
+                formData.append("desc", category.desc || "")
                 formData.append("is_end", category.is_end.toString())
                 formData.append("is_active", category.is_active.toString())
                 formData.append("parent_id", category.parent_id.toString())
@@ -44,6 +46,7 @@ export const categoriesApi = createApi({
 
                 const formData = new FormData()
                 formData.append("name", category.name)
+                formData.append("desc", category.desc || "")
                 formData.append("is_end", category.is_end.toString())
                 formData.append("is_active", category.is_active.toString())
                 formData.append("parent_id", category.parent_id.toString())

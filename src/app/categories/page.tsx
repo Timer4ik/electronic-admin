@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const { data: categories, refetch } = useFetchAllCategoriesQuery({ page: 0, limit: 8 })
+  const { data: categories, refetch } = useFetchAllCategoriesQuery({ page: 0, limit: 20 })
   const router = useRouter()
 
   useEffect(() => {

@@ -6,13 +6,10 @@ export const propertyTypesApi = createApi({
     reducerPath: 'propertyTypesApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
     endpoints: (build) => ({
-        fetchAllPropertyTypes: build.query<{ data: IPropertyType[], message: string }, { page: number, limit: number }>({
-            query: ({ page, limit }) => ({
+        fetchAllPropertyTypes: build.query<{ data: IPropertyType[], message: string, count: number }, any>({
+            query: (params) => ({
                 url: `/property-types`,
-                params: {
-                    page, 
-                    limit
-                }
+                params: params
 
             }),
         }),
@@ -41,9 +38,18 @@ export const propertyTypesApi = createApi({
                 })
             },
         }),
+        deletePropertyType: build.mutation<any, number>({
+            query: (id) => {
+                return ({
+                    url: `/property-types/${id}`,
+                    method: "DELETE",
+                })
+            },
+        }),
+
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation, useCreatePropertyTypeMutation } = propertyTypesApi
+export const { useFetchAllPropertyTypesQuery, useDeletePropertyTypeMutation, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation, useCreatePropertyTypeMutation } = propertyTypesApi

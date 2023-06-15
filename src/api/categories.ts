@@ -6,57 +6,42 @@ export const categoriesApi = createApi({
     reducerPath: 'categoriesApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
     endpoints: (build) => ({
-        fetchAllCategories: build.query<{ data: ICategory[], message: string },  { page?: number, limit?: number }>({
-            query: ({page,limit}) => ({
-                url: `/categories?extendParent=true`,
-                params:{
-                    page:page || 0,
-                    limit:limit || 8
-                }
-
+        fetchAllCategories: build.query<{ data: ICategory[], message: string,count:number,page:string },  any>({
+            query: (params) => ({
+                url: `/categories`,
+                params:params
             }),
         }),
         fetchCategoryById: build.query<{ data: ICategory, message: string }, number>({
             query: (id) => ({
-                url: `/categories/${id}`,
+                url: `/categories/${id}?extend=file`,
             }),
         }),
         updateCategory: build.mutation<any, ICategory>({
             query: (category) => {
 
-                const formData = new FormData()
-                formData.append("name", category.name)
-                formData.append("desc", category.desc || "")
-                formData.append("is_end", category.is_end.toString())
-                formData.append("is_active", category.is_active.toString())
-                formData.append("parent_id", category.parent_id.toString())
-                if (category.photo){
-                    formData.append("photo", category.photo)
-                }
-
                 return ({
                     url: `/categories/${category.category_id}`,
                     method: "PUT",
-                    body: formData
+                    body: category
                 })
             },
         }),
         createCategory: build.mutation<any, Omit<ICategory, 'category_id'>>({
             query: (category) => {
 
-                const formData = new FormData()
-                formData.append("name", category.name)
-                formData.append("desc", category.desc || "")
-                formData.append("is_end", category.is_end.toString())
-                formData.append("is_active", category.is_active.toString())
-                formData.append("parent_id", category.parent_id.toString())
-                if (category.photo){
-                    formData.append("photo", category.photo)
-                }
                 return ({
                     url: `/categories`,
                     method: "POST",
-                    body: formData
+                    body: category
+                })
+            },
+        }),
+        deleteCategory: build.mutation<any, number>({
+            query: (id) => {
+                return ({
+                    url: `/categories/${id}`,
+                    method: "DELETE",
                 })
             },
         }),
@@ -65,4 +50,4 @@ export const categoriesApi = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useUpdateCategoryMutation,useCreateCategoryMutation } = categoriesApi
+export const { useFetchAllCategoriesQuery,useLazyFetchAllCategoriesQuery,useDeleteCategoryMutation, useFetchCategoryByIdQuery, useUpdateCategoryMutation,useCreateCategoryMutation } = categoriesApi

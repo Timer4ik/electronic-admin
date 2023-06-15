@@ -1,69 +1,171 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { FormikFieldsTemplate, TemplateFields, TemplateTypes, generateInitialObject } from '@/components/form/FormikForm'
-import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/categories'
+import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation } from '@/api/categories'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory } from '@/types/models/types'
 import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
 import { Form, Formik } from 'formik'
 import { useCategoryPage } from '@/hooks/useCategoryPage'
-
+import { object as YupObject, string as YupString } from 'yup';
+import { FormikSelect } from '@/components/form/FormikSelect'
+import { FormikCheckbox } from '@/components/form/FormikCheckbox'
+import { FormikField } from '@/components/form/FormikField'
+import { useCreateFileMutation } from '@/api/filesApi'
+import Loader from '@/ui-kit/Loader/Loader'
+import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
+import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
+import { FormikTextarea } from '@/components/form/FormikTextarea'
+interface FormType {
+    name: string;
+    photo: any;
+    parent_category: {
+        value: number,
+        content: string
+    };
+    is_active: boolean;
+    desc: string;
+    is_end: boolean;
+    file_id?: number
+}
 
 const CategoryEditPage = () => {
 
     const router = useRouter()
     const params = useParams()
 
-    const { data: categories, refetch: refetchCategories } = useFetchAllCategoriesQuery({})
+    const { data: categories, refetch: refetchCategories, isLoading: categoriesIsLoading } = useFetchAllCategoriesQuery({})
+    const { data: category, refetch: refetchCategory, isLoading: categoryIsLoading } = useFetchCategoryByIdQuery(+params?.id)
+    const [updateCategory] = useUpdateCategoryMutation()
+    const [createFile] = useCreateFileMutation()
 
-    const { data: category, refetch: refetchCategory } = useFetchCategoryByIdQuery(+params?.id)
+    const [activeTab, setActiveTab] = useState(0)
 
-    const [updateCategory, { isLoading }] = useUpdateCategoryMutation()
+    const schema = YupObject().shape({
+        name: YupString()
+            .min(2, 'Название категории должно иметь не меньше 2 символов')
+            .max(50, 'Название категории не должно иметь больше 50 символов')
+            .required('Название категории обязательно'),
+    });
 
-    const [selectedTab, setSelectedTab] = useState(0)
+    const initialValues = useMemo((): FormType => {
+        return {
+            name: category?.data.name || "",
+            photo: {
+                url: category?.data?.file?.link,
+                file: {
+                    name:category?.data?.file?.name,
+                    size: category?.data?.file?.size
+                }
+            },
+            parent_category: {
+                value: category?.data.parent_id || 0,
+                content: category?.data.parent?.name || "Не выбрано",
+            },
+            is_active: !!category?.data.is_active,
+            desc: category?.data?.desc || "",
+            is_end: !!category?.data.is_end,
+        }
+    }, [category])
 
-    const {
-        fieldsTemplateTab1, fieldsTemplateTab2, initialValues
-    } = useCategoryPage(category?.data, categories?.data)
+    const handleSubmit = async (values: FormType) => {
 
+        try {
+            if (!category) {
+                return
+            }
+            if (values.photo.file.type) {
+                let data = await createFile(values.photo)
+
+                if (('error' in data)) {
+                    return
+                }
+
+                values.file_id = data?.data?.file_id
+            }
+            await updateCategory({
+                category_id: category.data.category_id,
+                name: values.name,
+                is_active: values.is_active,
+                is_end: values.is_end,
+                parent_id: values.parent_category.value,
+                desc: values.desc,
+                file_id: values.file_id || category?.data.category_id
+            })
+            refetchCategory()
+            router.push("/categories")
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div>
             <Row>
-                <h2>Редактирование категории товара - {category?.data?.name}({category?.data?.category_id})</h2>
+                <h1>Категории товаров - Создание</h1>
             </Row>
             <Card>
-                <Col>
-                    <Row>
-                        <Tabs>
-                            <TabsItem active={selectedTab == 0} onClick={() => setSelectedTab(0)}>Основная информация</TabsItem>
-                            <TabsItem active={selectedTab == 1} onClick={() => setSelectedTab(1)}>Дополнительные данные</TabsItem>
-                        </Tabs>
-                    </Row>
-                    {category?.data && <Formik initialValues={initialValues}
-                        onSubmit={async (values: any) => {
-                            await updateCategory({
-                                category_id: category?.data?.category_id,
-                                name: values.name,
-                                is_end: values.is_end,
-                                photo: values.photo_full.file,
-                                desc:values.desc,
-                                is_active: values.is_active,
-                                parent_id: values.parent_category.value
-                            })
-                            refetchCategory()
-                            router.back()
-                        }}
-                    >
-                        <Form>
-                            {selectedTab == 0 && <FormikFieldsTemplate fieldsTemplate={fieldsTemplateTab1(category?.data)} />}
-                            {selectedTab == 1 && <FormikFieldsTemplate fieldsTemplate={fieldsTemplateTab2(category?.data)} />}
-                            <Button type='submit'>Сохранить</Button>
-                        </Form>
-                    </Formik>}
-                </Col>
+                {categoriesIsLoading && categoryIsLoading &&
+                    <Loader />
+                }
+                {!categoriesIsLoading && !categoryIsLoading && category &&
+                    <>
+                        <Row>
+                            <Tabs>
+                                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
+                                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+                            </Tabs>
+                        </Row>
+
+                        <Formik
+                            initialValues={initialValues}
+                            onSubmit={handleSubmit}
+                            validationSchema={schema}
+                        >
+                            <Form>
+                                {activeTab == 0 && <>
+                                    <Row>
+                                        <FormikField label='Введите название категории' name={'name'} />
+                                    </Row>
+                                    <Row>
+                                        <FormikCheckbox label='Активность' name={'is_active'} />
+                                    </Row>
+                                    <Row>
+                                        <FormikSelect
+                                            label='Выберите родительскую категория'
+                                            name={'parent_category'}
+                                            selectedItem={{
+                                                value: category?.data.category_id,
+                                                content: category?.data.name,
+                                            }}
+                                            options={addNotSelectedOption((categories?.data.map((item) => {
+                                                return {
+                                                    content: item.name,
+                                                    value: item.category_id
+                                                }
+                                            })))}
+                                        />
+                                    </Row>
+                                    <Row>
+                                        <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
+                                    </Row>
+                                </>}
+                                {activeTab == 1 && <>
+                                    <Row>
+                                        <FormikTextarea label='Описание категории' name={'desc'} />
+                                    </Row>
+                                    <Row>
+                                        <FormikCheckbox label='Конечная категория?' name={'is_end'} />
+                                    </Row>
+                                </>}
+                                <Button type='submit'>Сохранить</Button>
+                            </Form>
+                        </Formik>
+                    </>}
             </Card>
+
         </div>
+
     )
 }
 

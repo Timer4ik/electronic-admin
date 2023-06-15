@@ -4,9 +4,11 @@ import "./Paginator.scss"
 interface Props {
     children?: ReactNode
     pageCount: number
+    onClick: (page: number) => void
+    currentPage: number
 }
 
-const Paginator: FC<Props> = ({ pageCount }) => {
+const Paginator: FC<Props> = ({ pageCount, onClick, currentPage }) => {
 
     const pages = useMemo((): {
         page: number,
@@ -29,7 +31,7 @@ const Paginator: FC<Props> = ({ pageCount }) => {
             <div className='paginator__item'>{"<"}</div>
             {pages.map((item) => {
                 return (
-                    <div className='paginator__item'>{item.page}</div>
+                    <div className={'paginator__item' + (currentPage == item.page ? " active" : "")} onClick={() => onClick(item.page)}>{item.page + 1}</div>
                 )
             })}
             <div className='paginator__item'>{">"}</div>

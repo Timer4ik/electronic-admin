@@ -7,6 +7,17 @@ interface useFormInputOptions {
     validateOnBlur?: (value:string) => any
 }
 
+export const useInput = (initialValue:any) => {
+    const [value,setValue] = useState(initialValue)
+
+    return {
+        value,
+        onChange(e:any) {
+            setValue(e.target.value)
+        }
+    }
+}
+
 export const useFormInput = (options: useFormInputOptions) => {
 
     const {

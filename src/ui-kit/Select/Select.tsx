@@ -5,15 +5,15 @@ import { useEffectOutsideClick } from '@/hooks/useEffectOutsideClick'
 interface Props {
     label?: string
     selectedItem: {
-        value: string | number,
+        value: number,
         content: string
     }
     options?: {
-        value: string | number,
+        value: number,
         content: string
     }[]
     isInvalid?: boolean
-    onChange: (selectedItem: { value: string | number, content: string }) => void
+    onChange: (selectedItem: { value: number, content: string }) => void
 }
 
 export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onChange }) => {
@@ -27,7 +27,7 @@ export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onC
     }, [isOpened])
 
     const handleClick = (option: {
-        value: string | number,
+        value:  number,
         content: string
     }) => {
         onChange(option)

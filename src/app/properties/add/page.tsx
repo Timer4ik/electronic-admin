@@ -1,46 +1,80 @@
 'use client'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
+import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/api/propertyTypes'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory, IProperty, IPropertyType } from '@/types/models/types'
-import { Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
-import { useCreatePropertyMutation, useFetchAllPropertiesQuery, useFetchPropertyByIdQuery } from '@/api/properties'
-import { useFetchAllPropertyTypesQuery } from '@/api/propertyTypes'
+import { ICategory, IPropertyType } from '@/types/models/types'
+import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { Form, Formik } from 'formik'
+import Loader from '@/ui-kit/Loader/Loader'
+import { FormikField } from '@/components/form/FormikField'
+import { FormikCheckbox } from '@/components/form/FormikCheckbox'
+import { object as YupObject, string as YupString } from 'yup';
+import { useCreatePropertyMutation, useFetchAllPropertiesQuery } from '@/api/properties'
+import { FormikSelect } from '@/components/form/FormikSelect'
+import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 
+interface FormType {
+    name: string
+    property_type: {
+        content: string
+        value: number
+    }
+    is_active: boolean
+    _propertyTypes: {
+        content: string
+        value: number
+    }[]
+}
 
 const CategoryEditPage = () => {
 
     const params = useParams()
     const router = useRouter()
 
-    const { data: properties, refetch: refetchProperties } = useFetchAllPropertiesQuery({ limit: 5, page: 0 })
-    const { data: propertyTypes } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
+    const { data: propertyTypes, isLoading: isPropertyTypesLoading } = useFetchAllPropertyTypesQuery({})
 
-    const [createPropertyType, { isLoading }] = useCreatePropertyMutation()
+    const [createProperty, { isLoading }] = useCreatePropertyMutation()
 
-    const fieldsTemplate = useCallback((property?: IProperty): TemplateFields[] => [
+    const [activeTab, setActiveTab] = useState(0)
 
-        {
-            label: "Название характеристики",
-            name: "name",
-            type: TemplateTypes.TEXT,
-            initialValue: property?.name || ""
-        },
-        {
-            label: "Единица измерения",
-            name: "property_type",
-            type: TemplateTypes.SELECT,
-            options: [
-                ...propertyTypes?.data.map(property_type => ({ value: property_type.property_type_id, content: property_type.type_name })) || []
-            ],
-            initialValue: {
-                value: propertyTypes?.data[0]?.property_type_id || 0,
-                content: propertyTypes?.data[0]?.type_name || "",
-            }
-        },
+    const schema = YupObject().shape({
+        name: YupString()
+            .min(2, 'Название характеристики должно иметь не меньше 2 символов')
+            .max(50, 'Название характеристики не должно иметь больше 50 символов')
+            .required('Обязательное поле')
 
+    });
 
-    ], [propertyTypes])
+    const initialValues = useMemo((): FormType => {
+        return {
+            name: "",
+            property_type: {
+                content: "Не выбрано",
+                value: 0
+            },
+            is_active: false,
+            _propertyTypes: addNotSelectedOption(propertyTypes?.data.map(item => {
+                return {
+                    value: item.property_type_id,
+                    content: item.type_name
+                }
+            }))
+        }
+    }, [propertyTypes])
+
+    const handleSubmit = async (values: FormType) => {
+        try {
+            await createProperty({
+                name: values.name,
+                property_type_id: values.property_type.value,
+                is_active: values.is_active
+            })
+            router.push("/property-types")
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div>
@@ -48,25 +82,44 @@ const CategoryEditPage = () => {
                 <h1>Единицы измерения категорий - Создание</h1>
             </Row>
             <Card>
-                <Col>
-                    <Row>
-                        <Tabs>
-                            <TabsItem active>Основная информация</TabsItem>
-                            <TabsItem>Дополнительная информация</TabsItem>
-                        </Tabs>
-                    </Row>
-                    <FormikForm
-                        fieldsTemplate={fieldsTemplate()}
-                        onSubmit={async (values) => {
-                            await createPropertyType({
-                                name: values.name,
-                                property_type_id: values.property_type.value
-                            })
-                            router.push("/properties")
-                        }}
-                    />
-                </Col>
+                {isPropertyTypesLoading &&
+                    <Loader />
+                }
+                {!isPropertyTypesLoading &&
+                    <>
+                        <Row>
+                            <Tabs>
+                                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
+                                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+                            </Tabs>
+                        </Row>
 
+                        <Formik
+                            initialValues={initialValues}
+                            onSubmit={handleSubmit}
+                            validationSchema={schema}
+                        >
+                            <Form>
+                                {activeTab == 0 && <>
+                                    <Row>
+                                        <FormikField label='Название характеристики' name={'name'} />
+                                    </Row>
+                                    <Row>
+                                        <FormikSelect
+                                            label='Единица измерения'
+                                            name={'property_type'}
+                                            selectedItem={initialValues.property_type}
+                                            options={initialValues._propertyTypes}
+                                        />
+                                    </Row>
+                                    <Row>
+                                        <FormikCheckbox label='Активность' name={'is_active'} />
+                                    </Row>
+                                </>}
+                                <Button type='submit'>Сохранить</Button>
+                            </Form>
+                        </Formik>
+                    </>}
             </Card>
 
         </div>

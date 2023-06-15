@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { useField, Formik, Form } from "formik"
-import { Field, Select } from "@/ui-kit"
+import { ErrorText, Field, Select } from "@/ui-kit"
 
 interface FormikField {
     name: string
@@ -13,7 +13,8 @@ export const FormikField: FC<FormikField> = ({ label, name }) => {
 
     return (
         <div>
-            <Field label={label} value={field.value} onChange={(e) => helpers.setValue(e.target.value)}/>
+            <Field label={label} value={field.value} isInvalid={!!meta.error} onChange={(e) => helpers.setValue(e.target.value)} />
+            {meta.error && <ErrorText>{meta.error}</ErrorText>}
         </div>
 
     )

@@ -1,8 +1,22 @@
 .table {
-    overflow: auto;
+    position: relative;
     border-radius: 0.75rem;
     border: 1px solid #e7eaf0;
     // box-shadow: 0px 3px 3px -1px rgba(10, 22, 70, 0.1), 0px 0px 1px 0px rgba(10, 22, 70, 0.06) !important;
+    .table__block::after {
+        display: block;
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background-color: white;
+        width: 100%;
+        height: 100%;
+        z-index: -100;
+        border-radius: 0.75rem;
+    }
     .table__block {
         border-collapse: collapse;
         width: 100%;
@@ -17,6 +31,7 @@
         background-color: white;
         color: #525f7f;
         border-bottom: 1px solid rgb(230, 230, 230);
+        display: contents;
         th {
             // border-top: 1px solid rgb(230, 230, 230);
             border-bottom: 1px solid rgb(230, 230, 230);
@@ -31,7 +46,7 @@
         }
     }
     tbody {
-        background-color: white;
+        display: contents;
         tr {
             min-height: 70px;
             height: 70px;

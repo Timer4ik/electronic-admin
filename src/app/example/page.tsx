@@ -1,19 +1,22 @@
 'use client'
-import { AdaptiveImage, Button, Card, Checkbox, Col, Field, FileLoader, PhotoLoader, Row, Select, SelectOption, Table, TableMenuIcon, Tabs, TabsItem } from '@/ui-kit'
+import { AdaptiveImage, Button, Card, Checkbox, Col, Field, FileLoader, PhotoLoader, Row, Select, Table, TableMenuIcon, Tabs, TabsItem } from '@/ui-kit'
 import React, { FC, useState } from 'react'
 
 const page = () => {
-  const [items, setItems] = useState([
-    { id: 0, value: "Не выбрано" },
-    { id: 1, value: "Швеция" },
-    { id: 2, value: "Германия" },
-    { id: 3, value: "США" },
-    { id: 4, value: "Польша" },
-    { id: 5, value: "Беларусь" },
+  const [items, setItems] = useState<{
+    value: number,
+    content: string
+  }[]>([
+    { value: 0, content: "Не выбрано" },
+    { value: 1, content: "Швеция" },
+    { value: 2, content: "Германия" },
+    { value: 3, content: "США" },
+    { value: 4, content: "Польша" },
+    { value: 5, content: "Беларусь" },
 
-    { id: 6, value: "Беларусь" },
-    { id: 7, value: "Китай" },
-    { id: 8, value: "Япония" },
+    { value: 6, content: "Беларусь" },
+    { value: 7, content: "Китай" },
+    { value: 8, content: "Япония" },
   ])
   const [selectedItem, setSelectedItem] = useState(items[0])
 
@@ -33,6 +36,8 @@ const page = () => {
     <div>
       <Col>
         <h1>Таблица</h1>
+        
+
         <Card noPadding>
           <Table>
             <thead className='table__thead'>
@@ -47,7 +52,7 @@ const page = () => {
             </thead>
             <tbody className='table__tbody'>
               <tr>
-                <td><TableMenuIcon/></td>
+                <td><TableMenuIcon /></td>
                 <td>123123</td>
                 <td>123123</td>
                 <td>123123</td>
@@ -55,7 +60,7 @@ const page = () => {
                 <td>123123</td>
               </tr>
               <tr>
-                <td><TableMenuIcon/></td>
+                <td><TableMenuIcon /></td>
                 <td>123123</td>
                 <td>123123</td>
                 <td>123123</td>
@@ -63,7 +68,7 @@ const page = () => {
                 <td>123123</td>
               </tr>
               <tr>
-                <td><TableMenuIcon/></td>
+                <td><TableMenuIcon /></td>
                 <td>123123</td>
                 <td>123123</td>
                 <td>123123</td>
@@ -90,13 +95,7 @@ const page = () => {
         </Row>
         <Row>
           <Field label={"First name"} />
-          <Select label={"Выбери страну"} selectedItem={selectedItem?.value}>
-            {items.map(item => {
-              return (
-                <SelectOption key={item.id} onClick={() => setSelectedItem(item)}>{item.value}</SelectOption>
-              )
-            })}
-          </Select>
+          <Select label={"Выбери страну"} onChange={(item) => setSelectedItem(item)} selectedItem={selectedItem} options={items} />
         </Row>
         <Row>
           <Checkbox label={"Хочешь умереть?"} />

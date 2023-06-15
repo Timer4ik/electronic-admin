@@ -1,5 +1,6 @@
 import { categoriesApi } from '@/api/categories'
 import { propertyTypesApi } from '@/api/propertyTypes'
+import { filesApi } from '@/api/filesApi'
 import { propertiesApi } from '@/api/properties'
 import { configureStore } from '@reduxjs/toolkit'
 // Or from '@reduxjs/toolkit/query/react'
@@ -10,6 +11,7 @@ export const store = configureStore({
     // Add the generated reducer as a specific top-level slice
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [propertyTypesApi.reducerPath]: propertyTypesApi.reducer,
+    [filesApi.reducerPath]: filesApi.reducer,
     [propertiesApi.reducerPath]: propertiesApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
@@ -18,6 +20,7 @@ export const store = configureStore({
     getDefaultMiddleware()
     .concat(categoriesApi.middleware)
     .concat(propertyTypesApi.middleware)
+    .concat(filesApi.middleware)
     .concat(propertiesApi.middleware)
 })
 

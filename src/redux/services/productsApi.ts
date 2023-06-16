@@ -5,18 +5,25 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const productsApi = createApi({
     reducerPath: 'productsApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
+    tagTypes: ["Products"],
     endpoints: (build) => ({
-        fetchAllProducts: build.query<{ data: IProduct[], message: string, count: number, page: string }, any>({
+        getProducts: build.query<{ data: IProduct[], message: string, count: number, page: string }, any>({
             query: (params) => ({
                 url: `/products`,
                 params: params
             }),
+            providesTags: (result, error, arg) =>
+                result
+                    ? [...result.data.map(({ product_id }) =>
+                        ({ type: 'Products' as const, id: product_id })), 'Products']
+                    : ['Products'],
         }),
-        fetchProductById: build.query<{ data: IProduct, message: string, page: string }, { id: number, params: any }>({
+        getProductById: build.query<{ data: IProduct, message: string, page: string }, { id: number, params: any }>({
             query: ({ id, params }) => ({
                 url: `/products/${id}`,
                 params: params
             }),
+            providesTags: (result, error, arg) => [{ type: 'Products' as const, id: result?.data?.product_id }],
         }),
         createProduct: build.mutation<any, Omit<IProduct, 'product_id'>>({
             query: (product) => {
@@ -27,6 +34,7 @@ export const productsApi = createApi({
                     body: product
                 })
             },
+            invalidatesTags: ['Products'],
         }),
         updateProduct: build.mutation<any, IProduct>({
             query: (product) => {
@@ -37,6 +45,7 @@ export const productsApi = createApi({
                     body: product
                 })
             },
+            invalidatesTags: ['Products'],
         }),
         deleteProductById: build.mutation<any, number>({
             query: (id) => {
@@ -45,10 +54,9 @@ export const productsApi = createApi({
                     method: "DELETE",
                 })
             },
+            invalidatesTags: ['Products'],
         }),
     }),
 })
 
-// Export hooks for usage in function components, which are
-// auto-generated based on the defined endpoints
-export const { useFetchProductByIdQuery, useCreateProductMutation, useDeleteProductByIdMutation, useFetchAllProductsQuery, useLazyFetchAllProductsQuery, useUpdateProductMutation } = productsApi
+export const { useCreateProductMutation, useDeleteProductByIdMutation,  useUpdateProductMutation, useGetProductByIdQuery, useGetProductsQuery, useLazyGetProductByIdQuery, useLazyGetProductsQuery } = productsApi

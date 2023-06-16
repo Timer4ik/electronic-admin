@@ -5,17 +5,24 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const categoriesApi = createApi({
     reducerPath: 'categoriesApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
+    tagTypes: ["Categories"],
     endpoints: (build) => ({
-        fetchAllCategories: build.query<{ data: ICategory[], message: string,count:number,page:string },  any>({
+        getCategories: build.query<{ data: ICategory[], message: string, count: number, page: string }, any>({
             query: (params) => ({
                 url: `/categories`,
-                params:params
+                params: params
             }),
+            providesTags: (result, error, arg) =>
+                result
+                    ? [...result.data.map(({ category_id }) =>
+                        ({ type: 'Categories' as const, id: category_id })), 'Categories']
+                    : ['Categories'],
         }),
-        fetchCategoryById: build.query<{ data: ICategory, message: string }, number>({
+        getCategoryById: build.query<{ data: ICategory, message: string }, number>({
             query: (id) => ({
                 url: `/categories/${id}?extend=file`,
             }),
+            providesTags: (result, error, arg) => [{ type: 'Categories' as const, id: result?.data?.category_id }],
         }),
         updateCategory: build.mutation<any, ICategory>({
             query: (category) => {
@@ -26,6 +33,7 @@ export const categoriesApi = createApi({
                     body: category
                 })
             },
+            invalidatesTags: ['Categories'],
         }),
         createCategory: build.mutation<any, Omit<ICategory, 'category_id'>>({
             query: (category) => {
@@ -36,6 +44,7 @@ export const categoriesApi = createApi({
                     body: category
                 })
             },
+            invalidatesTags: ['Categories'],
         }),
         deleteCategory: build.mutation<any, number>({
             query: (id) => {
@@ -44,10 +53,11 @@ export const categoriesApi = createApi({
                     method: "DELETE",
                 })
             },
+            invalidatesTags: ['Categories'],
         }),
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchAllCategoriesQuery,useLazyFetchAllCategoriesQuery,useDeleteCategoryMutation, useFetchCategoryByIdQuery, useUpdateCategoryMutation,useCreateCategoryMutation } = categoriesApi
+export const { useDeleteCategoryMutation, useUpdateCategoryMutation, useCreateCategoryMutation, useGetCategoriesQuery, useGetCategoryByIdQuery, useLazyGetCategoriesQuery, useLazyGetCategoryByIdQuery } = categoriesApi

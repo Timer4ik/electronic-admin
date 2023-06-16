@@ -1,20 +1,19 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/redux/services/categories'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Col, PhotoLoader, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Col, PhotoLoader, Row, Tabs, TabsItem, Loader } from '@/components/ui'
 import { Form, Formik, useFormik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { FormikSelect } from '@/components/form/FormikSelect'
-import Loader from '@/components/ui/Loader/Loader'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
 import { useCreateFileMutation } from '@/redux/services/filesApi'
-import { useCreateProductMutation, useFetchProductByIdQuery, useUpdateProductMutation } from '@/redux/services/productsApi'
-import { useLazyFetchAllDevelopersQuery } from '@/redux/services/developersApi'
+import { useGetDevelopersQuery } from '@/redux/services/developersApi'
+import { useGetCategoriesQuery } from '@/redux/services/categoriesApi'
+import { useGetProductByIdQuery, useUpdateProductMutation } from '@/redux/services/productsApi'
 
 interface FormType {
     name: string;
@@ -46,14 +45,14 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const [fetchDevelopers, { data: developers, isLoading: developersIsLoading }] = useLazyFetchAllDevelopersQuery()
-    const [fetchCategories, { data: categories, isLoading: categoriesIsLoading }] = useLazyFetchAllCategoriesQuery()
-    const { data: product, isSuccess, refetch: refetchProduct } = useFetchProductByIdQuery({
+    const { data: developers, isLoading: developersIsLoading } = useGetDevelopersQuery({})
+    const { data: categories, isLoading: categoriesIsLoading } = useGetCategoriesQuery({})
+    const { data: product } = useGetProductByIdQuery({
         id: +params?.id, params: {
             extend: "category,file,developer"
         }
     })
-    const [updateProduct, { isLoading, isError }] = useUpdateProductMutation()
+    const [updateProduct] = useUpdateProductMutation()
 
     const [createFile] = useCreateFileMutation()
 
@@ -127,21 +126,11 @@ const CategoryEditPage = () => {
                 descr: values.descr,
                 price: values.price,
             })
-            refetchProduct()
             router.push("/products")
         } catch (error) {
             console.log(error);
         }
     }
-
-    useEffect(() => {
-        (async () => {
-            await fetchCategories({})
-            await fetchDevelopers({})
-        })()
-    }, [])
-
-    // 
 
     return (
         <div>
@@ -149,10 +138,10 @@ const CategoryEditPage = () => {
                 <h1>Товары - {product?.data.name}({product?.data.product_id})</h1>
             </Row>
             <Card>
-                {categoriesIsLoading &&
+                {categoriesIsLoading && developersIsLoading &&
                     <Loader />
                 }
-                {categories && developers && product &&
+                {!categoriesIsLoading && !developersIsLoading && product &&
                     <>
                         <Row>
                             <Tabs>

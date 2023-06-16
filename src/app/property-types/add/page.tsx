@@ -1,12 +1,9 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react'
-import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
+import React, { useState } from 'react'
+import { useCreatePropTypeMutation } from '@/redux/services/propTypesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Loader, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
@@ -22,10 +19,7 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: propertyTypes, refetch: refetchPropertyTypes, isLoading: propertyTypesIsLoading } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
-    // const { data: propertyType, isSuccess, refetch: refetchPropertyType } = useFetchPropertyTypeByIdQuery(+params?.id)
-
-    const [createPropertyType, { isLoading }] = useCreatePropertyTypeMutation()
+    const [createPropertyType] = useCreatePropTypeMutation()
 
     const [activeTab, setActiveTab] = useState(0)
 
@@ -54,7 +48,6 @@ const CategoryEditPage = () => {
                 unit_type: values.unit_type,
                 is_active: values.is_active
             })
-            refetchPropertyTypes()
             router.push("/property-types")
         } catch (error) {
             console.log(error);
@@ -67,39 +60,33 @@ const CategoryEditPage = () => {
                 <h1>Единицы измерения - Создание</h1>
             </Row>
             <Card>
-                {propertyTypesIsLoading &&
-                    <Loader />
-                }
-                {!propertyTypesIsLoading &&
-                    <>
-                        <Row>
-                            <Tabs>
-                                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
-                            </Tabs>
-                        </Row>
+                <Row>
+                    <Tabs>
+                        <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
+                        <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+                    </Tabs>
+                </Row>
 
-                        <Formik
-                            initialValues={initialValues}
-                            onSubmit={handleSubmit}
-                            validationSchema={schema}
-                        >
-                            <Form>
-                                {activeTab == 0 && <>
-                                    <Row>
-                                        <FormikField label='Название единицы измерения' name={'type_name'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikField label='Обозначение' name={'unit_type'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikCheckbox label='Активность' name={'is_active'} />
-                                    </Row>
-                                </>}
-                                <Button type='submit'>Сохранить</Button>
-                            </Form>
-                        </Formik>
-                    </>}
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    validationSchema={schema}
+                >
+                    <Form>
+                        {activeTab == 0 && <>
+                            <Row>
+                                <FormikField label='Название единицы измерения' name={'type_name'} />
+                            </Row>
+                            <Row>
+                                <FormikField label='Обозначение' name={'unit_type'} />
+                            </Row>
+                            <Row>
+                                <FormikCheckbox label='Активность' name={'is_active'} />
+                            </Row>
+                        </>}
+                        <Button type='submit'>Сохранить</Button>
+                    </Form>
+                </Formik>
             </Card>
 
         </div>

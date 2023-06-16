@@ -1,5 +1,5 @@
 'use client'
-import { useDeletePropertyTypeMutation, useFetchAllPropertyTypesQuery, useUpdatePropertyTypeMutation } from "@/redux/services/propertyTypes";
+import { useDeletePropTypeMutation, useGetPropTypesQuery, useUpdatePropTypeMutation } from "@/redux/services/propTypesApi";
 import useDebounce from "@/hooks/useDebounce";
 import { IPropertyType } from "@/types/models/types";
 import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
@@ -19,34 +19,28 @@ export default function Home() {
   const [searchValue, setSearchValue] = useState<string>("")
   const debouncedSearchValue = useDebounce(searchValue, 800)
 
-  const { data: propertyTypes, refetch } = useFetchAllPropertyTypesQuery({
+  const { data: propertyTypes } = useGetPropTypesQuery({
     page: currentPage,
     limit: limit,
     like: debouncedSearchValue || ""
   })
 
   // menu  
-  const [deletePropertyType] = useDeletePropertyTypeMutation()
-  const [updatePropertyType] = useUpdatePropertyTypeMutation()
+  const [deletePropertyType] = useDeletePropTypeMutation()
+  const [updatePropertyType] = useUpdatePropTypeMutation()
 
   const handleDelete = async (id: number) => {
     await deletePropertyType(id)
-    refetch()
   }
 
   const handleToggleActive = async (propertyType: IPropertyType) => {
     let activePropertyType: IPropertyType = { ...propertyType, is_active: !propertyType.is_active }
     await updatePropertyType(activePropertyType)
-    refetch()
   }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
-
-  useEffect(() => {
-    refetch()
-  }, [])
 
   return (
     <Col>

@@ -1,20 +1,19 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/redux/services/categories'
+import { useCreateCategoryMutation, useGetCategoriesQuery } from '@/redux/services/categoriesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Col, Loader, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik, useFormik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { FormikSelect } from '@/components/form/FormikSelect'
-import Loader from '@/components/ui/Loader/Loader'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
 import { useCreateFileMutation } from '@/redux/services/filesApi'
 import { useCreateProductMutation } from '@/redux/services/productsApi'
-import { useLazyFetchAllDevelopersQuery } from '@/redux/services/developersApi'
+import { useGetDevelopersQuery } from '@/redux/services/developersApi'
 
 interface FormType {
     name: string;
@@ -46,10 +45,10 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const [fetchDevelopers, { data: developers, isLoading: developersIsLoading }] = useLazyFetchAllDevelopersQuery()
-    const [fetchCategories, { data: categories, isLoading: categoriesIsLoading }] = useLazyFetchAllCategoriesQuery()
-    // const { data: category, isSuccess, refetch: refetchCategory } = useFetchCategoryByIdQuery(+params?.id)
-    const [createProduct, { isLoading, isError }] = useCreateProductMutation()
+    const { data: developers, isLoading: developersIsLoading } = useGetDevelopersQuery({})
+    const { data: categories, isLoading: categoriesIsLoading } = useGetCategoriesQuery({})
+
+    const [createProduct] = useCreateProductMutation()
 
     const [createFile] = useCreateFileMutation()
 
@@ -122,23 +121,16 @@ const CategoryEditPage = () => {
         }
     }
 
-    useEffect(() => {
-        (async () => {
-            await fetchCategories({})
-            await fetchDevelopers({})
-        })()
-    }, [])
-
     return (
         <div>
             <Row>
                 <h1>Товары - Создание</h1>
             </Row>
             <Card>
-                {categoriesIsLoading &&
+                {categoriesIsLoading && developersIsLoading &&
                     <Loader />
                 }
-                {!categoriesIsLoading &&
+                {!categoriesIsLoading && !developersIsLoading &&
                     <>
                         <Row>
                             <Tabs>
@@ -183,7 +175,7 @@ const CategoryEditPage = () => {
                                     <Row>
                                         <FormikField label='Цена' name='price' />
                                     </Row>
-                                    
+
                                 </>}
                                 {activeTab == 1 && <>
                                     <Row>

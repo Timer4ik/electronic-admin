@@ -1,11 +1,11 @@
 'use client'
-import { useDeletePropertyByIdMutation, useFetchAllPropertiesQuery, useUpdatePropertyMutation } from "@/redux/services/properties";
+import { useDeletePropertyByIdMutation, useFetchAllPropertiesQuery, useUpdatePropertyMutation } from "@/redux/services/propertiesApi";
 import useDebounce from "@/hooks/useDebounce";
 import { IProperty } from "@/types/models/types";
 import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
 import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
 
@@ -20,7 +20,7 @@ export default function Home() {
   const debouncedSearchValue = useDebounce(searchValue, 800)
 
   // table data
-  const { data: properties, refetch } = useFetchAllPropertiesQuery({
+  const { data: properties } = useFetchAllPropertiesQuery({
     page: 0,
     limit: 10,
     extend: "property_type",
@@ -34,22 +34,16 @@ export default function Home() {
 
   const handleDelete = async (id: number) => {
     await deletePropertyById(id)
-    refetch()
   }
 
   const handleToggleActive = async (property: IProperty) => {
     let activeProperty: IProperty = { ...property, is_active: !property.is_active }
     await updateProperty(activeProperty)
-    refetch()
   }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
-
-  useEffect(() => {
-    refetch()
-  }, [])
 
   return (
     <Col>

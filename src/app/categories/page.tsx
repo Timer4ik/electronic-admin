@@ -1,11 +1,12 @@
 'use client'
-import { useDeleteCategoryMutation, useFetchAllCategoriesQuery, useUpdateCategoryMutation } from "@/redux/services/categories";
+import { useDeleteCategoryMutation, useGetCategoriesQuery, useUpdateCategoryMutation } from "@/redux/services/categoriesApi";
 import useDebounce from "@/hooks/useDebounce";
 import { ICategory } from "@/types/models/types";
 import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
 import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function Home() {
 
@@ -20,7 +21,7 @@ export default function Home() {
   const debouncedSearchValue = useDebounce(searchValue, 800)
 
   // table data
-  const { categories, refetch } = useFetchAllCategoriesQuery({
+  const { categories } = useGetCategoriesQuery({
     limit,
     page: currentPage,
     extendParent: "true",
@@ -39,23 +40,16 @@ export default function Home() {
 
   const handleDelete = async (id: number) => {
     await deleteCategory(id)
-    refetch()
   }
 
   const handleToggleActive = async (category: ICategory) => {
     let activeCategory: ICategory = { ...category, is_active: !category.is_active }
     await updateCategory(activeCategory)
-    refetch()
   }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
-
-
-  useEffect(() => {
-    refetch()
-  }, [])
 
   return (
     <Col>
@@ -101,14 +95,14 @@ export default function Home() {
                   <td className="gray">{item.category_id}</td>
                   <td className="black-500">{item.name}</td>
                   <td>
-                    {item.is_active && <img src="img/icons/checked.svg" width={18} />}
+                    {item.is_active && <Image width={18} height={18} src="img/icons/checked.svg" alt="" />}
                   </td>
                   <td>
-                    {item.is_end && <img src="img/icons/checked.svg" width={18} />}
+                    {item.is_end && <Image width={18} height={18} src="img/icons/checked.svg" alt="" />}
                   </td>
                   <td>
                     <div className="table-photo">
-                      <img src={item.file?.link} alt="" />
+                      <Image width={0} height={0} src={item.file?.link || ""} alt="" />
                     </div>
                   </td>
                   <td>{item?.parent?.name}</td>

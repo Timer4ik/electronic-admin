@@ -1,18 +1,17 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Col, Loader, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
-import { useCreatePropertyMutation, useFetchAllPropertiesQuery } from '@/redux/services/properties'
+import { useCreatePropertyMutation, useFetchAllPropertiesQuery } from '@/redux/services/propertiesApi'
 import { FormikSelect } from '@/components/form/FormikSelect'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
+import { useGetPropTypesQuery } from '@/redux/services/propTypesApi'
 
 interface FormType {
     name: string
@@ -32,14 +31,11 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: properties, refetch: refetchProperties } = useFetchAllPropertiesQuery({
-       
-    })
-    const { data: propertyTypes, isLoading: isPropertyTypesLoading } = useFetchAllPropertyTypesQuery({
+    const { data: propertyTypes, isLoading } = useGetPropTypesQuery({
         "filter[is_active]": true
     })
 
-    const [createProperty, { isLoading }] = useCreatePropertyMutation()
+    const [createProperty] = useCreatePropertyMutation()
 
     const [activeTab, setActiveTab] = useState(0)
 
@@ -75,7 +71,6 @@ const CategoryEditPage = () => {
                 property_type_id: values.property_type.value,
                 is_active: values.is_active
             })
-            refetchProperties()
             router.push("/properties")
         } catch (error) {
             console.log(error);
@@ -88,10 +83,10 @@ const CategoryEditPage = () => {
                 <h1>Характеристики - Создание</h1>
             </Row>
             <Card>
-                {isPropertyTypesLoading &&
+                {isLoading &&
                     <Loader />
                 }
-                {!isPropertyTypesLoading &&
+                {!isLoading &&
                     <>
                         <Row>
                             <Tabs>

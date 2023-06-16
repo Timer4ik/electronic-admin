@@ -5,12 +5,19 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const categoryPropertiesApi = createApi({
     reducerPath: 'categoryPropertiesApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
+    tagTypes: ["CategoryProperties"],
     endpoints: (build) => ({
-        fetchAllCategoryProperties: build.query<{ data: ICategoryProperty[], message: string, count: number, page: string }, any>({
+        getCategoryProperties: build.query<{ data: ICategoryProperty[], message: string, count: number, page: string }, any>({
             query: (params) => ({
                 url: `/category-properties`,
                 params: params
             }),
+            providesTags: (result, error, arg) =>
+                result
+                    ? [...result.data.map(({ category_property_id }) =>
+                        ({ type: 'CategoryProperties' as const, id: category_property_id })), 'CategoryProperties']
+                    : ['CategoryProperties'],
+
         }),
         createCategoryProperty: build.mutation<any, Omit<ICategoryProperty, 'category_property_id'>>({
             query: (category) => {
@@ -21,6 +28,7 @@ export const categoryPropertiesApi = createApi({
                     body: category
                 })
             },
+            invalidatesTags: ['CategoryProperties'],
         }),
         deleteCategoryProperty: build.mutation<any, number>({
             query: (id) => {
@@ -29,10 +37,11 @@ export const categoryPropertiesApi = createApi({
                     method: "DELETE",
                 })
             },
+            invalidatesTags: ['CategoryProperties'],
         }),
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchAllCategoryPropertiesQuery, useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation } = categoryPropertiesApi
+export const { useGetCategoryPropertiesQuery, useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation } = categoryPropertiesApi

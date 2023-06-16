@@ -1,5 +1,5 @@
 'use client'
-import { useDeleteDeveloperByIdMutation, useFetchAllDevelopersQuery, useUpdateDeveloperMutation } from "@/redux/services/developersApi";
+import { useDeleteDeveloperByIdMutation, useGetDevelopersQuery, useUpdateDeveloperMutation } from "@/redux/services/developersApi";
 import useDebounce from "@/hooks/useDebounce";
 import { IDeveloper } from "@/types/models/types";
 import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
@@ -20,7 +20,7 @@ export default function Home() {
   const debouncedSearchValue = useDebounce(searchValue, 800)
 
   // table data
-  const { data: developers, refetch } = useFetchAllDevelopersQuery({
+  const { data: developers } = useGetDevelopersQuery({
     page: currentPage,
     limit: limit,
     extend: "file",
@@ -33,23 +33,16 @@ export default function Home() {
 
   const handleDelete = async (id: number) => {
     await deleteDeveloper(id)
-    refetch()
   }
 
   const handleToggleActive = async (developer: IDeveloper) => {
     let activeDeveloper: IDeveloper = { ...developer, is_active: !developer.is_active }
     await updateDeveloper(activeDeveloper)
-    refetch()
   }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
-
-  useEffect(() => {
-    refetch()
-  }, [])
-
 
   return (
     <Col>

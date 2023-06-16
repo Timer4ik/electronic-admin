@@ -1,16 +1,13 @@
 'use client'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useLazyFetchAllPropertyTypesQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useGetPropTypesQuery } from '@/redux/services/propTypesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Loader, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
-import { useCreatePropertyMutation, useFetchAllPropertiesQuery, useFetchPropertyByIdQuery, useUpdatePropertyMutation } from '@/redux/services/properties'
+import { useFetchAllPropertiesQuery, useFetchPropertyByIdQuery, useUpdatePropertyMutation } from '@/redux/services/propertiesApi'
 import { FormikSelect } from '@/components/form/FormikSelect'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 
@@ -33,12 +30,13 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: properties, refetch: refetchProperties } = useFetchAllPropertiesQuery({})
+    const { data: propertyTypes, isLoading: isLoadingPropTypes } = useGetPropTypesQuery({
+        "filter[is_active]": true
+    })
 
-    const [fetchPropertyTypes, { data: propertyTypes, isLoading: isPropertyTypesLoading }] = useLazyFetchAllPropertyTypesQuery()
-    const { data: property, isLoading: isPropertyLoading, refetch: refetchProperty } = useFetchPropertyByIdQuery(+params?.id)
+    const { data: property, isLoading: isPropertyLoading } = useFetchPropertyByIdQuery(+params?.id)
 
-    const [updateProperty, { isLoading }] = useUpdatePropertyMutation()
+    const [updateProperty] = useUpdatePropertyMutation()
 
     const [activeTab, setActiveTab] = useState(0)
 
@@ -49,14 +47,6 @@ const CategoryEditPage = () => {
             .required('Обязательное поле')
 
     });
-
-    useEffect(() => {
-        (async () => {
-            await fetchPropertyTypes({
-                "filter[is_active]": true
-            })
-        })()
-    }, [])
 
     const initialValues = useMemo((): FormType => {
         return {
@@ -83,8 +73,6 @@ const CategoryEditPage = () => {
                 property_type_id: values.property_type.value,
                 is_active: values.is_active
             })
-            refetchProperty()
-            refetchProperties()
             router.push("/properties")
         } catch (error) {
             console.log(error);
@@ -97,10 +85,10 @@ const CategoryEditPage = () => {
                 <h1>Характеристики - {property?.data?.name}({property?.data?.property_id})</h1>
             </Row>
             <Card>
-                {isPropertyTypesLoading && isPropertyLoading &&
+                {isLoadingPropTypes && isPropertyLoading &&
                     <Loader />
                 }
-                {!isPropertyTypesLoading && !isPropertyLoading && property &&
+                {!isLoadingPropTypes && !isPropertyLoading && property &&
                     <>
                         <Row>
                             <Tabs>

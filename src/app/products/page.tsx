@@ -1,7 +1,7 @@
 'use client'
-import { useLazyFetchAllCategoriesQuery } from "@/redux/services/categories";
-import { useLazyFetchAllDevelopersQuery } from "@/redux/services/developersApi";
-import { useDeleteProductByIdMutation, useFetchAllProductsQuery, useUpdateProductMutation } from "@/redux/services/productsApi";
+import { useGetCategoriesQuery } from "@/redux/services/categoriesApi";
+import { useGetDevelopersQuery } from "@/redux/services/developersApi";
+import { useDeleteProductByIdMutation, useGetProductsQuery, useUpdateProductMutation } from "@/redux/services/productsApi";
 import useDebounce from "@/hooks/useDebounce";
 import { IProduct } from "@/types/models/types";
 import { Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon } from "@/components/ui";
@@ -28,7 +28,7 @@ export default function Home() {
 
     // filter - select category
 
-    const [fetchCategories, { data: categories }] = useLazyFetchAllCategoriesQuery()
+    const { data: categories } = useGetCategoriesQuery({})
     const [selectedCategory, setSelectedCategory] = useState<{
         value: number,
         content: string
@@ -38,7 +38,7 @@ export default function Home() {
     })
     // filter - select developer
 
-    const [fetchDevelopers, { data: developers }] = useLazyFetchAllDevelopersQuery()
+    const { data: developers } = useGetDevelopersQuery({})
     const [selectedDeveloper, setSelectedDeveloper] = useState<{
         value: number,
         content: string
@@ -48,7 +48,7 @@ export default function Home() {
     })
 
     // table data
-    const { data: products, refetch } = useFetchAllProductsQuery({
+    const { data: products } = useGetProductsQuery({
         limit,
         page: currentPage,
         extendParent: "true",
@@ -71,24 +71,16 @@ export default function Home() {
 
     const handleDelete = async (id: number) => {
         await deleteProduct(id)
-        refetch()
     }
 
     const handleToggleActive = async (product: IProduct) => {
         let activeProduct: IProduct = { ...product, is_active: !product.is_active }
         await updateProduct(activeProduct)
-        refetch()
     }
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page)
     }
-
-    useEffect(() => {
-        fetchDevelopers({})
-        fetchCategories({})
-        refetch()
-    }, [])
 
     return (
         <Col>

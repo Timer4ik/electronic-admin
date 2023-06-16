@@ -1,18 +1,18 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/redux/services/categories'
+import { useCreateCategoryMutation, useGetCategoriesQuery } from '@/redux/services/categoriesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
-import { Form, Formik, useFormik } from 'formik'
+import { Button, Card, Row, Tabs, TabsItem } from '@/components/ui'
+import { Form, Formik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { FormikSelect } from '@/components/form/FormikSelect'
-import Loader from '@/components/ui/Loader/Loader'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
 import { useCreateFileMutation } from '@/redux/services/filesApi'
+import { Loader } from '@/components/ui'
 
 interface FormType {
     name: string;
@@ -36,9 +36,9 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const [fetchCategories, { data: categories, isLoading: categoriesIsLoading }] = useLazyFetchAllCategoriesQuery()
-    // const { data: category, isSuccess, refetch: refetchCategory } = useFetchCategoryByIdQuery(+params?.id)
-    const [createCategory, { isLoading, isError }] = useCreateCategoryMutation()
+    const { data: categories, isLoading } = useGetCategoriesQuery({})
+
+    const [createCategory] = useCreateCategoryMutation()
 
     const [createFile] = useCreateFileMutation()
 
@@ -97,11 +97,7 @@ const CategoryEditPage = () => {
         }
     }
 
-    useEffect(() => {
-        (async () => {
-            await fetchCategories({})
-        })()
-    }, [])
+
 
     return (
         <div>
@@ -109,10 +105,10 @@ const CategoryEditPage = () => {
                 <h1>Категории товаров - Создание</h1>
             </Row>
             <Card>
-                {categoriesIsLoading &&
+                {isLoading &&
                     <Loader />
                 }
-                {!categoriesIsLoading &&
+                {!isLoading &&
                     <>
                         <Row>
                             <Tabs>

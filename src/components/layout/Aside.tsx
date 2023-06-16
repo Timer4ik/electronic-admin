@@ -1,4 +1,5 @@
 "use client"
+import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
@@ -7,13 +8,13 @@ export const Aside = () => {
     return (
         <aside className="aside">
             <div className="aside__logo">
-                <img src="/img/header/logo.svg" alt="" />
+                <Image width={150} height={100} src="/img/header/logo.svg" alt="" />
             </div>
             <nav className="aside__navbar">
 
                 <div className="navbar__item item">
                     <div className="item__title">
-                        <img src="/img/icons/content.svg" alt="" />
+                        <Image width={0} height={0} src="/img/icons/content.svg" alt="" />
                         <div>Контент</div>
                     </div>
                     <div className="item__list">
@@ -28,7 +29,7 @@ export const Aside = () => {
                 </div>
                 <div className="navbar__item item">
                     <div className="item__title">
-                        <img src="/img/icons/content.svg" alt="" />
+                        <Image width={0} height={0} src="/img/icons/content.svg" alt="" />
                         <div>Дополнительно</div>
                     </div>
                     <div className="item__list">
@@ -38,7 +39,7 @@ export const Aside = () => {
                 </div>
                 {/* <div className="navbar__item item">
                     <div className="item__title">
-                        <img src="/img/icons/content.svg" alt="" />
+                        <Image width={0} height={0} src="/img/icons/content.svg" alt="" />
                         <div>Контент</div>
                     </div>
                     <div className="item__list">
@@ -52,7 +53,7 @@ export const Aside = () => {
                 </div>
                 <div className="navbar__item item">
                     <div className="item__title">
-                        <img src="/img/icons/content.svg" alt="" />
+                        <Image width={0} height={0} src="/img/icons/content.svg" alt="" />
                         <div>Контент</div>
                     </div>
                     <div className="item__list">

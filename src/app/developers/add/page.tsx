@@ -1,12 +1,8 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react'
-import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
+import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
@@ -26,10 +22,7 @@ const DeveloperEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    // const { data: propertyTypes, refetch: refetchPropertyTypes, isLoading: propertyTypesIsLoading } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
-    // const { data: propertyType, isSuccess, refetch: refetchPropertyType } = useFetchPropertyTypeByIdQuery(+params?.id)
-
-    const [createDeveloper, { isLoading }] = useCreateDeveloperMutation()
+    const [createDeveloper] = useCreateDeveloperMutation()
 
     const [createFile] = useCreateFileMutation()
 
@@ -66,7 +59,7 @@ const DeveloperEditPage = () => {
                 is_active: values.is_active,
                 file_id: values.file_id
             })
-            // router.push("/developers")
+            router.push("/developers")
         } catch (error) {
             console.log(error);
         }
@@ -78,11 +71,6 @@ const DeveloperEditPage = () => {
                 <h1>Производители - Создание</h1>
             </Row>
             <Card>
-                {/* {propertyTypesIsLoading &&
-                    <Loader />
-                } */}
-                {/* {!propertyTypesIsLoading &&
-                    <> */}
                 <Row>
                     <Tabs>
                         <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
@@ -110,7 +98,6 @@ const DeveloperEditPage = () => {
                         <Button type='submit'>Сохранить</Button>
                     </Form>
                 </Formik>
-                {/* </>} */}
             </Card>
 
         </div >

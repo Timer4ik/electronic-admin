@@ -1,16 +1,12 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react'
-import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
+import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Col, Row, Tabs, TabsItem, Loader } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
-import { useCreateDeveloperMutation, useFetchDeveloperByIdQuery, useUpdateDeveloperMutation } from '@/redux/services/developersApi'
+import { useGetDeveloperByIdQuery, useUpdateDeveloperMutation } from '@/redux/services/developersApi'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { useCreateFileMutation } from '@/redux/services/filesApi'
 
@@ -26,8 +22,7 @@ const DeveloperEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    // const { data: propertyTypes, refetch: refetchPropertyTypes, isLoading: propertyTypesIsLoading } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
-    const { data: developer, isSuccess, refetch: refetchDeveloper } = useFetchDeveloperByIdQuery(+params?.id)
+    const { data: developer, isLoading: developerIsLoading } = useGetDeveloperByIdQuery(+params?.id)
 
     const [updateDeveloper, { isLoading }] = useUpdateDeveloperMutation()
 
@@ -73,7 +68,6 @@ const DeveloperEditPage = () => {
                 is_active: values.is_active,
                 file_id: values.file_id
             })
-            refetchDeveloper()
             router.push("/developers")
         } catch (error) {
             console.log(error);
@@ -86,39 +80,39 @@ const DeveloperEditPage = () => {
                 <h1>Производители - Создание</h1>
             </Row>
             <Card>
-                {/* {propertyTypesIsLoading &&
+                {developerIsLoading &&
                     <Loader />
-                } */}
-                {/* {!propertyTypesIsLoading &&
-                    <> */}
-                <Row>
-                    <Tabs>
-                        <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                        <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
-                    </Tabs>
-                </Row>
+                }
+                {!developerIsLoading &&
+                    <>
+                        <Row>
+                            <Tabs>
+                                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
+                                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+                            </Tabs>
+                        </Row>
 
-                {developer && <Formik
-                    initialValues={initialValues}
-                    onSubmit={handleSubmit}
-                    validationSchema={schema}
-                >
-                    <Form>
-                        {activeTab == 0 && <>
-                            <Row>
-                                <FormikField label='Наименование производителя' name={'name'} />
-                            </Row>
-                            <Row>
-                                <FormikCheckbox label='Активность' name={'is_active'} />
-                            </Row>
-                            <Row>
-                                <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
-                            </Row>
-                        </>}
-                        <Button type='submit'>Сохранить</Button>
-                    </Form>
-                </Formik>}
-                {/* </>} */}
+                        {developer && <Formik
+                            initialValues={initialValues}
+                            onSubmit={handleSubmit}
+                            validationSchema={schema}
+                        >
+                            <Form>
+                                {activeTab == 0 && <>
+                                    <Row>
+                                        <FormikField label='Наименование производителя' name={'name'} />
+                                    </Row>
+                                    <Row>
+                                        <FormikCheckbox label='Активность' name={'is_active'} />
+                                    </Row>
+                                    <Row>
+                                        <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
+                                    </Row>
+                                </>}
+                                <Button type='submit'>Сохранить</Button>
+                            </Form>
+                        </Formik>}
+                    </>}
             </Card>
 
         </div >

@@ -1,12 +1,9 @@
 'use client'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
+import React, { useMemo, useState } from 'react'
+import { useGetPropTypeByIdQuery, useUpdatePropTypeMutation } from '@/redux/services/propTypesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Col, Loader, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
@@ -22,10 +19,9 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: propertyTypes, refetch: refetchPropertyTypes, isLoading: propertyTypesIsLoading } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
-    const { data: propertyType, isSuccess, refetch: refetchPropertyType } = useFetchPropertyTypeByIdQuery(+params?.id)
+    const { data: propertyType, isLoading } = useGetPropTypeByIdQuery(+params?.id)
 
-    const [updatePropertyType, { isLoading }] = useUpdatePropertyTypeMutation()
+    const [updatePropertyType] = useUpdatePropTypeMutation()
 
     const [activeTab, setActiveTab] = useState(0)
 
@@ -57,8 +53,6 @@ const CategoryEditPage = () => {
                 unit_type: values.unit_type,
                 is_active: values.is_active
             })
-            refetchPropertyType()
-            refetchPropertyTypes()
             router.push("/property-types")
         } catch (error) {
             console.log(error);
@@ -71,10 +65,10 @@ const CategoryEditPage = () => {
                 <h1>Единицы измерения - Создание</h1>
             </Row>
             <Card>
-                {propertyTypesIsLoading &&
+                {isLoading &&
                     <Loader />
                 }
-                {!propertyTypesIsLoading && propertyType &&
+                {!isLoading &&
                     <>
                         <Row>
                             <Tabs>

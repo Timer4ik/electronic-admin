@@ -1,8 +1,8 @@
-import { categoriesApi } from '@/redux/services/categories'
-import { propertyTypesApi } from '@/redux/services/propertyTypes'
+import { categoriesApi } from '@/redux/services/categoriesApi'
 import { filesApi } from '@/redux/services/filesApi'
 import { developersApi } from '@/redux/services/developersApi'
-import { propertiesApi } from '@/redux/services/properties'
+import { propertiesApi } from '@/redux/services/propertiesApi'
+import { propTypesApi } from '@/redux/services/propTypesApi'
 import { categoryPropertiesApi } from '@/redux/services/categoryPropertiesApi'
 import { productsApi } from '@/redux/services/productsApi'
 import { configureStore } from '@reduxjs/toolkit'
@@ -11,23 +11,23 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 export const store = configureStore({
   reducer: {
     [categoriesApi.reducerPath]: categoriesApi.reducer,
-    [propertyTypesApi.reducerPath]: propertyTypesApi.reducer,
     [filesApi.reducerPath]: filesApi.reducer,
+    [propertiesApi.reducerPath]: propertiesApi.reducer,
     [categoryPropertiesApi.reducerPath]: categoryPropertiesApi.reducer,
     [developersApi.reducerPath]: developersApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
-    [propertiesApi.reducerPath]: propertiesApi.reducer,
+    [propTypesApi.reducerPath]: propTypesApi.reducer,
   },
  
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(categoriesApi.middleware)
-      .concat(propertyTypesApi.middleware)
       .concat(productsApi.middleware)
+      .concat(propertiesApi.middleware)
       .concat(filesApi.middleware)
       .concat(developersApi.middleware)
       .concat(categoryPropertiesApi.middleware)
-      .concat(propertiesApi.middleware)
+      .concat(propTypesApi.middleware)
 })
 
 setupListeners(store.dispatch)

@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { useField, Formik, Form } from "formik"
-import { AdaptiveImage, Col, Field, PhotoLoader, Row, Select } from "@/ui-kit"
+import { AdaptiveImage, Col, Field, PhotoLoader, Row, Select } from "@/components/ui"
 
 interface FormikPhotoLoader {
     name: string

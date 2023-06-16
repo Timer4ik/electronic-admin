@@ -1,10 +1,10 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { FormikFieldsTemplate, TemplateFields, TemplateTypes, generateInitialObject } from '@/components/form/FormikForm'
-import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/categories'
+import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/redux/services/categories'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory } from '@/types/models/types'
-import { Card, Col, Field, Row, Select, Tabs, TabsItem } from '@/ui-kit'
+import { Card, Col, Field, Row, Select, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikSelect } from '@/components/form/FormikSelect'
@@ -116,8 +116,8 @@ export default CategoryEditPage
 // 'use client'
 // import React, { useEffect } from 'react'
 // import { useParams } from 'next/navigation'
-// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/categories'
-// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/ui-kit'
+// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/redux/services/categories'
+// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/components/ui'
 // import { useFormik } from "formik"
 // import { ICategory } from '@/types/models/types'
 

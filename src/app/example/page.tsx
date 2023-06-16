@@ -1,5 +1,5 @@
 'use client'
-import { AdaptiveImage, Button, Card, Checkbox, Col, Field, FileLoader, PhotoLoader, Row, Select, Table, TableMenuIcon, Tabs, TabsItem } from '@/ui-kit'
+import { AdaptiveImage, Button, Card, Checkbox, Col, Field, FileLoader, PhotoLoader, Row, Select, Table, TableMenuIcon, Tabs, TabsItem } from '@/components/ui'
 import React, { FC, useState } from 'react'
 
 const Page = () => {

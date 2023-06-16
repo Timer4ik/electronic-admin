@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { useField, Formik, Form } from "formik"
-import { ErrorText, Select } from "@/ui-kit"
+import { ErrorText, Select } from "@/components/ui"
 
 interface FormikSelectProps {
     name: string

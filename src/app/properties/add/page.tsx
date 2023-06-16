@@ -1,16 +1,16 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/api/propertyTypes'
+import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/ui-kit/Loader/Loader'
+import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
-import { useCreatePropertyMutation, useFetchAllPropertiesQuery } from '@/api/properties'
+import { useCreatePropertyMutation, useFetchAllPropertiesQuery } from '@/redux/services/properties'
 import { FormikSelect } from '@/components/form/FormikSelect'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 
@@ -139,8 +139,8 @@ export default CategoryEditPage
 // 'use client'
 // import React, { useEffect } from 'react'
 // import { useParams } from 'next/navigation'
-// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/properties'
-// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/ui-kit'
+// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/redux/services/properties'
+// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/components/ui'
 // import { useFormik } from "formik"
 // import { ICategory } from '@/types/models/types'
 

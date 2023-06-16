@@ -1,17 +1,15 @@
-import { categoriesApi } from '@/api/categories'
-import { propertyTypesApi } from '@/api/propertyTypes'
-import { filesApi } from '@/api/filesApi'
-import { developersApi } from '@/api/developersApi'
-import { propertiesApi } from '@/api/properties'
-import { categoryPropertiesApi } from '@/api/categoryPropertiesApi'
-import { productsApi } from '@/api/productsApi'
+import { categoriesApi } from '@/redux/services/categories'
+import { propertyTypesApi } from '@/redux/services/propertyTypes'
+import { filesApi } from '@/redux/services/filesApi'
+import { developersApi } from '@/redux/services/developersApi'
+import { propertiesApi } from '@/redux/services/properties'
+import { categoryPropertiesApi } from '@/redux/services/categoryPropertiesApi'
+import { productsApi } from '@/redux/services/productsApi'
 import { configureStore } from '@reduxjs/toolkit'
-// Or from '@reduxjs/toolkit/query/react'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
   reducer: {
-    // Add the generated reducer as a specific top-level slice
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [propertyTypesApi.reducerPath]: propertyTypesApi.reducer,
     [filesApi.reducerPath]: filesApi.reducer,
@@ -20,8 +18,7 @@ export const store = configureStore({
     [productsApi.reducerPath]: productsApi.reducer,
     [propertiesApi.reducerPath]: propertiesApi.reducer,
   },
-  // Adding the api middleware enables caching, invalidation, polling,
-  // and other useful features of `rtk-query`.
+ 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(categoriesApi.middleware)
@@ -33,10 +30,7 @@ export const store = configureStore({
       .concat(propertiesApi.middleware)
 })
 
-// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
-// see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
 setupListeners(store.dispatch)
 
 export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch

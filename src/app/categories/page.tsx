@@ -1,43 +1,41 @@
 'use client'
-import { useDeleteCategoryMutation, useFetchAllCategoriesQuery, useLazyFetchAllCategoriesQuery, useUpdateCategoryMutation } from "@/api/categories";
+import { useDeleteCategoryMutation, useFetchAllCategoriesQuery, useUpdateCategoryMutation } from "@/redux/services/categories";
+import useDebounce from "@/hooks/useDebounce";
 import { ICategory } from "@/types/models/types";
-import { BorderCard, Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/ui-kit";
-import Paginator from "@/ui-kit/Paginator/Paginator";
-import { debounce } from "@/utils/debounce";
+import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
+import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const limit = 8
+  const router = useRouter()
+
+  // pagination
+  const [limit, setLimit] = useState(10)
   const [currentPage, setCurrentPage] = useState(0)
 
+  // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
-  const [likeValue,setLikeValue] = useState<string>("")
-  const debouncedSetLikeValue = debounce(setLikeValue, 800)
+  const debouncedSearchValue = useDebounce(searchValue, 800)
 
-  const changeSearchValue = (value:string) => {
-    setSearchValue(value)
-    debouncedSetLikeValue(value)
-  }
-
-  const { data: categories, refetch } = useFetchAllCategoriesQuery({
+  // table data
+  const { categories, refetch } = useFetchAllCategoriesQuery({
     limit,
     page: currentPage,
     extendParent: "true",
     extend: "file",
-    like: likeValue || ""
+    like: debouncedSearchValue || ""
+  }, {
+    selectFromResult({ data }) {
+      return {
+        categories: data,
+      }
+    }
   })
-
+  // menu
   const [deleteCategory] = useDeleteCategoryMutation()
   const [updateCategory] = useUpdateCategoryMutation()
-
-  const router = useRouter()
-
-  useEffect(() => {
-    refetch()
-  }, [])
-
 
   const handleDelete = async (id: number) => {
     await deleteCategory(id)
@@ -54,6 +52,11 @@ export default function Home() {
     setCurrentPage(page)
   }
 
+
+  useEffect(() => {
+    refetch()
+  }, [])
+
   return (
     <Col>
       <RowBetween>
@@ -64,7 +67,7 @@ export default function Home() {
         <Field
           placeholder="Поиск по названию"
           value={searchValue}
-          onChange={(e) => changeSearchValue(e.target.value)} />
+          onChange={(e) => setSearchValue(e.target.value)} />
       </RowBetween>
       <Row>
         <Table>
@@ -99,17 +102,13 @@ export default function Home() {
                   <td className="black-500">{item.name}</td>
                   <td>
                     {item.is_active && <img src="img/icons/checked.svg" width={18} />}
-
-                    {/* <Checkbox disabled checked={item.is_end} /> */}
                   </td>
                   <td>
                     {item.is_end && <img src="img/icons/checked.svg" width={18} />}
-
-                    {/* <Checkbox disabled checked={item.is_end} /> */}
                   </td>
                   <td>
-                    <div style={{ maxWidth: 50, maxHeight: 50, width: "50px", height: "50px", borderRadius: 10, overflow: "hidden", border: "1px solid #d3d3d378" }}>
-                      <img style={{ objectFit: "contain", width: "100%", height: "100%" }} src={item.file?.link} alt="" />
+                    <div className="table-photo">
+                      <img src={item.file?.link} alt="" />
                     </div>
                   </td>
                   <td>{item?.parent?.name}</td>

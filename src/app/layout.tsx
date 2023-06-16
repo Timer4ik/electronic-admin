@@ -1,10 +1,10 @@
+import { ReactNode } from "react"
+
 import { Header, Aside, Footer } from "@/components/layout"
 
-import "../../public/styles/style.scss"
-import "../ui-kit/styles/index.scss"
+import Providers from "@/redux/provider"
 
-import { ReactNode } from "react"
-import Providers from "@/store/provider"
+import "../../public/styles/style.scss"
 
 export const metadata = {
   title: 'Create Next App',

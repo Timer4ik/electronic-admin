@@ -1,23 +1,23 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { FormikFieldsTemplate, TemplateFields, TemplateTypes, generateInitialObject } from '@/components/form/FormikForm'
-import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/api/categories'
+import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/redux/services/categories'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory } from '@/types/models/types'
-import { Button, Card, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon, Tabs, TabsItem } from '@/ui-kit'
+import { Button, Card, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
 // import { useCategoryPage } from '@/hooks/useCategoryPage'
 import { object as YupObject, string as YupString } from 'yup';
 import { FormikSelect } from '@/components/form/FormikSelect'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { FormikField } from '@/components/form/FormikField'
-import { useCreateFileMutation } from '@/api/filesApi'
-import Loader from '@/ui-kit/Loader/Loader'
+import { useCreateFileMutation } from '@/redux/services/filesApi'
+import Loader from '@/components/ui/Loader/Loader'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
-import { useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation, useFetchAllCategoryPropertiesQuery } from '@/api/categoryPropertiesApi'
-import { useFetchAllPropertiesQuery, useLazyFetchAllPropertiesQuery } from '@/api/properties'
+import { useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation, useFetchAllCategoryPropertiesQuery } from '@/redux/services/categoryPropertiesApi'
+import { useFetchAllPropertiesQuery, useLazyFetchAllPropertiesQuery } from '@/redux/services/properties'
 interface FormType {
     name: string;
     photo: any;
@@ -302,8 +302,8 @@ export default CategoryEditPage
 // 'use client'
 // import React, { useEffect } from 'react'
 // import { useParams } from 'next/navigation'
-// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/categories'
-// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/ui-kit'
+// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/redux/services/categories'
+// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/components/ui'
 // import { useFormik } from "formik"
 // import { ICategory } from '@/types/models/types'
 

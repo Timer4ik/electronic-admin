@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { useField, Formik, Form } from "formik"
-import { Checkbox } from "@/ui-kit"
+import { Checkbox } from "@/components/ui"
 
 interface FormikCheckbox {
     name: string

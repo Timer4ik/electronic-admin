@@ -1,42 +1,36 @@
 'use client'
-import { useFetchAllCategoriesQuery } from "@/api/categories";
-import { useDeletePropertyByIdMutation, useFetchAllPropertiesQuery, useUpdatePropertyMutation } from "@/api/properties";
+import { useDeletePropertyByIdMutation, useFetchAllPropertiesQuery, useUpdatePropertyMutation } from "@/redux/services/properties";
+import useDebounce from "@/hooks/useDebounce";
 import { IProperty } from "@/types/models/types";
-import { BorderCard, Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/ui-kit";
-import Paginator from "@/ui-kit/Paginator/Paginator";
-import { debounce } from "@/utils/debounce";
+import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
+import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const limit = 8
+  const router = useRouter()
+
+  // pagination
+  const [limit, setLimit] = useState(10)
   const [currentPage, setCurrentPage] = useState(0)
 
+  // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
-  const [likeValue, setLikeValue] = useState<string>("")
-  const debouncedSetLikeValue = debounce(setLikeValue, 800)
+  const debouncedSearchValue = useDebounce(searchValue, 800)
 
-  const changeSearchValue = (value: string) => {
-    setSearchValue(value)
-    debouncedSetLikeValue(value)
-  }
-
+  // table data
   const { data: properties, refetch } = useFetchAllPropertiesQuery({
     page: 0,
     limit: 10,
     extend: "property_type",
-    like: likeValue || ""
+    like: debouncedSearchValue || ""
   })
+
+  // menu  
 
   const [updateProperty] = useUpdatePropertyMutation()
   const [deletePropertyById] = useDeletePropertyByIdMutation()
-
-  const router = useRouter()
-
-  useEffect(() => {
-    refetch()
-  }, [])
 
   const handleDelete = async (id: number) => {
     await deletePropertyById(id)
@@ -53,6 +47,10 @@ export default function Home() {
     setCurrentPage(page)
   }
 
+  useEffect(() => {
+    refetch()
+  }, [])
+
   return (
     <Col>
       <RowBetween>
@@ -63,7 +61,7 @@ export default function Home() {
         <Field
           placeholder="Поиск по названию"
           value={searchValue}
-          onChange={(e) => changeSearchValue(e.target.value)} />
+          onChange={(e) => setSearchValue(e.target.value)} />
       </RowBetween>
       <Row>
         <Table>
@@ -95,20 +93,16 @@ export default function Home() {
                   <td className="gray">{item.property_id}</td>
                   <td>
                     {item.is_active && <img src="img/icons/checked.svg" width={18} />}
-
-                    {/* <Checkbox disabled checked={item.is_end} /> */}
                   </td>
                   <td className="black-500">{item.name}</td>
                   <td className="black-500">{item?.property_type?.type_name}</td>
                 </tr>
               )
             })}
-
           </tbody>
         </Table>
       </Row>
       <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((properties?.count ?? 0) / limit) || 0} />
-
     </Col >
   )
 }

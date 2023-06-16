@@ -1,34 +1,31 @@
 'use client'
-import { useFetchAllCategoriesQuery } from "@/api/categories";
-import { useDeletePropertyTypeMutation, useFetchAllPropertyTypesQuery, useUpdatePropertyTypeMutation } from "@/api/propertyTypes";
+import { useDeletePropertyTypeMutation, useFetchAllPropertyTypesQuery, useUpdatePropertyTypeMutation } from "@/redux/services/propertyTypes";
+import useDebounce from "@/hooks/useDebounce";
 import { IPropertyType } from "@/types/models/types";
-import { BorderCard, Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/ui-kit";
-import Paginator from "@/ui-kit/Paginator/Paginator";
-import { debounce } from "@/utils/debounce";
+import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
+import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const limit = 8
+  const router = useRouter()
+
+  // pagination
+  const [limit, setLimit] = useState(10)
   const [currentPage, setCurrentPage] = useState(0)
 
+  // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
-  const [likeValue, setLikeValue] = useState<string>("")
-  const debouncedSetLikeValue = debounce(setLikeValue, 800)
-
-  const changeSearchValue = (value: string) => {
-    setSearchValue(value)
-    debouncedSetLikeValue(value)
-  }
+  const debouncedSearchValue = useDebounce(searchValue, 800)
 
   const { data: propertyTypes, refetch } = useFetchAllPropertyTypesQuery({
     page: currentPage,
     limit: limit,
-    like: likeValue || ""
+    like: debouncedSearchValue || ""
   })
-  const router = useRouter()
 
+  // menu  
   const [deletePropertyType] = useDeletePropertyTypeMutation()
   const [updatePropertyType] = useUpdatePropertyTypeMutation()
 
@@ -47,6 +44,10 @@ export default function Home() {
     setCurrentPage(page)
   }
 
+  useEffect(() => {
+    refetch()
+  }, [])
+
   return (
     <Col>
       <RowBetween>
@@ -57,7 +58,7 @@ export default function Home() {
         <Field
           placeholder="Поиск по названию"
           value={searchValue}
-          onChange={(e) => changeSearchValue(e.target.value)} />
+          onChange={(e) => setSearchValue(e.target.value)} />
       </RowBetween>
       <Row>
         <Table>
@@ -90,15 +91,12 @@ export default function Home() {
                   <td className="gray">{item.property_type_id}</td>
                   <td>
                     {item.is_active && <img src="img/icons/checked.svg" width={18} />}
-
-                    {/* <Checkbox disabled checked={item.is_end} /> */}
                   </td>
                   <td className="black-500">{item.type_name}</td>
                   <td className="black-500">{item.unit_type}</td>
                 </tr>
               )
             })}
-
           </tbody>
         </Table>
       </Row>

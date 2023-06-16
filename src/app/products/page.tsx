@@ -1,18 +1,33 @@
 'use client'
-import { useLazyFetchAllCategoriesQuery } from "@/api/categories";
-import { useLazyFetchAllDevelopersQuery } from "@/api/developersApi";
-import { useDeleteProductByIdMutation, useFetchAllProductsQuery, useUpdateProductMutation } from "@/api/productsApi";
+import { useLazyFetchAllCategoriesQuery } from "@/redux/services/categories";
+import { useLazyFetchAllDevelopersQuery } from "@/redux/services/developersApi";
+import { useDeleteProductByIdMutation, useFetchAllProductsQuery, useUpdateProductMutation } from "@/redux/services/productsApi";
+import useDebounce from "@/hooks/useDebounce";
 import { IProduct } from "@/types/models/types";
-import { BorderCard, Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon } from "@/ui-kit";
-import Paginator from "@/ui-kit/Paginator/Paginator";
+import { Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon } from "@/components/ui";
+import Paginator from "@/components/ui/Paginator/Paginator";
 import { addNotSelectedOption } from "@/utils/addNotSelectedOption";
-import { debounce } from "@/utils/debounce";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 
-    const [fetchDevelopers, { data: developers }] = useLazyFetchAllDevelopersQuery()
+    const router = useRouter()
+
+    // pagination
+    const [limit, setLimit] = useState(10)
+    const [currentPage, setCurrentPage] = useState(0)
+
+    // filter - search
+    const [searchValue, setSearchValue] = useState<string>("")
+    const debouncedSearchValue = useDebounce(searchValue, 800)
+
+    // filter - isactive
+
+    const [isActive, setIsActive] = useState(false)
+
+    // filter - select category
+
     const [fetchCategories, { data: categories }] = useLazyFetchAllCategoriesQuery()
     const [selectedCategory, setSelectedCategory] = useState<{
         value: number,
@@ -21,45 +36,38 @@ export default function Home() {
         value: 0,
         content: "Не выбрано"
     })
-    const [isActive, setIsActive] = useState(false)
+    // filter - select developer
 
-    const limit = 8
-    const [currentPage, setCurrentPage] = useState(0)
+    const [fetchDevelopers, { data: developers }] = useLazyFetchAllDevelopersQuery()
+    const [selectedDeveloper, setSelectedDeveloper] = useState<{
+        value: number,
+        content: string
+    }>({
+        value: 0,
+        content: "Не выбрано"
+    })
 
-    const [searchValue, setSearchValue] = useState<string>("")
-    const [likeValue, setLikeValue] = useState<string>("")
-    const debouncedSetLikeValue = debounce(setLikeValue, 800)
-
-    const changeSearchValue = (value: string) => {
-        setSearchValue(value)
-        debouncedSetLikeValue(value)
-    }
-
+    // table data
     const { data: products, refetch } = useFetchAllProductsQuery({
         limit,
         page: currentPage,
         extendParent: "true",
         extend: "file,category,developer",
-        like: likeValue || "",
+        like: debouncedSearchValue || "",
         ...(isActive ? {
             "filter[is_active]": isActive,
-        }:{}),
+        } : {}),
         ...(selectedCategory.value > 0 ? {
             "filter[category_id]": selectedCategory.value
+        } : {}),
+        ...(selectedDeveloper.value > 0 ? {
+            "filter[developer_id]": selectedDeveloper.value
         } : {})
     })
 
+    // menu  
     const [deleteProduct] = useDeleteProductByIdMutation()
     const [updateProduct] = useUpdateProductMutation()
-
-    const router = useRouter()
-
-    useEffect(() => {
-        fetchDevelopers({})
-        fetchCategories({})
-        refetch()
-    }, [])
-
 
     const handleDelete = async (id: number) => {
         await deleteProduct(id)
@@ -76,6 +84,12 @@ export default function Home() {
         setCurrentPage(page)
     }
 
+    useEffect(() => {
+        fetchDevelopers({})
+        fetchCategories({})
+        refetch()
+    }, [])
+
     return (
         <Col>
             <RowBetween>
@@ -88,7 +102,7 @@ export default function Home() {
                         label="Поиск"
                         placeholder="Поиск по названию"
                         value={searchValue}
-                        onChange={(e) => changeSearchValue(e.target.value)} />
+                        onChange={(e) => setSearchValue(e.target.value)} />
                     <Select
                         label="Выберите категорию"
                         onChange={(item) => setSelectedCategory(item)}
@@ -100,8 +114,21 @@ export default function Home() {
                             }
                         }))}
                     />
+                    <Select
+                        label="Выберите производителя"
+                        onChange={(item) => setSelectedDeveloper(item)}
+                        selectedItem={selectedDeveloper}
+                        options={addNotSelectedOption(developers?.data.map(item => {
+                            return {
+                                content: item.name,
+                                value: item.developer_id
+                            }
+                        }))}
+                    />
                 </div>
-                <Checkbox label="Активность" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+                <Checkbox label="Активность"
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)} />
             </Col>
 
             <Row>
@@ -116,9 +143,6 @@ export default function Home() {
                             <th>Фото</th>
                             <th>Категория</th>
                             <th>Производитель</th>
-                            {/* <th>Конечная категория?</th>
-              <th>Фото</th>
-              <th>Родительская категория</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -141,23 +165,15 @@ export default function Home() {
                                     <td className="black-500">{item.name}</td>
                                     <td>
                                         {item.is_active && <img src="img/icons/checked.svg" width={18} />}
-
-                                        {/* <Checkbox disabled checked={item.is_end} /> */}
                                     </td>
                                     <td className="black-500">{item.price}</td>
                                     <td>
-                                        <div style={{ maxWidth: 50, maxHeight: 50, width: "50px", height: "50px", borderRadius: 10, overflow: "hidden", border: "1px solid #d3d3d378" }}>
-                                            <img style={{ objectFit: "contain", width: "100%", height: "100%" }} src={item.file?.link} alt="" />
+                                        <div className="table-photo">
+                                            <img src={item.file?.link} alt="" />
                                         </div>
                                     </td>
                                     <td className="black-500">{item?.category?.name}</td>
                                     <td className="black-500">{item?.developer?.name}</td>
-                                    {/* <td>
-                    {item.is_end && <img src="img/icons/checked.svg" width={18} />}
-
-                  </td>
-               
-                  <td>{item?.parent?.name}</td> */}
                                 </tr>
                             )
                         })}

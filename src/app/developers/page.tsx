@@ -1,35 +1,33 @@
 'use client'
-import { useFetchAllCategoriesQuery, useLazyFetchAllCategoriesQuery } from "@/api/categories";
-import { useDeleteDeveloperByIdMutation, useFetchAllDevelopersQuery, useLazyFetchAllDevelopersQuery, useUpdateDeveloperMutation } from "@/api/developersApi";
+import { useDeleteDeveloperByIdMutation, useFetchAllDevelopersQuery, useUpdateDeveloperMutation } from "@/redux/services/developersApi";
+import useDebounce from "@/hooks/useDebounce";
 import { IDeveloper } from "@/types/models/types";
-import { BorderCard, Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/ui-kit";
-import Paginator from "@/ui-kit/Paginator/Paginator";
-import { debounce } from "@/utils/debounce";
+import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
+import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
 
-  const limit = 8
+  const router = useRouter()
+
+  // pagination
+  const [limit, setLimit] = useState(10)
   const [currentPage, setCurrentPage] = useState(0)
 
+  // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
-  const [likeValue, setLikeValue] = useState<string>("")
-  const debouncedSetLikeValue = debounce(setLikeValue, 800)
+  const debouncedSearchValue = useDebounce(searchValue, 800)
 
-  const changeSearchValue = (value: string) => {
-    setSearchValue(value)
-    debouncedSetLikeValue(value)
-  }
-
+  // table data
   const { data: developers, refetch } = useFetchAllDevelopersQuery({
     page: currentPage,
     limit: limit,
     extend: "file",
-    like: likeValue || ""
+    like: debouncedSearchValue || ""
   })
-  const router = useRouter()
 
+  // menu  
   const [deleteDeveloper] = useDeleteDeveloperByIdMutation()
   const [updateDeveloper] = useUpdateDeveloperMutation()
 
@@ -63,7 +61,7 @@ export default function Home() {
         <Field
           placeholder="Поиск по названию"
           value={searchValue}
-          onChange={(e) => changeSearchValue(e.target.value)} />
+          onChange={(e) => setSearchValue(e.target.value)} />
       </RowBetween>
       <Row>
         <Table>
@@ -96,24 +94,20 @@ export default function Home() {
                   <td className="gray">{item.developer_id}</td>
                   <td>
                     {item.is_active && <img src="img/icons/checked.svg" width={18} />}
-
-                    {/* <Checkbox disabled checked={item.is_end} /> */}
                   </td>
                   <td className="black-500">{item.name}</td>
                   <td>
-                    <div style={{ maxWidth: 50, maxHeight: 50, width: "50px", height: "50px", borderRadius: 10, overflow: "hidden", border: "1px solid #d3d3d378" }}>
-                      <img style={{ objectFit: "contain", width: "100%", height: "100%" }} src={item.file?.link} alt="" />
+                    <div className="table-photo">
+                      <img src={item.file?.link} alt="" />
                     </div>
                   </td>
                 </tr>
               )
             })}
-
           </tbody>
         </Table>
       </Row>
       <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((developers?.count ?? 0) / limit) || 0} />
-
     </Col >
   )
 }

@@ -1,18 +1,18 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/api/categories'
+import { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/redux/services/categories'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik, useFormik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { FormikSelect } from '@/components/form/FormikSelect'
-import Loader from '@/ui-kit/Loader/Loader'
+import Loader from '@/components/ui/Loader/Loader'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
-import { useCreateFileMutation } from '@/api/filesApi'
+import { useCreateFileMutation } from '@/redux/services/filesApi'
 
 interface FormType {
     name: string;
@@ -171,8 +171,8 @@ export default CategoryEditPage
 // 'use client'
 // import React, { useEffect } from 'react'
 // import { useParams } from 'next/navigation'
-// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/categories'
-// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/ui-kit'
+// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/redux/services/categories'
+// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/components/ui'
 // import { useFormik } from "formik"
 // import { ICategory } from '@/types/models/types'
 

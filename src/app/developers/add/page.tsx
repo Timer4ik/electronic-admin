@@ -1,18 +1,18 @@
 'use client'
 import React, { useCallback, useEffect, useState } from 'react'
 import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/api/propertyTypes'
+import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/redux/services/propertyTypes'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory, IPropertyType } from '@/types/models/types'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { Button, Card, Col, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
-import Loader from '@/ui-kit/Loader/Loader'
+import Loader from '@/components/ui/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
-import { useCreateDeveloperMutation } from '@/api/developersApi'
+import { useCreateDeveloperMutation } from '@/redux/services/developersApi'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
-import { useCreateFileMutation } from '@/api/filesApi'
+import { useCreateFileMutation } from '@/redux/services/filesApi'
 
 interface FormType {
     name: string
@@ -124,8 +124,8 @@ export default DeveloperEditPage
 // 'use client'
 // import React, { useEffect } from 'react'
 // import { useParams } from 'next/navigation'
-// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/api/propertyTypes'
-// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/ui-kit'
+// import { useUpdateCategoryMutation, useFetchAllCategoriesQuery, useFetchCategoryByIdQuery } from '@/redux/services/propertyTypes'
+// import { AdaptiveImage, Button, Card, Checkbox, Col, Field, PhotoLoader, Row, RowBetween, Select, SelectOption, Tabs, TabsItem } from '@/components/ui'
 // import { useFormik } from "formik"
 // import { ICategory } from '@/types/models/types'
 

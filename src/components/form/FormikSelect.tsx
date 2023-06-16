@@ -6,7 +6,7 @@ interface FormikSelectProps {
     name: string
     label: string
     options?: {
-        value: string | number,
+        value: number,
         content: string
     }[]
     selectedItem: {

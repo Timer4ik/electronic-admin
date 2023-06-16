@@ -1,9 +1,10 @@
-'use client'
 import { Header, Aside, Footer } from "@/components/layout"
 
 import "../../public/styles/style.scss"
-import { Provider } from "react-redux"
-import { store } from "@/store"
+import "../ui-kit/styles/index.scss"
+
+import { ReactNode } from "react"
+import Providers from "@/store/provider"
 
 export const metadata = {
   title: 'Create Next App',
@@ -11,15 +12,15 @@ export const metadata = {
 }
 
 export default function RootLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=<ваш API-ключ>" type="text/javascript"></script>
@@ -34,9 +35,9 @@ export default function RootLayout({
         <Aside />
         <Header />
         <main className="main">
-          <Provider store={store}>
+          <Providers>
             {children}
-          </Provider>
+          </Providers>
         </main>
       </body>
     </html>

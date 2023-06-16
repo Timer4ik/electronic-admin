@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, ReactNode } from 'react'
-import "./Table.scss"
+// import "./Table.scss"
 
 interface Props {
   children: ReactNode
@@ -8,7 +8,7 @@ interface Props {
 export const TableMenuIcon:FC = ({ ...props }) => {
   return (
     <div className='table__menu' {...props}>
-      <img src="img/icons/menu-dotes.svg" alt="" />
+      <img src="/img/icons/menu-dotes.svg" alt="" />
     </div>
   )
 }

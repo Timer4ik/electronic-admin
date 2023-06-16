@@ -10,52 +10,63 @@ import Loader from '@/ui-kit/Loader/Loader'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
+import { useCreateDeveloperMutation } from '@/api/developersApi'
+import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
+import { useCreateFileMutation } from '@/api/filesApi'
 
 interface FormType {
-    type_name: string
-    unit_type: string
+    name: string
+    photo: any;
+    file_id?: number
     is_active: boolean
 }
 
-const CategoryEditPage = () => {
+const DeveloperEditPage = () => {
 
     const params = useParams()
     const router = useRouter()
 
-    const { data: propertyTypes, refetch: refetchPropertyTypes, isLoading: propertyTypesIsLoading } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
+    // const { data: propertyTypes, refetch: refetchPropertyTypes, isLoading: propertyTypesIsLoading } = useFetchAllPropertyTypesQuery({ limit: 5, page: 0 })
     // const { data: propertyType, isSuccess, refetch: refetchPropertyType } = useFetchPropertyTypeByIdQuery(+params?.id)
 
-    const [createPropertyType, { isLoading }] = useCreatePropertyTypeMutation()
+    const [createDeveloper, { isLoading }] = useCreateDeveloperMutation()
+
+    const [createFile] = useCreateFileMutation()
 
     const [activeTab, setActiveTab] = useState(0)
 
     const schema = YupObject().shape({
-        type_name: YupString()
-            .min(2, 'Название единицы измерения должно иметь не меньше 2 символов')
-            .max(50, 'Название единицы измерения не должно иметь больше 50 символов')
-            .required('Обязательное поле'),
-        unit_type: YupString()
-            .min(2, 'Обозначение единицы измерения должно иметь не меньше 2 символов')
-            .max(50, 'Обозначение единицы измерения не должно иметь больше 50 символов')
+        name: YupString()
+            .min(2, 'Название должно иметь не меньше 2 символов')
+            .max(50, 'Название не должно иметь больше 50 символов')
             .required('Обязательное поле'),
 
     });
 
     const initialValues: FormType = {
-        type_name: "",
-        unit_type: "",
-        is_active: false,
+        name: "",
+        photo: null,
+        is_active: false
     }
 
     const handleSubmit = async (values: FormType) => {
         try {
-            await createPropertyType({
-                type_name: values.type_name,
-                unit_type: values.unit_type,
-                is_active: values.is_active
+            if (values?.photo?.file?.type) {
+                let data = await createFile(values.photo)
+
+                if (('error' in data)) {
+                    return
+                }
+
+                values.file_id = data?.data?.file_id
+            }
+
+            await createDeveloper({
+                name: values.name,
+                is_active: values.is_active,
+                file_id: values.file_id
             })
-            refetchPropertyTypes()
-            router.push("/property-types")
+            // router.push("/developers")
         } catch (error) {
             console.log(error);
         }
@@ -64,50 +75,50 @@ const CategoryEditPage = () => {
     return (
         <div>
             <Row>
-                <h1>Единицы измерения - Создание</h1>
+                <h1>Производители - Создание</h1>
             </Row>
             <Card>
-                {propertyTypesIsLoading &&
+                {/* {propertyTypesIsLoading &&
                     <Loader />
-                }
-                {!propertyTypesIsLoading &&
-                    <>
-                        <Row>
-                            <Tabs>
-                                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
-                            </Tabs>
-                        </Row>
+                } */}
+                {/* {!propertyTypesIsLoading &&
+                    <> */}
+                <Row>
+                    <Tabs>
+                        <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
+                        <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+                    </Tabs>
+                </Row>
 
-                        <Formik
-                            initialValues={initialValues}
-                            onSubmit={handleSubmit}
-                            validationSchema={schema}
-                        >
-                            <Form>
-                                {activeTab == 0 && <>
-                                    <Row>
-                                        <FormikField label='Название единицы измерения' name={'type_name'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikField label='Обозначение' name={'unit_type'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikCheckbox label='Активность' name={'is_active'} />
-                                    </Row>
-                                </>}
-                                <Button type='submit'>Сохранить</Button>
-                            </Form>
-                        </Formik>
-                    </>}
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    validationSchema={schema}
+                >
+                    <Form>
+                        {activeTab == 0 && <>
+                            <Row>
+                                <FormikField label='Наименование производителя' name={'name'} />
+                            </Row>
+                            <Row>
+                                <FormikCheckbox label='Активность' name={'is_active'} />
+                            </Row>
+                            <Row>
+                                <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
+                            </Row>
+                        </>}
+                        <Button type='submit'>Сохранить</Button>
+                    </Form>
+                </Formik>
+                {/* </>} */}
             </Card>
 
-        </div>
+        </div >
 
     )
 }
 
-export default CategoryEditPage
+export default DeveloperEditPage
 
 
 // 'use client'

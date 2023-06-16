@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react'
-import "./Tabs.scss"
+// import "./Tabs.scss"
 
 interface TabsProps {
     children: ReactNode

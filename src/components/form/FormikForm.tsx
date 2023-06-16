@@ -41,11 +41,11 @@ export interface TemplateSelect {
     name: string
     type: TemplateTypes.SELECT
     options: {
-        value: string | number
+        value:  number
         content: string
     }[]
     initialValue: {
-        value: string | number
+        value:  number
         content: string
     }
 }

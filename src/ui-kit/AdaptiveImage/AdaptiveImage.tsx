@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import "./AdaptiveImage.scss"
+// import "./AdaptiveImage.scss"
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 

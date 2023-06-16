@@ -1,7 +1,7 @@
 'use client'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import FormikForm, { TemplateFields, TemplateTypes } from '@/components/form/FormikForm'
-import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation } from '@/api/propertyTypes'
+import { useCreatePropertyTypeMutation, useFetchAllPropertyTypesQuery, useFetchPropertyTypeByIdQuery, useLazyFetchAllPropertyTypesQuery, useUpdatePropertyTypeMutation } from '@/api/propertyTypes'
 import { useParams, useRouter } from 'next/navigation'
 import { ICategory, IPropertyType } from '@/types/models/types'
 import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
@@ -33,8 +33,10 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: propertyTypes, isLoading: isPropertyTypesLoading } = useFetchAllPropertyTypesQuery({})
-    const { data: property, isLoading: isPropertyLoading } = useFetchPropertyByIdQuery(+params?.id)
+    const { data: properties, refetch: refetchProperties } = useFetchAllPropertiesQuery({})
+
+    const [fetchPropertyTypes, { data: propertyTypes, isLoading: isPropertyTypesLoading }] = useLazyFetchAllPropertyTypesQuery()
+    const { data: property, isLoading: isPropertyLoading, refetch: refetchProperty } = useFetchPropertyByIdQuery(+params?.id)
 
     const [updateProperty, { isLoading }] = useUpdatePropertyMutation()
 
@@ -47,6 +49,14 @@ const CategoryEditPage = () => {
             .required('Обязательное поле')
 
     });
+
+    useEffect(() => {
+        (async () => {
+            await fetchPropertyTypes({
+                "filter[is_active]": true
+            })
+        })()
+    }, [])
 
     const initialValues = useMemo((): FormType => {
         return {
@@ -73,21 +83,24 @@ const CategoryEditPage = () => {
                 property_type_id: values.property_type.value,
                 is_active: values.is_active
             })
+            refetchProperty()
+            refetchProperties()
             router.push("/properties")
         } catch (error) {
             console.log(error);
         }
     }
+
     return (
         <div>
             <Row>
-                <h1>Единицы измерения категорий - Создание</h1>
+                <h1>Характеристики - {property?.data?.name}({property?.data?.property_id})</h1>
             </Row>
             <Card>
                 {isPropertyTypesLoading && isPropertyLoading &&
                     <Loader />
                 }
-                {!isPropertyTypesLoading && !isPropertyLoading &&
+                {!isPropertyTypesLoading && !isPropertyLoading && property &&
                     <>
                         <Row>
                             <Tabs>

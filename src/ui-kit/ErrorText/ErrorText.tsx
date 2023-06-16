@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react'
-import "./ErrorText.scss"
+// import "./ErrorText.scss"
 
 interface Props {
     children: ReactNode

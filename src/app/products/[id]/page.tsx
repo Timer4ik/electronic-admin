@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFetchAllCategoriesQuery, useFetchCategoryByIdQuery, useCreateCategoryMutation, useLazyFetchAllCategoriesQuery } from '@/api/categories'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Col, Row, Tabs, TabsItem } from '@/ui-kit'
+import { Button, Card, Col, PhotoLoader, Row, Tabs, TabsItem } from '@/ui-kit'
 import { Form, Formik, useFormik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
@@ -13,19 +13,29 @@ import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
 import { useCreateFileMutation } from '@/api/filesApi'
+import { useCreateProductMutation, useFetchProductByIdQuery, useUpdateProductMutation } from '@/api/productsApi'
+import { useLazyFetchAllDevelopersQuery } from '@/api/developersApi'
 
 interface FormType {
     name: string;
+    descr: string;
+    price: number;
     photo: any;
-    parent_category: {
+    developer: {
+        value: number,
+        content: string
+    };
+    category: {
         value: number,
         content: string
     };
     is_active: boolean;
-    desc: string;
-    is_end: boolean;
     file_id?: number
     _categories: {
+        value: number,
+        content: string
+    }[]
+    _developers: {
         value: number,
         content: string
     }[]
@@ -36,9 +46,14 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
+    const [fetchDevelopers, { data: developers, isLoading: developersIsLoading }] = useLazyFetchAllDevelopersQuery()
     const [fetchCategories, { data: categories, isLoading: categoriesIsLoading }] = useLazyFetchAllCategoriesQuery()
-    // const { data: category, isSuccess, refetch: refetchCategory } = useFetchCategoryByIdQuery(+params?.id)
-    const [createCategory, { isLoading, isError }] = useCreateCategoryMutation()
+    const { data: product, isSuccess, refetch: refetchProduct } = useFetchProductByIdQuery({
+        id: +params?.id, params: {
+            extend: "category,file,developer"
+        }
+    })
+    const [updateProduct, { isLoading, isError }] = useUpdateProductMutation()
 
     const [createFile] = useCreateFileMutation()
 
@@ -53,21 +68,40 @@ const CategoryEditPage = () => {
     });
 
     const initialValues: FormType = {
-        name: "",
-        photo: null,
-        parent_category: {
-            value: 0,
-            content: "Не выбрано"
-        },
-        is_active: false,
-        desc: "",
-        is_end: false,
-        _categories: addNotSelectedOption((categories?.data.map((item) => {
-            return {
-                content: item.name,
-                value: item.category_id
+        name: product?.data.name || "",
+        photo: {
+            url: product?.data?.file?.link,
+            file: {
+                name: product?.data?.file?.name,
+                size: product?.data?.file?.size
             }
-        })))
+        },
+        category: {
+            value: product?.data.category_id || 0,
+            content: product?.data.category?.name || "Не выбрано",
+        },
+        developer: {
+            value: product?.data.developer_id || 0,
+            content: product?.data.developer?.name || "Не выбрано",
+        },
+        descr: product?.data.descr || "",
+        price: product?.data.price || 0,
+
+        is_active: product?.data.is_active || false,
+        _categories:
+            addNotSelectedOption((categories?.data.map((item) => {
+                return {
+                    content: item.name,
+                    value: item.category_id
+                }
+            }))),
+        _developers:
+            addNotSelectedOption((developers?.data.map((item) => {
+                return {
+                    content: item.name,
+                    value: item.developer_id
+                }
+            }))),
     }
 
     const handleSubmit = async (values: FormType) => {
@@ -83,15 +117,18 @@ const CategoryEditPage = () => {
                 values.file_id = data?.data?.file_id
             }
 
-            await createCategory({
+            await updateProduct({
+                product_id: product?.data?.product_id || 0,
                 name: values.name,
                 is_active: values.is_active,
-                is_end: values.is_end,
-                parent_id: values.parent_category.value,
-                desc: values.desc,
-                file_id: values.file_id
+                category_id: values.category.value,
+                developer_id: values.developer.value,
+                file_id: values.file_id,
+                descr: values.descr,
+                price: values.price,
             })
-            router.push("/categories")
+            refetchProduct()
+            router.push("/products")
         } catch (error) {
             console.log(error);
         }
@@ -100,19 +137,22 @@ const CategoryEditPage = () => {
     useEffect(() => {
         (async () => {
             await fetchCategories({})
+            await fetchDevelopers({})
         })()
     }, [])
+
+    // 
 
     return (
         <div>
             <Row>
-                <h1>Категории товаров - Создание</h1>
+                <h1>Товары - {product?.data.name}({product?.data.product_id})</h1>
             </Row>
             <Card>
                 {categoriesIsLoading &&
                     <Loader />
                 }
-                {!categoriesIsLoading &&
+                {categories && developers && product &&
                     <>
                         <Row>
                             <Tabs>
@@ -136,22 +176,34 @@ const CategoryEditPage = () => {
                                     </Row>
                                     <Row>
                                         <FormikSelect
-                                            label='Выберите родительскую категория'
-                                            name={'parent_category'}
-                                            selectedItem={initialValues.parent_category}
+                                            label='Выберите категорию товара'
+                                            name={'category'}
+                                            selectedItem={initialValues.category}
                                             options={initialValues._categories}
+                                        />
+                                    </Row>
+                                    <Row>
+                                        <FormikSelect
+                                            label='Выберите производителя'
+                                            name={'developer'}
+                                            selectedItem={initialValues.developer}
+                                            options={initialValues._developers}
                                         />
                                     </Row>
                                     <Row>
                                         <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
                                     </Row>
+
+                                    <Row>
+                                        <FormikField label='Цена' name='price' />
+                                    </Row>
                                 </>}
                                 {activeTab == 1 && <>
                                     <Row>
-                                        <FormikTextarea label='Описание категории' name={'desc'} />
+                                        <FormikTextarea label='Описание' name='descr' />
                                     </Row>
                                     <Row>
-                                        <FormikCheckbox label='Конечная категория?' name={'is_end'} />
+                                        {/* <PhotoLoader */}
                                     </Row>
                                 </>}
                                 <Button type='submit'>Сохранить</Button>

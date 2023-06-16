@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react'
-import "./FileLoader.scss"
+// import "./FileLoader.scss"
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string

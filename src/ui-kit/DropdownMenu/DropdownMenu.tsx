@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useState } from 'react'
-import "./DropdownMenu.scss"
+// import "./DropdownMenu.scss"
 import { useCreateSlotById } from '@/hooks/useCreateSlot'
 import { useEffectOutsideClick } from '@/hooks/useEffectOutsideClick'
 

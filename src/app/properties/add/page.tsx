@@ -32,7 +32,12 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: propertyTypes, isLoading: isPropertyTypesLoading } = useFetchAllPropertyTypesQuery({})
+    const { data: properties, refetch: refetchProperties } = useFetchAllPropertiesQuery({
+       
+    })
+    const { data: propertyTypes, isLoading: isPropertyTypesLoading } = useFetchAllPropertyTypesQuery({
+        "filter[is_active]": true
+    })
 
     const [createProperty, { isLoading }] = useCreatePropertyMutation()
 
@@ -70,7 +75,8 @@ const CategoryEditPage = () => {
                 property_type_id: values.property_type.value,
                 is_active: values.is_active
             })
-            router.push("/property-types")
+            refetchProperties()
+            router.push("/properties")
         } catch (error) {
             console.log(error);
         }
@@ -79,7 +85,7 @@ const CategoryEditPage = () => {
     return (
         <div>
             <Row>
-                <h1>Единицы измерения категорий - Создание</h1>
+                <h1>Характеристики - Создание</h1>
             </Row>
             <Card>
                 {isPropertyTypesLoading &&

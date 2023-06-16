@@ -32,10 +32,6 @@ export default function Home() {
   const [deletePropertyType] = useDeletePropertyTypeMutation()
   const [updatePropertyType] = useUpdatePropertyTypeMutation()
 
-  useEffect(() => {
-    refetch()
-  }, [])
-
   const handleDelete = async (id: number) => {
     await deletePropertyType(id)
     refetch()
@@ -54,7 +50,7 @@ export default function Home() {
   return (
     <Col>
       <RowBetween>
-        <h1>Единицы измерения характеристик</h1>
+        <h1>Единицы измерения</h1>
         <Button color="green" onClick={() => router.push("/property-types/add")}>Добавить</Button>
       </RowBetween>
       <RowBetween>

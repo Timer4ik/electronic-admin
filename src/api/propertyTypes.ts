@@ -52,4 +52,4 @@ export const propertyTypesApi = createApi({
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useFetchAllPropertyTypesQuery, useDeletePropertyTypeMutation, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation, useCreatePropertyTypeMutation } = propertyTypesApi
+export const { useFetchAllPropertyTypesQuery, useLazyFetchAllPropertyTypesQuery , useDeletePropertyTypeMutation, useFetchPropertyTypeByIdQuery, useUpdatePropertyTypeMutation, useCreatePropertyTypeMutation } = propertyTypesApi

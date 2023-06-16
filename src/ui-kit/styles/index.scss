@@ -1,27 +1,27 @@
 @font-face {
     font-family: "PT Sans";
-    src: url("../../public/fonts/PTSans-Regular.ttf");
+    src: url("../../../public/fonts/PTSans-Regular.ttf");
     font-style: normal;
     font-weight: normal;
 }
 
 @font-face {
     font-family: "PT Sans";
-    src: url("../../public/fonts/PTSans-Bold.ttf");
+    src: url("../../../public/fonts/PTSans-Bold.ttf");
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: "PT Sans";
-    src: url("../../public/fonts/PTSans-Italic.ttf");
+    src: url("../../../public/fonts/PTSans-Italic.ttf");
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: "PT Sans";
-    src: url("../../public/fonts/PTSans-BoldItalic.ttf");
+    src: url("../../../public/fonts/PTSans-BoldItalic.ttf");
     font-style: italic;
     font-weight: bold;
 }
@@ -55,3 +55,21 @@ h6 {
 body {
     background-color: #F5F9FC;
 }
+
+@import "./AdaptiveImage.scss";
+@import "./Button.scss";
+@import "./Card.scss";
+@import "./Checkbox.scss";
+@import "./Col.scss";
+@import "./DropdownMenu.scss";
+@import "./ErrorText.scss";
+@import "./Field.scss";
+@import "./FileLoader.scss";
+@import "./Loader.scss";
+@import "./Paginator.scss";
+@import "./PhotoLoader.scss";
+@import "./Row.scss";
+@import "./Select.scss";
+@import "./Table.scss";
+@import "./Tabs.scss";
+@import "./Textarea.scss";

@@ -54,6 +54,10 @@
                 color: #6B7B93;
                 padding: 15px 40px;
                 padding-left: 66px;
+                transition: color 0.2s linear;
+                &:hover {
+                    color: #000000;
+                }
             }
         }
     }

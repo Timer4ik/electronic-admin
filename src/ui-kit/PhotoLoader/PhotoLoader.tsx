@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import "./PhotoLoader.scss"
+// import "./PhotoLoader.scss"
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     label: string

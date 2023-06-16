@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import "./Textarea.scss"
+// import "./Textarea.scss"
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string

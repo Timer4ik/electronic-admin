@@ -1,5 +1,5 @@
 import React from 'react'
-import "./DatePicker.scss"
+// import "./DatePicker.scss"
 
 export const DatePicker = ({ label, ...props }) => {
   return (

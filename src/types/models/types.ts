@@ -4,7 +4,13 @@ export interface IFile {
     name?: string
     link: string
 }
-
+export interface ICategoryProperty {
+    category_property_id: number
+    category_id: number
+    property_id: number
+    property?: IProperty
+    name: string
+}
 export interface ICategory {
     category_id: number
     name: string
@@ -33,4 +39,38 @@ export interface IProperty {
     property_type?: IPropertyType
 
     is_active: boolean
+}
+
+export interface IDeveloper {
+    developer_id: number
+    name: string
+    is_active: boolean
+    file_id?: number
+
+    file?: IFile
+}
+
+export interface IProduct {
+    product_id: number
+    name: string
+    is_active: boolean
+    descr: string
+    price: number
+    file_id?: number
+    category_id: number
+    developer_id: number
+
+    file?: IFile
+    developer?: IDeveloper
+    category?: ICategory
+}
+
+export interface IProductPhoto {
+
+    product_photo_id:number
+    product_id:number
+    file_id:number
+
+    product?: IProduct
+    file?: IFile
 }

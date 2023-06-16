@@ -2,7 +2,7 @@
 import { AdaptiveImage, Button, Card, Checkbox, Col, Field, FileLoader, PhotoLoader, Row, Select, Table, TableMenuIcon, Tabs, TabsItem } from '@/ui-kit'
 import React, { FC, useState } from 'react'
 
-const page = () => {
+const Page = () => {
   const [items, setItems] = useState<{
     value: number,
     content: string
@@ -132,4 +132,4 @@ const page = () => {
     </div>
   )
 }
-export default page
+export default Page

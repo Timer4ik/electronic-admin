@@ -1,7 +1,7 @@
 'use client'
-import { useFetchAllCategoriesQuery } from "@/api/categories";
-import { useDeletePropertyByIdMutation, useFetchAllPropertiesQuery, useUpdatePropertyMutation } from "@/api/properties";
-import { IProperty } from "@/types/models/types";
+import { useFetchAllCategoriesQuery, useLazyFetchAllCategoriesQuery } from "@/api/categories";
+import { useDeleteDeveloperByIdMutation, useFetchAllDevelopersQuery, useLazyFetchAllDevelopersQuery, useUpdateDeveloperMutation } from "@/api/developersApi";
+import { IDeveloper } from "@/types/models/types";
 import { BorderCard, Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/ui-kit";
 import Paginator from "@/ui-kit/Paginator/Paginator";
 import { debounce } from "@/utils/debounce";
@@ -22,30 +22,25 @@ export default function Home() {
     debouncedSetLikeValue(value)
   }
 
-  const { data: properties, refetch } = useFetchAllPropertiesQuery({
-    page: 0,
-    limit: 10,
-    extend: "property_type",
+  const { data: developers, refetch } = useFetchAllDevelopersQuery({
+    page: currentPage,
+    limit: limit,
+    extend: "file",
     like: likeValue || ""
   })
-
-  const [updateProperty] = useUpdatePropertyMutation()
-  const [deletePropertyById] = useDeletePropertyByIdMutation()
-
   const router = useRouter()
 
-  useEffect(() => {
-    refetch()
-  }, [])
+  const [deleteDeveloper] = useDeleteDeveloperByIdMutation()
+  const [updateDeveloper] = useUpdateDeveloperMutation()
 
   const handleDelete = async (id: number) => {
-    await deletePropertyById(id)
+    await deleteDeveloper(id)
     refetch()
   }
 
-  const handleToggleActive = async (property: IProperty) => {
-    let activeProperty: IProperty = { ...property, is_active: !property.is_active }
-    await updateProperty(activeProperty)
+  const handleToggleActive = async (developer: IDeveloper) => {
+    let activeDeveloper: IDeveloper = { ...developer, is_active: !developer.is_active }
+    await updateDeveloper(activeDeveloper)
     refetch()
   }
 
@@ -53,11 +48,16 @@ export default function Home() {
     setCurrentPage(page)
   }
 
+  useEffect(() => {
+    refetch()
+  }, [])
+
+
   return (
     <Col>
       <RowBetween>
-        <h1>Характеристики</h1>
-        <Button color="green" onClick={() => router.push("/properties/add")}>Добавить</Button>
+        <h1>Производители</h1>
+        <Button color="green" onClick={() => router.push("/developers/add")}>Добавить</Button>
       </RowBetween>
       <RowBetween>
         <Field
@@ -72,14 +72,14 @@ export default function Home() {
               <th></th>
               <th>ID</th>
               <th>Активность</th>
-              <th>Характеристика</th>
-              <th>Единица измерения</th>
+              <th>Производитель</th>
+              <th>Фото производителя</th>
             </tr>
           </thead>
           <tbody>
-            {[...(properties?.data || [])].sort((a, b) => a.property_id - b.property_id).map(item => {
+            {developers?.data.map(item => {
               return (
-                <tr key={item.property_id}>
+                <tr key={item.developer_id}>
                   <td>
                     <Dropdown>
                       <div>
@@ -87,19 +87,24 @@ export default function Home() {
                       </div>
                       <div>
                         <div onClick={() => handleToggleActive(item)}>{item.is_active ? "Деактивировать" : "Активировать"}</div>
-                        <div onClick={() => router.push(`/properties/${item.property_id}`)}>Изменить</div>
-                        <div onClick={() => handleDelete(item.property_id)} className="danger-hover">Удалить</div>
+                        <div onClick={() => router.push(`/developers/${item.developer_id}`)}>Изменить</div>
+                        <div onClick={() => handleDelete(item.developer_id)} className="danger-hover">Удалить</div>
+
                       </div>
                     </Dropdown>
                   </td>
-                  <td className="gray">{item.property_id}</td>
+                  <td className="gray">{item.developer_id}</td>
                   <td>
                     {item.is_active && <img src="img/icons/checked.svg" width={18} />}
 
                     {/* <Checkbox disabled checked={item.is_end} /> */}
                   </td>
                   <td className="black-500">{item.name}</td>
-                  <td className="black-500">{item?.property_type?.type_name}</td>
+                  <td>
+                    <div style={{ maxWidth: 50, maxHeight: 50, width: "50px", height: "50px", borderRadius: 10, overflow: "hidden", border: "1px solid #d3d3d378" }}>
+                      <img style={{ objectFit: "contain", width: "100%", height: "100%" }} src={item.file?.link} alt="" />
+                    </div>
+                  </td>
                 </tr>
               )
             })}
@@ -107,7 +112,7 @@ export default function Home() {
           </tbody>
         </Table>
       </Row>
-      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((properties?.count ?? 0) / limit) || 0} />
+      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((developers?.count ?? 0) / limit) || 0} />
 
     </Col >
   )

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import "./Checkbox.scss"
+// import "./Checkbox.scss"
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string

@@ -58,6 +58,7 @@ const CategoryEditPage = () => {
                 is_active: values.is_active
             })
             refetchPropertyType()
+            refetchPropertyTypes()
             router.push("/property-types")
         } catch (error) {
             console.log(error);
@@ -67,13 +68,13 @@ const CategoryEditPage = () => {
     return (
         <div>
             <Row>
-                <h1>Единицы измерения категорий - Создание</h1>
+                <h1>Единицы измерения - Создание</h1>
             </Row>
             <Card>
                 {propertyTypesIsLoading &&
                     <Loader />
                 }
-                {!propertyTypesIsLoading &&
+                {!propertyTypesIsLoading && propertyType &&
                     <>
                         <Row>
                             <Tabs>

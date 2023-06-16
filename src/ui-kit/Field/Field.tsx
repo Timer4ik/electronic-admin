@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import "./Field.scss"
+// import "./Field.scss"
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string

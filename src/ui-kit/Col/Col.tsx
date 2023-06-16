@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react'
-import "./Col.scss"
+// import "./Col.scss"
 
 interface Props {
     children: ReactNode

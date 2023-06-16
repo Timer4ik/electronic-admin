@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, ReactNode } from 'react'
-import "./Card.scss"
+// import "./Card.scss"
 
 type Props = {
     children: ReactNode

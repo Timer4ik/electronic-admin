@@ -2,7 +2,7 @@ import { categoriesApi } from '@/redux/services/categoriesApi'
 import { filesApi } from '@/redux/services/filesApi'
 import { developersApi } from '@/redux/services/developersApi'
 import { propertiesApi } from '@/redux/services/propertiesApi'
-import { propTypesApi } from '@/redux/services/propTypesApi'
+import { propValuesApi } from '@/redux/services/propValuesApi'
 import { productPhotosApi } from '@/redux/services/productPhotosApi'
 import { categoryPropertiesApi } from '@/redux/services/categoryPropertiesApi'
 import { productsApi } from '@/redux/services/productsApi'
@@ -18,7 +18,7 @@ export const store = configureStore({
     [productPhotosApi.reducerPath]: productPhotosApi.reducer,
     [developersApi.reducerPath]: developersApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
-    [propTypesApi.reducerPath]: propTypesApi.reducer,
+    [propValuesApi.reducerPath]: propValuesApi.reducer,
   },
  
   middleware: (getDefaultMiddleware) =>
@@ -30,7 +30,7 @@ export const store = configureStore({
       .concat(productPhotosApi.middleware)
       .concat(developersApi.middleware)
       .concat(categoryPropertiesApi.middleware)
-      .concat(propTypesApi.middleware)
+      .concat(propValuesApi.middleware)
 })
 
 setupListeners(store.dispatch)

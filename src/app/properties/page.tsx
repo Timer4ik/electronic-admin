@@ -23,7 +23,7 @@ export default function Home() {
   const { data: properties } = useFetchAllPropertiesQuery({
     page: 0,
     limit: 10,
-    extend: "property_type",
+    extend: "property_values",
     like: debouncedSearchValue || ""
   })
 
@@ -65,7 +65,6 @@ export default function Home() {
               <th>ID</th>
               <th>Активность</th>
               <th>Характеристика</th>
-              <th>Единица измерения</th>
             </tr>
           </thead>
           <tbody>
@@ -89,7 +88,6 @@ export default function Home() {
                     {item.is_active && <img src="img/icons/checked.svg" width={18} />}
                   </td>
                   <td className="black-500">{item.name}</td>
-                  <td className="black-500">{item?.property_type?.type_name}</td>
                 </tr>
               )
             })}

@@ -108,7 +108,6 @@ const CategoryProperties: FC<Props> = ({ category }) => {
                                 <td>{item.category_property_id}</td>
                                 <td>{item.name}</td>
                                 <td>{item?.property?.name}</td>
-                                <td>{item?.property?.property_type?.unit_type}</td>
                             </tr>
                         ))}
                     </tbody>

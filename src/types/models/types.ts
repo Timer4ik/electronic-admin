@@ -24,20 +24,18 @@ export interface ICategory {
     parent?: Omit<ICategory, "parent">
 }
 
-export interface IPropertyType {
-    property_type_id: number
-    type_name: string
-    unit_type: string
+export interface IPropertyValue {
+    property_value_id: number
+    name:string
+    property_id: number
+    is_active:boolean
 
-    is_active: boolean
+    property?:IProperty
 }
 
 export interface IProperty {
     property_id: number
     name: string
-    property_type_id: number
-    property_type?: IPropertyType
-
     is_active: boolean
 }
 
@@ -67,10 +65,10 @@ export interface IProduct {
 
 export interface IProductPhoto {
 
-    name?:string
-    product_photo_id:number
-    product_id:number
-    file_id:number
+    name?: string
+    product_photo_id: number
+    product_id: number
+    file_id: number
 
     product?: IProduct
     file?: IFile

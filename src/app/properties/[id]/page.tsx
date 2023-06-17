@@ -1,38 +1,24 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useGetPropTypesQuery } from '@/redux/services/propTypesApi'
+import React, { useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Button, Card, Loader, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { object as YupObject, string as YupString } from 'yup';
-import { useFetchAllPropertiesQuery, useFetchPropertyByIdQuery, useUpdatePropertyMutation } from '@/redux/services/propertiesApi'
+import { useFetchPropertyByIdQuery, useUpdatePropertyMutation } from '@/redux/services/propertiesApi'
 import { FormikSelect } from '@/components/form/FormikSelect'
-import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
+import PropertyValues from '@/components/properties/PropertyValues'
 
 interface FormType {
     name: string
-    property_type: {
-        content: string
-        value: number
-    }
     is_active: boolean
-    _propertyTypes: {
-        content: string
-        value: number
-    }[]
 }
-
 
 const CategoryEditPage = () => {
 
     const params = useParams()
     const router = useRouter()
-
-    const { data: propertyTypes, isLoading: isLoadingPropTypes } = useGetPropTypesQuery({
-        "filter[is_active]": true
-    })
 
     const { data: property, isLoading: isPropertyLoading } = useFetchPropertyByIdQuery(+params?.id)
 
@@ -51,26 +37,15 @@ const CategoryEditPage = () => {
     const initialValues = useMemo((): FormType => {
         return {
             name: property?.data.name || "",
-            property_type: {
-                content: property?.data.property_type?.type_name || "Не выбрано",
-                value: property?.data.property_type?.property_type_id || 0
-            },
             is_active: property?.data?.is_active || false,
-            _propertyTypes: addNotSelectedOption(propertyTypes?.data.map(item => {
-                return {
-                    value: item.property_type_id,
-                    content: item.type_name
-                }
-            }))
         }
-    }, [propertyTypes, property])
+    }, [property])
 
     const handleSubmit = async (values: FormType) => {
         try {
             await updateProperty({
                 property_id: property?.data.property_id || 0,
                 name: values.name,
-                property_type_id: values.property_type.value,
                 is_active: values.is_active
             })
             router.push("/properties")
@@ -85,10 +60,10 @@ const CategoryEditPage = () => {
                 <h1>Характеристики - {property?.data?.name}({property?.data?.property_id})</h1>
             </Row>
             <Card>
-                {isLoadingPropTypes && isPropertyLoading &&
+                {isPropertyLoading &&
                     <Loader />
                 }
-                {!isLoadingPropTypes && !isPropertyLoading && property &&
+                {!isPropertyLoading && property &&
                     <>
                         <Row>
                             <Tabs>
@@ -105,19 +80,17 @@ const CategoryEditPage = () => {
                             <Form>
                                 {activeTab == 0 && <>
                                     <Row>
-                                        <FormikField label='Название характеристики' name={'name'} />
+                                        <h2>Основная информация</h2>
                                     </Row>
                                     <Row>
-                                        <FormikSelect
-                                            label='Единица измерения'
-                                            name={'property_type'}
-                                            selectedItem={initialValues.property_type}
-                                            options={initialValues._propertyTypes}
-                                        />
+                                        <FormikField label='Название характеристики' name={'name'} />
                                     </Row>
                                     <Row>
                                         <FormikCheckbox label='Активность' name={'is_active'} />
                                     </Row>
+                                </>}
+                                {activeTab == 1 && <>
+                                    <PropertyValues property_id={property?.data?.property_id} />
                                 </>}
                                 <Button type='submit'>Сохранить</Button>
                             </Form>

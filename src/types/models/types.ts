@@ -75,3 +75,15 @@ export interface IProductPhoto {
     product?: IProduct
     file?: IFile
 }
+
+// export interface IProductProperty {
+//     product_property_id
+//     name
+//     value
+//     value_min
+//     value_average
+//     value_max
+//     product_id
+//     property_id
+//     is_active
+// }

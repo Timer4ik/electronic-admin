@@ -4,7 +4,6 @@ import { Button, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon 
 import { useFetchAllPropertiesQuery } from '@/redux/services/propertiesApi'
 import { useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation, useGetCategoryPropertiesQuery } from '@/redux/services/categoryPropertiesApi'
 import { ICategory } from '@/types/models/types'
-import { useGetCategoriesQuery } from '@/redux/services/categoriesApi'
 
 interface Props {
     category: ICategory
@@ -17,7 +16,7 @@ const CategoryProperties: FC<Props> = ({ category }) => {
     })
     const { data: categoryProperties, isLoading: categoryPropertiesIsLoading } = useGetCategoryPropertiesQuery({
         "filter[category_id]": category.category_id,
-        extend: "property.property_type"
+        extend: "property"
     })
     const [createCategoryProperty] = useCreateCategoryPropertyMutation()
     const [deleteCategoryProperty] = useDeleteCategoryPropertyMutation()
@@ -89,7 +88,6 @@ const CategoryProperties: FC<Props> = ({ category }) => {
                             <th>ID</th>
                             <th>Наименование</th>
                             <th>Характеристика</th>
-                            <th>Обозначение характеристики</th>
                         </tr>
                     </thead>
                     <tbody>

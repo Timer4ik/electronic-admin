@@ -7,13 +7,15 @@ interface Props {
     selectedItem: {
         value: number,
         content: string
+        value2?: number
     }
     options?: {
         value: number,
-        content: string
+        content: string,
+        value2?: number
     }[]
     isInvalid?: boolean
-    onChange: (selectedItem: { value: number, content: string }) => void
+    onChange: (selectedItem: { value: number, content: string, value2?: number }) => void
 }
 
 export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onChange }) => {
@@ -27,8 +29,9 @@ export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onC
     }, [isOpened])
 
     const handleClick = (option: {
-        value:  number,
-        content: string
+        value: number,
+        content: string,
+        value2?: number
     }) => {
         onChange(option)
     }
@@ -40,7 +43,7 @@ export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onC
 
             <div className={(isOpened ? 'select__input active' : 'select__input') + (isInvalid ? " error" : "")} >
 
-               { options && <div className='select__value'>{selectedItem.content || options[0]?.content}</div>}
+                {options && <div className='select__value'>{selectedItem.content || options[0]?.content}</div>}
                 {isOpened &&
                     <div className='select__options'>
                         {options?.map(option => (

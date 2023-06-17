@@ -26,11 +26,11 @@ export interface ICategory {
 
 export interface IPropertyValue {
     property_value_id: number
-    name:string
+    name: string
     property_id: number
-    is_active:boolean
+    is_active: boolean
 
-    property?:IProperty
+    property?: IProperty
 }
 
 export interface IProperty {
@@ -74,14 +74,14 @@ export interface IProductPhoto {
     file?: IFile
 }
 
-// export interface IProductProperty {
-//     product_property_id
-//     name
-//     value
-//     value_min
-//     value_average
-//     value_max
-//     product_id
-//     property_id
-//     is_active
-// }
+export interface IProductPropertyValue {
+    product_property_value_id: number
+    product_id: number
+    property_id:number
+    property_value_id: number
+    is_active:boolean
+
+    property?:IProperty
+    product?:IProduct
+    property_value?:IPropertyValue
+}

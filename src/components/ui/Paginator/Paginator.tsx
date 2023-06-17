@@ -78,7 +78,7 @@ const Paginator: FC<Props> = ({ pageCount, onClick, currentPage }) => {
             <div className='paginator'>
                 <div className='paginator__item' onClick={() => currentPage > 1 && onClick(currentPage - 1)}>{"<"}</div>
                 {pages.map(item => (
-                    <div className={'paginator__item' + (currentPage == item.page ? " active" : "")} onClick={() => onClick(item.page)}>{item.page}</div>
+                    <div key={item.page} className={'paginator__item' + (currentPage == item.page ? " active" : "")} onClick={() => onClick(item.page)}>{item.page}</div>
                 ))}
                 <div className='paginator__item' onClick={() => currentPage < pageCount && onClick(currentPage + 1)}>{">"}</div>
             </div>

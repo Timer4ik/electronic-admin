@@ -15,6 +15,7 @@ import { useGetDevelopersQuery } from '@/redux/services/developersApi'
 import { useGetCategoriesQuery } from '@/redux/services/categoriesApi'
 import { useGetProductByIdQuery, useUpdateProductMutation } from '@/redux/services/productsApi'
 import ProductPhotos from '@/components/products/ProductPhotos'
+import ProductProperties from '@/components/products/ProductProperties'
 
 interface FormType {
     name: string;
@@ -148,6 +149,7 @@ const CategoryEditPage = () => {
                             <Tabs>
                                 <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
                                 <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+                                <TabsItem active={activeTab == 2} onClick={() => setActiveTab(2)}>Характеристики</TabsItem>
                             </Tabs>
                         </Row>
 
@@ -193,8 +195,11 @@ const CategoryEditPage = () => {
                                         <FormikTextarea label='Описание' name='descr' />
                                     </Row>
                                     <Row>
-                                        <ProductPhotos product_id={product?.data?.product_id}/>
+                                        <ProductPhotos product_id={product?.data?.product_id} />
                                     </Row>
+                                </>}
+                                {activeTab == 2 && <>
+                                    <ProductProperties product_id={product?.data?.product_id} category_id={product?.data?.category_id} />
                                 </>}
                                 <Button type='submit'>Сохранить</Button>
                             </Form>

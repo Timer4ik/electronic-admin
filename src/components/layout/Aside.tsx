@@ -27,7 +27,7 @@ export const Aside = () => {
                         <a className="item__link" href="#">Категории товаров</a> */}
                     </div>
                 </div>
-                <div className="navbar__item item">
+                {/* <div className="navbar__item item">
                     <div className="item__title">
                         <Image width={0} height={0} src="/img/icons/content.svg" alt="" />
                         <div>Дополнительно</div>
@@ -36,7 +36,7 @@ export const Aside = () => {
                         <Link className="item__link" href="/property-types">Единицы измерения</Link>
 
                     </div>
-                </div>
+                </div> */}
                 {/* <div className="navbar__item item">
                     <div className="item__title">
                         <Image width={0} height={0} src="/img/icons/content.svg" alt="" />

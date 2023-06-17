@@ -12,15 +12,15 @@ export default function Home() {
   const router = useRouter()
 
   // pagination
-  const [limit, setLimit] = useState(10)
-  const [currentPage, setCurrentPage] = useState(0)
+  const [limit, setLimit] = useState(8)
+  const [currentPage, setCurrentPage] = useState(1)
 
   // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
   const debouncedSearchValue = useDebounce(searchValue, 800)
 
   const { data: propertyTypes } = useGetPropTypesQuery({
-    page: currentPage,
+    page: currentPage-1,
     limit: limit,
     like: debouncedSearchValue || ""
   })
@@ -94,7 +94,7 @@ export default function Home() {
           </tbody>
         </Table>
       </Row>
-      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((propertyTypes?.count ?? 0) / limit) || 0} />
+      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={Math.round(((propertyTypes?.count ?? 0) / limit) || 0)} />
 
     </Col >
   )

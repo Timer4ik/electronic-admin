@@ -5,14 +5,20 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const productPhotosApi = createApi({
     reducerPath: 'productPhotosApi',
     baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
+    tagTypes: ["ProductPhotos"],
     endpoints: (build) => ({
-        fetchAllProductPhotos: build.query<{ data: IProductPhoto[], message: string, count: number, page: string }, any>({
+        getProductPhotos: build.query<{ data: IProductPhoto[], message: string, count: number, page: string }, any>({
             query: (params) => ({
                 url: `/product-photos`,
                 params: params
             }),
+            providesTags: (result, error, arg) =>
+                result
+                    ? [...result.data.map(({ product_photo_id }) =>
+                        ({ type: 'ProductPhotos' as const, id: product_photo_id })), 'ProductPhotos']
+                    : ['ProductPhotos'],
         }),
-        fetchProductPhotoById: build.query<{ data: IProductPhoto, message: string, page: string }, { id: number, params: any }>({
+        getProductPhotoById: build.query<{ data: IProductPhoto, message: string, page: string }, { id: number, params: any }>({
             query: ({ id, params }) => ({
                 url: `/product-photos/${id}`,
                 params: params
@@ -26,6 +32,7 @@ export const productPhotosApi = createApi({
                     body: product
                 })
             },
+            invalidatesTags: ['ProductPhotos'],
         }),
         updateProductPhoto: build.mutation<any, IProductPhoto>({
             query: (product) => {
@@ -35,6 +42,7 @@ export const productPhotosApi = createApi({
                     body: product
                 })
             },
+            invalidatesTags: ['ProductPhotos'],
         }),
         deleteProductPhotoById: build.mutation<any, number>({
             query: (id) => {
@@ -43,10 +51,11 @@ export const productPhotosApi = createApi({
                     method: "DELETE",
                 })
             },
+            invalidatesTags: ['ProductPhotos'],
         }),
     }),
 })
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useCreateProductPhotoMutation, useDeleteProductPhotoByIdMutation, useFetchAllProductPhotosQuery, useFetchProductPhotoByIdQuery, useLazyFetchAllProductPhotosQuery, useLazyFetchProductPhotoByIdQuery, useUpdateProductPhotoMutation } = productPhotosApi
+export const { useCreateProductPhotoMutation, useDeleteProductPhotoByIdMutation, useUpdateProductPhotoMutation, useGetProductPhotoByIdQuery, useGetProductPhotosQuery, useLazyGetProductPhotoByIdQuery, useLazyGetProductPhotosQuery } = productPhotosApi

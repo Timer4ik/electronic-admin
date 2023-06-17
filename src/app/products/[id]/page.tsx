@@ -14,6 +14,7 @@ import { useCreateFileMutation } from '@/redux/services/filesApi'
 import { useGetDevelopersQuery } from '@/redux/services/developersApi'
 import { useGetCategoriesQuery } from '@/redux/services/categoriesApi'
 import { useGetProductByIdQuery, useUpdateProductMutation } from '@/redux/services/productsApi'
+import ProductPhotos from '@/components/products/ProductPhotos'
 
 interface FormType {
     name: string;
@@ -192,7 +193,7 @@ const CategoryEditPage = () => {
                                         <FormikTextarea label='Описание' name='descr' />
                                     </Row>
                                     <Row>
-                                        {/* <PhotoLoader */}
+                                        <ProductPhotos product_id={product?.data?.product_id}/>
                                     </Row>
                                 </>}
                                 <Button type='submit'>Сохранить</Button>

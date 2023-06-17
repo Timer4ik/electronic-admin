@@ -1,9 +1,19 @@
 'use client'
-import React from 'react'
+import Paginator from '@/components/ui/Paginator/Paginator'
+import React, { useMemo, useState } from 'react'
 
 const CategoryEditPage = () => {
+
+    const pages = 100
+    const [currentPage,setCurrentPage] = useState(1)
+    console.log(currentPage);
+    
+
     return (
         <div>
+            <Paginator onClick={(page) => setCurrentPage(page)}
+                currentPage={currentPage}
+                pageCount={pages} />
 
         </div>
     )

@@ -67,6 +67,7 @@ export interface IProduct {
 
 export interface IProductPhoto {
 
+    name?:string
     product_photo_id:number
     product_id:number
     file_id:number

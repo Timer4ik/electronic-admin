@@ -5,6 +5,7 @@ import { propertiesApi } from '@/redux/services/propertiesApi'
 import { propValuesApi } from '@/redux/services/propValuesApi'
 import { productPropertyValuesApi } from '@/redux/services/productPropertyValuesApi'
 import { productPhotosApi } from '@/redux/services/productPhotosApi'
+import { slidersApi } from '@/redux/services/slidersApi'
 import { categoryPropertiesApi } from '@/redux/services/categoryPropertiesApi'
 import { productsApi } from '@/redux/services/productsApi'
 import { configureStore } from '@reduxjs/toolkit'
@@ -21,6 +22,7 @@ export const store = configureStore({
     [productsApi.reducerPath]: productsApi.reducer,
     [propValuesApi.reducerPath]: propValuesApi.reducer,
     [productPropertyValuesApi.reducerPath]: productPropertyValuesApi.reducer,
+    [slidersApi.reducerPath]: slidersApi.reducer,
   },
  
   middleware: (getDefaultMiddleware) =>
@@ -30,6 +32,7 @@ export const store = configureStore({
       .concat(propertiesApi.middleware)
       .concat(filesApi.middleware)
       .concat(productPhotosApi.middleware)
+      .concat(slidersApi.middleware)
       .concat(productPropertyValuesApi.middleware)
       .concat(developersApi.middleware)
       .concat(categoryPropertiesApi.middleware)

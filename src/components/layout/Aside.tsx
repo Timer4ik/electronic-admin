@@ -22,6 +22,7 @@ export const Aside = () => {
                         <Link className="item__link" href="/properties">Характеристики</Link>
                         <Link className="item__link" href="/developers">Производители</Link>
                         <Link className="item__link" href="/products">Товары</Link>
+                        <Link className="item__link" href="/sliders">Слайдеры</Link>
                         {/* <a className="item__link" href="#">Категории товаров</a>
                         <a className="item__link" href="#">Категории товаров</a>
                         <a className="item__link" href="#">Категории товаров</a> */}

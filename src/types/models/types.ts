@@ -77,11 +77,24 @@ export interface IProductPhoto {
 export interface IProductPropertyValue {
     product_property_value_id: number
     product_id: number
-    property_id:number
+    property_id: number
     property_value_id: number
-    is_active:boolean
+    is_active: boolean
 
-    property?:IProperty
-    product?:IProduct
-    property_value?:IPropertyValue
+    property?: IProperty
+    product?: IProduct
+    property_value?: IPropertyValue
+}
+
+export interface ISlider {
+    slider_id: number
+    title: string
+    text: string
+    file_id?: number
+    product_id?: number
+    is_active: boolean
+    start_active_dt?: any
+    end_active_dt?: any
+
+    file?:IFile
 }

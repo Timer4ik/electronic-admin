@@ -9,6 +9,9 @@ const nextConfig = {
             },
         ],
     },
+    publicRuntimeConfig: {
+        API_URL: "http://26.13.70.202:5000/api"
+    }
 }
 
 module.exports = nextConfig

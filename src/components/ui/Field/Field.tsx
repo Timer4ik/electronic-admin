@@ -20,7 +20,7 @@ export const Field: FC<Props> = ({ label, disabled, noModify, isInvalid, ...prop
   return (
     <label className='field'>
       {label ? <div className='field__label'>{label}</div> : null}
-      <input className={!isInvalid ? 'field__input' : "field__input error"} type="text" {...props} />
+      <input className={!isInvalid ? 'field__input' : "field__input error"}  {...props} />
     </label>
   )
 }

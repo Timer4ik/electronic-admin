@@ -16,15 +16,14 @@ interface Props {
 const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
 
     const { data: categoryPropeties, isLoading: categoryPropetiesIsLoading } = useGetCategoryPropertiesQuery({
-        "extend": "property"
+        "extend": "property",
+        "filter[category_id]": category_id,
     })
     const { data: productPropertyValues, isLoading: productPropertyValuesIsLoading } = useGetProductPropertyValuesQuery({
         "filter[product_id]": product_id,
         "extend": "property,property_value",
 
     })
-
-
 
     const [createProductPropertyValue] = useCreateProductPropertyValueMutation()
     const [deleteProductPropertyValue] = useDeleteProductPropertyValueMutation()
@@ -48,7 +47,7 @@ const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
     })
 
     const { data: propertyValues, isLoading: propertyValueIsLoading } = useGetPropValuesQuery({
-        ...{ "filter[property_id]": selectedCategoryProperty.value }
+        ...{ "filter[property_id]": selectedCategoryProperty.value2 }
     })
 
     const handleDeleteProductPropertyValue = async (id: number) => {

@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 // Define a service using a base URL and expected endpoints
 export const developersApi = createApi({
     reducerPath: 'developersApi',
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "http://26.13.70.202:5000/api" }),
     tagTypes: ["Developers"],
     endpoints: (build) => ({
         getDevelopers: build.query<{ data: IDeveloper[], message: string, count: number }, any>({

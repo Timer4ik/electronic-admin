@@ -13,11 +13,12 @@ interface FormikSelectProps {
         value: string | number,
         content: string
     }
+    validate?:any
 }
 
-export const FormikSelect: FC<FormikSelectProps> = ({ label, selectedItem, options, name }) => {
+export const FormikSelect: FC<FormikSelectProps> = ({ label, selectedItem, options, name,validate }) => {
 
-    const [field, meta, helpers] = useField({ name })
+    const [field, meta, helpers] = useField({ name,validate })
 
     const handleChangeSelection = (option: any) => {
         helpers.setValue(option)

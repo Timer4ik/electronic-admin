@@ -20,7 +20,10 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
-    const { data: property, isLoading: isPropertyLoading } = useFetchPropertyByIdQuery(+params?.id)
+    const { data: property, isLoading: isPropertyLoading } = useFetchPropertyByIdQuery({
+        id: +params?.id,
+        params: {}
+    })
 
     const [updateProperty] = useUpdatePropertyMutation()
 

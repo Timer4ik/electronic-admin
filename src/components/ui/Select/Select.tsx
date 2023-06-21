@@ -1,105 +1,78 @@
-import React, { FC, useState } from 'react'
-// import "./Select.scss"
-import { useEffectOutsideClick } from '@/hooks/useEffectOutsideClick'
+'use client'
+import React, { FC, ReactElement, useMemo, useState } from 'react'
 
-interface Props {
+interface SelectItemProps {
+    children: React.ReactNode
+    value: any
+    onClick:(value: any) => void
+}
+export interface SelectProps {
+    children: React.ReactNode
     label?: string
-    selectedItem: {
-        value: number,
-        content: string
-        value2?: number
-    }
-    options?: {
-        value: number,
-        content: string,
-        value2?: number
-    }[]
+    value: any
+    onChange: (value: any) => void
     isInvalid?: boolean
-    onChange: (selectedItem: { value: number, content: string, value2?: number }) => void
+}
+interface SelectOptionProps {
+    children: React.ReactNode
+    value: any
 }
 
-export const Select: FC<Props> = ({ label, selectedItem, options, isInvalid, onChange }) => {
+export const SelectOption: FC<SelectOptionProps> = ({ children, value }) => {
+    return <>{children}</>
 
-    const [isOpened, setIsOpened] = useState(false)
+}
 
-    useEffectOutsideClick("select", () => {
-        if (isOpened) {
-            setIsOpened(false)
-        }
-    }, [isOpened])
+const SelectItem: FC<SelectItemProps> = ({ children, value, ...props }) => {
 
-    const handleClick = (option: {
-        value: number,
-        content: string,
-        value2?: number
-    }) => {
-        onChange(option)
-    }
+    const { onClick } = props as { onClick: any }
 
     return (
-        <label className='select' onClick={(e) => { setIsOpened(!isOpened); e.stopPropagation() }}>
+        <div className='select__option' onClick={() => onClick && onClick(value)}>
+            {children}
+        </div>
+    )
+}
+
+export const Select: FC<SelectProps> = ({ children, label, value, onChange, isInvalid }) => {
+
+    const [isOpened, setIsOpened] = useState<boolean>(false)
+    const toggleSelect = (e: React.MouseEvent<HTMLLabelElement, MouseEvent>) => {
+        setIsOpened(!isOpened);
+
+        e.stopPropagation()
+    }
+
+    const options = useMemo(() => {
+        return React.Children.map(children, (child) => {
+            const childReactElem = (child as ReactElement<SelectOptionProps>)
+            return {
+                value: childReactElem.props.value,
+                children: childReactElem.props.children,
+            }
+        })
+    }, [children])
+
+    const inputClassName = (isOpened ? 'select__input active' : 'select__input') + (isInvalid ? " error" : "")
+
+    return (
+        <label className='select' onClick={toggleSelect}>
 
             {label ? <div className='select__label'>{label}</div> : null}
 
-            <div className={(isOpened ? 'select__input active' : 'select__input') + (isInvalid ? " error" : "")} >
+            <div className={inputClassName} >
 
-                {options && <div className='select__value'>{selectedItem.content || options[0]?.content}</div>}
+                <div className='select__value'>{options?.find(item => item.value == value)?.children || "Не выбрано"}</div>
                 {isOpened &&
                     <div className='select__options'>
-                        {options?.map(option => (
-                            <div className='select__option' key={option.value} onClick={() => handleClick(option)}>{option.content}</div>
-                        ))}
+                        {options?.map(item => {
+                            return (
+                                <SelectItem key={item.value} onClick={onChange} value={item.value}>{item.children}</SelectItem>
+                            )
+                        })}
                     </div>
                 }
             </div>
         </label>
     )
 }
-
-
-
-// import React, { Children, FC, ReactNode, useState } from 'react'
-// import "./Select.scss"
-// import { useEffectOutsideClick } from '@/hooks/useEffectOutsideClick'
-
-// interface SelectProps {
-//     children: ReactNode
-//     label: string
-//     selectedItem: string
-// }
-
-// interface SelectOptionProps extends React.HTMLAttributes<HTMLDivElement> {
-//     children:ReactNode
-// }
-
-// export const SelectOption:FC<SelectOptionProps> = ({ children, ...props }) => {
-//     return <div className='select__option' {...props}>{children}</div>
-// }
-
-// export const Select: FC<SelectProps> = ({ label, children, selectedItem }) => {
-
-//     const [isOpened, setIsOpened] = useState(false)
-
-//     useEffectOutsideClick("select",() => {
-//         if (isOpened){
-//             setIsOpened(false)
-//         }
-//     },[isOpened])
-
-//     return (
-//         <label className='select' onClick={(e) => { setIsOpened(!isOpened);e.stopPropagation() }}>
-
-//             {label ? <div className='select__label'>{label}</div> : null}
-
-//             <div className={isOpened ? 'select__input active' : 'select__input'} >
-
-//                 <div className='select__value'>{selectedItem ?? "Выберите значение"}</div>
-
-//                 {isOpened && <div className='select__options'>
-//                     {isOpened && Children.map(children, child => <>{child}</>)}
-//                 </div>}
-
-//             </div>
-//         </label>
-//     )
-// }

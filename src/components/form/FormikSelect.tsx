@@ -1,41 +1,35 @@
-import { FC } from "react"
-import { useField, Formik, Form } from "formik"
-import { ErrorText, Select } from "@/components/ui"
+'use client'
+import { ErrorText, Select } from '@/components/ui'
+import { useField } from 'formik'
+import React, { FC } from 'react'
+import { SelectProps } from '../ui/Select/Select'
 
-interface FormikSelectProps {
+
+interface FormikSelectProps extends Pick<SelectProps, "label" | "children"> {
     name: string
-    label: string
-    options?: {
-        value: number,
-        content: string
-    }[]
-    selectedItem: {
-        value: string | number,
-        content: string
-    }
-    validate?:any
+    defaultValue?: string
 }
 
-export const FormikSelect: FC<FormikSelectProps> = ({ label, selectedItem, options, name,validate }) => {
 
-    const [field, meta, helpers] = useField({ name,validate })
+export const FormikSelect: FC<FormikSelectProps> = ({ name, defaultValue, children, label }) => {
 
-    const handleChangeSelection = (option: any) => {
-        helpers.setValue(option)
+    const [field, meta, helpers] = useField({ value: defaultValue, name })
+
+    const onChange = (value: string) => {
+        helpers.setValue(value)
+        console.log(value);
+
     }
 
     return (
         <div>
-            <Select
-                label={label}
-                onChange={handleChangeSelection}
-                selectedItem={field.value}
-                options={options}
-                isInvalid={!!meta.error}
-            />
+            <Select onChange={onChange} label={label} value={field.value} isInvalid={!!meta.error}>
+                {children}
+            </Select>
+
             {meta.error && <ErrorText>{meta.error}</ErrorText>}
         </div>
-
     )
-
 }
+
+

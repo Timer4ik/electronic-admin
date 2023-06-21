@@ -14,30 +14,17 @@ import { object as YupObject, string as YupString } from 'yup';
 import { useCreateFileMutation } from '@/redux/services/filesApi'
 import { useCreateProductMutation } from '@/redux/services/productsApi'
 import { useGetDevelopersQuery } from '@/redux/services/developersApi'
+import { SelectOption } from '@/components/ui/Select/Select'
 
 interface FormType {
     name: string;
     descr: string;
     price: number;
     photo: any;
-    developer: {
-        value: number,
-        content: string
-    };
-    category: {
-        value: number,
-        content: string
-    };
+    developer_id: number;
+    category_id: number;
     is_active: boolean;
     file_id?: number
-    _categories: {
-        value: number,
-        content: string
-    }[]
-    _developers: {
-        value: number,
-        content: string
-    }[]
 }
 
 const CategoryEditPage = () => {
@@ -65,32 +52,12 @@ const CategoryEditPage = () => {
     const initialValues: FormType = {
         name: "",
         photo: null,
-        category: {
-            value: 0,
-            content: "Не выбрано"
-        },
-        developer: {
-            value: 0,
-            content: "Не выбрано"
-        },
+        category_id: 0,
+        developer_id: 0,
         descr: "",
         price: 0,
 
         is_active: false,
-        _categories:
-            addNotSelectedOption((categories?.data.map((item) => {
-                return {
-                    content: item.name,
-                    value: item.category_id
-                }
-            }))),
-        _developers:
-            addNotSelectedOption((developers?.data.map((item) => {
-                return {
-                    content: item.name,
-                    value: item.developer_id
-                }
-            }))),
     }
 
     const handleSubmit = async (values: FormType) => {
@@ -109,8 +76,8 @@ const CategoryEditPage = () => {
             await createProduct({
                 name: values.name,
                 is_active: values.is_active,
-                category_id: values.category.value,
-                developer_id: values.developer.value,
+                category_id: values.category_id,
+                developer_id: values.developer_id,
                 file_id: values.file_id,
                 descr: values.descr,
                 price: values.price,
@@ -155,10 +122,11 @@ const CategoryEditPage = () => {
                                     <Row>
                                         <FormikSelect
                                             label='Выберите категорию товара'
-                                            name={'category'}
-                                            selectedItem={initialValues.category}
-                                            options={initialValues._categories}
-                                        />
+                                            name={'category_id'}>
+                                            {categories?.data?.map(cat => {
+                                                return <SelectOption key={cat.category_id} value={cat.category_id}>{cat.name}</SelectOption>
+                                            })}
+                                        </FormikSelect>
                                     </Row>
 
                                     <Row>
@@ -167,10 +135,11 @@ const CategoryEditPage = () => {
                                     <Row>
                                         <FormikSelect
                                             label='Выберите производителя'
-                                            name={'developer'}
-                                            selectedItem={initialValues.developer}
-                                            options={initialValues._developers}
-                                        />
+                                            name={'developer_id'}>
+                                            {developers?.data?.map(dev => {
+                                                return <SelectOption key={dev.developer_id} value={dev.developer_id}>{dev.name}</SelectOption>
+                                            })}
+                                        </FormikSelect>
                                     </Row>
                                     <Row>
                                         <FormikField label='Цена' name='price' />

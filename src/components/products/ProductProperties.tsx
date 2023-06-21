@@ -7,6 +7,8 @@ import { useGetCategoryPropertiesQuery } from '@/redux/services/categoryProperti
 import { useCreateProductPropertyValueMutation, useDeleteProductPropertyValueMutation, useGetProductPropertyValuesQuery } from '@/redux/services/productPropertyValuesApi'
 import { useGetPropValuesQuery } from '@/redux/services/propValuesApi'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
+import { SelectOption } from '../ui/Select/Select'
+import { ICategoryProperty, IProperty, IPropertyValue } from '@/types/models/types'
 
 interface Props {
     product_id: number
@@ -28,26 +30,12 @@ const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
     const [createProductPropertyValue] = useCreateProductPropertyValueMutation()
     const [deleteProductPropertyValue] = useDeleteProductPropertyValueMutation()
 
-    const [selectedCategoryProperty, setSelecterProperty] = useState<{
-        content: string,
-        value: number
-        value2?: number
-    }>({
-        content: "Выбери характеристику",
-        value: 0,
-        value2: 0
-    })
+    const [selectedCategoryProperty, setSelecterProperty] = useState<ICategoryProperty | null>(null)
 
-    const [selectedPropertyValue, setSelecterPropertyValue] = useState<{
-        content: string,
-        value: number
-    }>({
-        content: "Выбери значение характеристики",
-        value: 0
-    })
+    const [selectedPropertyValue, setSelecterPropertyValue] = useState<IPropertyValue | null>(null)
 
     const { data: propertyValues, isLoading: propertyValueIsLoading } = useGetPropValuesQuery({
-        ...{ "filter[property_id]": selectedCategoryProperty.value2 }
+        ...{ "filter[property_id]": selectedCategoryProperty?.property_id || 0 }
     })
 
     const handleDeleteProductPropertyValue = async (id: number) => {
@@ -55,19 +43,17 @@ const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
     }
 
     const handleAddProductPropertyValue = async () => {
-        if (!product_id || !selectedCategoryProperty?.value2 || !selectedPropertyValue.value) return
+        if (!product_id || !selectedCategoryProperty?.property_id || !selectedPropertyValue?.property_id) return
         await createProductPropertyValue({
             is_active: true,
             product_id,
-            property_id: selectedCategoryProperty?.value2 || 0,
-            property_value_id: selectedPropertyValue.value,
+            property_id: selectedCategoryProperty?.property_id || 0,
+            property_value_id: selectedPropertyValue?.property_value_id || 0,
         })
     }
+
     useEffect(() => {
-        setSelecterPropertyValue({
-            content: "Выбери значение характеристики",
-            value: 0
-        })
+        setSelecterPropertyValue(null)
     }, [selectedCategoryProperty])
 
     return !categoryPropetiesIsLoading &&
@@ -80,23 +66,25 @@ const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
             <Row>
                 <Select
                     onChange={(item) => setSelecterProperty(item)}
-                    selectedItem={selectedCategoryProperty}
-                    options={addNotSelectedOption(categoryPropeties?.data?.map(item => {
-                        return {
-                            value: item.category_property_id,
-                            value2: item.property_id,
-                            content: item?.property?.name
-                        }
-                    }))} />
+                    value={selectedCategoryProperty}
+                >
+                    <SelectOption value={null}>Не выбрано</SelectOption>
+                    {categoryPropeties?.data?.map(catProperty => {
+                        return (
+                            <SelectOption key={catProperty.category_property_id} value={catProperty}>{catProperty?.property?.name}</SelectOption>
+                        )
+                    })}
+
+                </Select>
                 <Select
                     onChange={(item) => setSelecterPropertyValue(item)}
-                    selectedItem={selectedPropertyValue}
-                    options={addNotSelectedOption(propertyValues?.data?.map(item => {
-                        return {
-                            value: item.property_value_id,
-                            content: item.name
-                        }
-                    }))} />
+                    value={selectedPropertyValue}
+                >
+                    <SelectOption value={null}>Не выбрано</SelectOption>
+                    {propertyValues?.data?.map(item => {
+                        return <SelectOption key={item.property_value_id} value={item}>{item.name}</SelectOption>
+                    })}
+                </Select>
                 <RowBetween>
                     <div></div>
                     <Button type='button' color='green' onClick={() => handleAddProductPropertyValue()}>Добавить</Button>

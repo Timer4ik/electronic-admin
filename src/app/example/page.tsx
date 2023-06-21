@@ -95,7 +95,7 @@ const Page = () => {
         </Row>
         <Row>
           <Field label={"First name"} />
-          <Select label={"Выбери страну"} onChange={(item) => setSelectedItem(item)} selectedItem={selectedItem} options={items} />
+          {/* <Select label={"Выбери страну"} onChange={(item) => setSelectedItem(item)} selectedItem={selectedItem} options={items} /> */}
         </Row>
         <Row>
           <Checkbox label={"Хочешь умереть?"} />

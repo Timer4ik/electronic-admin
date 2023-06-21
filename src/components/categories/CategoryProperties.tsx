@@ -4,6 +4,7 @@ import { Button, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon 
 import { useFetchAllPropertiesQuery } from '@/redux/services/propertiesApi'
 import { useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation, useGetCategoryPropertiesQuery } from '@/redux/services/categoryPropertiesApi'
 import { ICategory } from '@/types/models/types'
+import { SelectOption } from '../ui/Select/Select'
 
 interface Props {
     category: ICategory
@@ -18,27 +19,21 @@ const CategoryProperties: FC<Props> = ({ category }) => {
         "filter[category_id]": category.category_id,
         extend: "property"
     })
+
     const [createCategoryProperty] = useCreateCategoryPropertyMutation()
     const [deleteCategoryProperty] = useDeleteCategoryPropertyMutation()
 
-    const [selectedProperty, setSelectedProperty] = useState<{
-        value: number
-        content: string
-    }>({
-        value: 0,
-        content: "Не выбрано"
-    })
+    const [selectedPropertyId, setSelectedPropertyId] = useState<any>(0)
     const [categoryPropertyName, setCategoryPropertyName] = useState("")
 
     const handleCreateCategoryProperty = async () => {
-        if (!category || selectedProperty.value <= 0) return
+        if (!category || selectedPropertyId <= 0) return
 
         await createCategoryProperty({
             category_id: category.category_id,
-            property_id: selectedProperty.value,
+            property_id: selectedPropertyId,
             name: categoryPropertyName
         })
-
     }
 
     const handleDeleteCategoryProperty = (id: number) => {
@@ -47,10 +42,7 @@ const CategoryProperties: FC<Props> = ({ category }) => {
 
     useEffect(() => {
         if (properties?.data?.length)
-            setSelectedProperty({
-                value: properties?.data[0]?.property_id || 0,
-                content: properties?.data[0]?.name || "Не выбрано"
-            })
+            setSelectedPropertyId(properties?.data[0]?.property_id)
     }, [properties])
 
 
@@ -62,19 +54,18 @@ const CategoryProperties: FC<Props> = ({ category }) => {
             <Row>
                 <RowBetween>
                     <Select
-
                         label='Выберите характеристику'
-                        selectedItem={selectedProperty}
-                        options={properties?.data.map(item => {
-                            return {
-                                value: item.property_id,
-                                content: item.name
-                            }
-                        })}
+                        value={selectedPropertyId}
                         onChange={(item) => {
-                            setSelectedProperty(item)
+                            setSelectedPropertyId(item)
                         }}
-                    />
+                    >
+                        {properties?.data?.map(property => {
+                            return (
+                                <SelectOption key={property.property_id} value={property.property_id}>{property?.name}</SelectOption>
+                            )
+                        })}
+                    </Select>
                     <Field label='Наименование' value={categoryPropertyName} onChange={(e) => setCategoryPropertyName(e.target.value)} />
                     <Button type='button' onClick={() => handleCreateCategoryProperty()}>Добавить</Button>
                 </RowBetween>

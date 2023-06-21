@@ -13,13 +13,11 @@ import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import CategoryProperties from '@/components/categories/CategoryProperties'
+import { SelectOption } from '@/components/ui/Select/Select'
 interface FormType {
     name: string;
     photo: any;
-    parent_category: {
-        value: number,
-        content: string
-    };
+    parent_category_id:number;
     is_active: boolean;
     desc: string;
     is_end: boolean;
@@ -57,10 +55,7 @@ const CategoryEditPage = () => {
                     size: category?.data?.file?.size
                 }
             },
-            parent_category: {
-                value: category?.data.parent_id || 0,
-                content: category?.data.parent?.name || "Не выбрано",
-            },
+            parent_category_id: category?.data?.parent_id || 0,
             is_active: !!category?.data.is_active,
             desc: category?.data?.desc || "",
             is_end: !!category?.data.is_end,
@@ -87,7 +82,7 @@ const CategoryEditPage = () => {
                 name: values.name,
                 is_active: values.is_active,
                 is_end: values.is_end,
-                parent_id: values.parent_category.value,
+                parent_id: values.parent_category_id,
                 desc: values.desc,
                 file_id: values.file_id || category?.data.category_id
             })
@@ -135,19 +130,16 @@ const CategoryEditPage = () => {
                                             </Row>
                                             <Row>
                                                 <FormikSelect
-                                                    label='Выберите родительскую категория'
-                                                    name={'parent_category'}
-                                                    selectedItem={{
-                                                        value: category?.data.category_id,
-                                                        content: category?.data.name,
-                                                    }}
-                                                    options={addNotSelectedOption((categories?.data.map((item) => {
-                                                        return {
-                                                            content: item.name,
-                                                            value: item.category_id
-                                                        }
-                                                    })))}
-                                                />
+                                                    label='Выберите родительскую категорию'
+                                                    name={'parent_category_id'}
+                                                >
+                                                    <SelectOption  value={0}>Не выбрано</SelectOption>
+                                                    {categories?.data.map(cat => {
+                                                        return (
+                                                            <SelectOption key={cat.category_id} value={cat.category_id}>{cat.name}</SelectOption>
+                                                        )
+                                                    })}
+                                                </FormikSelect>
                                             </Row>
                                             <Row>
                                                 <FormikPhotoLoader label='Загрузите фотографию' name='photo' />

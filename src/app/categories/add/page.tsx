@@ -13,152 +13,142 @@ import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
 import { useCreateFileMutation } from '@/redux/services/filesApi'
 import { Loader } from '@/components/ui'
+import { SelectOption } from '@/components/ui/Select/Select'
 
 interface FormType {
-    name: string;
-    photo: any;
-    parent_category: {
-        value: number,
-        content: string
-    };
-    is_active: boolean;
-    desc: string;
-    is_end: boolean;
-    file_id?: number
-    _categories: {
-        value: number,
-        content: string
-    }[]
+  name: string;
+  photo: any;
+  parent_category_id: number,
+  is_active: boolean;
+  desc: string;
+  is_end: boolean;
+  file_id?: number
 }
 
 const CategoryEditPage = () => {
 
-    const params = useParams()
-    const router = useRouter()
+  const params = useParams()
+  const router = useRouter()
 
-    const { data: categories, isLoading } = useGetCategoriesQuery({})
+  const { data: categories, isLoading } = useGetCategoriesQuery({})
 
-    const [createCategory] = useCreateCategoryMutation()
+  const [createCategory] = useCreateCategoryMutation()
 
-    const [createFile] = useCreateFileMutation()
+  const [createFile] = useCreateFileMutation()
 
-    const [activeTab, setActiveTab] = useState(0)
+  const [activeTab, setActiveTab] = useState(0)
 
-    const schema = YupObject().shape({
-        name: YupString()
-            .min(2, 'Название категории должно иметь не меньше 2 символов')
-            .max(50, 'Название категории не должно иметь больше 50 символов')
-            .required('Название категории обязательно'),
+  const schema = YupObject().shape({
+    name: YupString()
+      .min(2, 'Название категории должно иметь не меньше 2 символов')
+      .max(50, 'Название категории не должно иметь больше 50 символов')
+      .required('Название категории обязательно'),
 
-    });
+  });
 
-    const initialValues: FormType = {
-        name: "",
-        photo: null,
-        parent_category: {
-            value: 0,
-            content: "Не выбрано"
-        },
-        is_active: false,
-        desc: "",
-        is_end: false,
-        _categories: addNotSelectedOption((categories?.data.map((item) => {
-            return {
-                content: item.name,
-                value: item.category_id
-            }
-        })))
-    }
+  const initialValues: FormType = {
+    name: "",
+    photo: null,
+    parent_category_id: 2,
+    is_active: false,
+    desc: "",
+    is_end: false,
+  }
 
-    const handleSubmit = async (values: FormType) => {
+  const handleSubmit = async (values: FormType) => {
 
-        try {
-            if (values?.photo?.file?.type) {
-                let data = await createFile(values.photo)
+    try {
+      if (values?.photo?.file?.type) {
+        let data = await createFile(values.photo)
 
-                if (('error' in data)) {
-                    return
-                }
-
-                values.file_id = data?.data?.file_id
-            }
-
-            await createCategory({
-                name: values.name,
-                is_active: values.is_active,
-                is_end: values.is_end,
-                parent_id: values.parent_category.value,
-                desc: values.desc,
-                file_id: values.file_id
-            })
-            router.push("/categories")
-        } catch (error) {
-            console.log(error);
+        if (('error' in data)) {
+          return
         }
+
+        values.file_id = data?.data?.file_id
+      }
+
+      await createCategory({
+        name: values.name,
+        is_active: values.is_active,
+        is_end: values.is_end,
+        parent_id: values.parent_category_id,
+        desc: values.desc,
+        file_id: values.file_id
+      })
+      router.push("/categories")
+    } catch (error) {
+      console.log(error);
     }
+  }
 
 
 
-    return (
-        <div>
+  return (
+    <div>
+      <Row>
+        <h1>Категории товаров - Создание</h1>
+      </Row>
+      <Card>
+        {isLoading &&
+          <Loader />
+        }
+        {!isLoading &&
+          <>
             <Row>
-                <h1>Категории товаров - Создание</h1>
+              <Tabs>
+                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
+                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
+              </Tabs>
             </Row>
-            <Card>
-                {isLoading &&
-                    <Loader />
-                }
-                {!isLoading &&
-                    <>
-                        <Row>
-                            <Tabs>
-                                <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                                <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
-                            </Tabs>
-                        </Row>
 
-                        <Formik
-                            initialValues={initialValues}
-                            onSubmit={handleSubmit}
-                            validationSchema={schema}
-                        >
-                            <Form>
-                                {activeTab == 0 && <>
-                                    <Row>
-                                        <FormikField label='Введите название категории' name={'name'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikCheckbox label='Активность' name={'is_active'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikSelect
-                                            label='Выберите родительскую категория'
-                                            name={'parent_category'}
-                                            selectedItem={initialValues.parent_category}
-                                            options={initialValues._categories}
-                                        />
-                                    </Row>
-                                    <Row>
-                                        <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
-                                    </Row>
-                                </>}
-                                {activeTab == 1 && <>
-                                    <Row>
-                                        <FormikTextarea label='Описание категории' name={'desc'} />
-                                    </Row>
-                                    <Row>
-                                        <FormikCheckbox label='Конечная категория?' name={'is_end'} />
-                                    </Row>
-                                </>}
-                                <Button type='submit'>Сохранить</Button>
-                            </Form>
-                        </Formik>
-                    </>}
-            </Card>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={schema}
+            >
+              <Form>
+                {activeTab == 0 && <>
+                  <Row>
+                    <FormikField label='Введите название категории' name={'name'} />
+                  </Row>
+                  <Row>
+                    <FormikCheckbox label='Активность' name={'is_active'} />
+                  </Row>
+                  <Row>
+                    <FormikSelect
+                      label='Выберите родительскую категорию'
+                      name={'parent_category_id'}
+                    >
+                      <SelectOption  value={0}>Не выбрано</SelectOption>
+                      {categories?.data.map(cat => {
+                        return (
+                          <SelectOption key={cat.category_id} value={cat.category_id}>{cat.name}</SelectOption>
+                        )
+                      })}
+                    </FormikSelect>
+                  </Row>
+                  <Row>
+                    <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
+                  </Row>
+                </>}
+                {activeTab == 1 && <>
+                  <Row>
+                    <FormikTextarea label='Описание категории' name={'desc'} />
+                  </Row>
+                  <Row>
+                    <FormikCheckbox label='Конечная категория?' name={'is_end'} />
+                  </Row>
+                </>}
+                <Button type='submit'>Сохранить</Button>
+              </Form>
+            </Formik>
+          </>}
+      </Card>
 
-        </div>
+    </div>
 
-    )
+  )
 }
 
 export default CategoryEditPage

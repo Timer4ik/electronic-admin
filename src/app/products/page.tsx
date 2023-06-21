@@ -4,11 +4,12 @@ import { useGetDevelopersQuery } from "@/redux/services/developersApi";
 import { useDeleteProductByIdMutation, useGetProductsQuery, useUpdateProductMutation } from "@/redux/services/productsApi";
 import useDebounce from "@/hooks/useDebounce";
 import { IProduct } from "@/types/models/types";
-import { Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon } from "@/components/ui";
+import { Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
 import Paginator from "@/components/ui/Paginator/Paginator";
 import { addNotSelectedOption } from "@/utils/addNotSelectedOption";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Select, SelectOption } from "@/components/ui/Select/Select";
 
 export default function Home() {
 
@@ -29,23 +30,11 @@ export default function Home() {
     // filter - select category
 
     const { data: categories } = useGetCategoriesQuery({})
-    const [selectedCategory, setSelectedCategory] = useState<{
-        value: number,
-        content: string
-    }>({
-        value: 0,
-        content: "Не выбрано"
-    })
+    const [selectedCategoryId, setSelectedCategoryId] = useState<any>(0)
     // filter - select developer
 
     const { data: developers } = useGetDevelopersQuery({})
-    const [selectedDeveloper, setSelectedDeveloper] = useState<{
-        value: number,
-        content: string
-    }>({
-        value: 0,
-        content: "Не выбрано"
-    })
+    const [selectedDeveloperId, setSelectedDeveloperId] = useState<any>(0)
 
     // table data
     const { data: products } = useGetProductsQuery({
@@ -57,11 +46,11 @@ export default function Home() {
         ...(isActive ? {
             "filter[is_active]": isActive,
         } : {}),
-        ...(selectedCategory.value > 0 ? {
-            "filter[category_id]": selectedCategory.value
+        ...(selectedCategoryId > 0 ? {
+            "filter[category_id]": selectedCategoryId
         } : {}),
-        ...(selectedDeveloper.value > 0 ? {
-            "filter[developer_id]": selectedDeveloper.value
+        ...(selectedDeveloperId > 0 ? {
+            "filter[developer_id]": selectedDeveloperId
         } : {})
     })
 
@@ -82,10 +71,10 @@ export default function Home() {
         setCurrentPage(page)
     }
 
-    return (
+    return categories?.data && developers?.data ? (
         <Col>
             <RowBetween>
-                <h1>Товары</h1>
+                <h1>Введите название товара</h1>
                 <Button color="green" onClick={() => router.push("/products/add")}>Добавить</Button>
             </RowBetween>
             <Col>
@@ -97,26 +86,24 @@ export default function Home() {
                         onChange={(e) => setSearchValue(e.target.value)} />
                     <Select
                         label="Выберите категорию"
-                        onChange={(item) => setSelectedCategory(item)}
-                        selectedItem={selectedCategory}
-                        options={addNotSelectedOption(categories?.data.map(item => {
-                            return {
-                                content: item.name,
-                                value: item.category_id
-                            }
-                        }))}
-                    />
+                        onChange={(item) => setSelectedCategoryId(item)}
+                        value={selectedCategoryId}
+                    >
+                        <SelectOption value={0}>Не выбрано</SelectOption>
+                        {categories?.data?.map(item => {
+                            return <SelectOption key={item.category_id} value={item.category_id}>{item.name}</SelectOption>
+                        })}
+                    </Select>
                     <Select
                         label="Выберите производителя"
-                        onChange={(item) => setSelectedDeveloper(item)}
-                        selectedItem={selectedDeveloper}
-                        options={addNotSelectedOption(developers?.data.map(item => {
-                            return {
-                                content: item.name,
-                                value: item.developer_id
-                            }
-                        }))}
-                    />
+                        onChange={(item) => setSelectedDeveloperId(item)}
+                        value={selectedDeveloperId}
+                    >
+                        <SelectOption value={0}>Не выбрано</SelectOption>
+                        {developers?.data?.map(item => {
+                            return <SelectOption key={item.developer_id} value={item.developer_id}>{item.name}</SelectOption>
+                        })}
+                    </Select>
                 </div>
                 <Checkbox label="Активность"
                     checked={isActive}
@@ -174,6 +161,6 @@ export default function Home() {
                 </Table>
             </Row>
             <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((products?.count ?? 0) / limit) || 0} />
-        </Col >
-    )
+        </Col>
+    ) : null
 }

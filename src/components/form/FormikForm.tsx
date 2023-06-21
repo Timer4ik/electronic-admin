@@ -104,13 +104,13 @@ const FormikForm: FC<Props> = ({ fieldsTemplate, onSubmit, children, ...props })
                                 </Row>
                             )
                         }
-                        else if (field.type === TemplateTypes.SELECT) {
-                            return (
-                                <Row key={field.name}>
-                                    <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
-                                </Row>
-                            )
-                        }
+                        // else if (field.type === TemplateTypes.SELECT) {
+                        //     return (
+                        //         <Row key={field.name}>
+                        //             <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
+                        //         </Row>
+                        //     )
+                        // }
                         else if (field.type === TemplateTypes.IMAGE) {
                             return (
                                 <Row key={field.name}>
@@ -151,13 +151,13 @@ export const FormikFieldsTemplate: FC<FormikFieldsTemplateProps> = ({ fieldsTemp
                         </Row>
                     )
                 }
-                else if (field.type === TemplateTypes.SELECT) {
-                    return (
-                        <Row key={field.name}>
-                            <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
-                        </Row>
-                    )
-                }
+                // else if (field.type === TemplateTypes.SELECT) {
+                //     return (
+                //         <Row key={field.name}>
+                //             <FormikSelect label={field.label} selectedItem={field.initialValue} options={field.options} name={field.name} />
+                //         </Row>
+                //     )
+                // }
                 else if (field.type === TemplateTypes.IMAGE) {
                     return (
                         <Row key={field.name}>

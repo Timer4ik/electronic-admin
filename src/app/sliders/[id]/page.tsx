@@ -39,6 +39,8 @@ const SliderEditPage = () => {
             extend: "file"
         }
     })
+    console.log();
+
     const [createFile] = useCreateFileMutation()
 
     const [activeTab, setActiveTab] = useState(0)
@@ -63,8 +65,8 @@ const SliderEditPage = () => {
         },
         is_active: slider?.data.is_active || false,
         product_id: slider?.data.product_id || 0,
-        end_active_dt: slider?.data.end_active_dt,
-        start_active_dt: slider?.data.start_active_dt,
+        end_active_dt: new Date(slider?.data.end_active_dt || Date.now())?.toISOString().split('T')[0],
+        start_active_dt: new Date(slider?.data.start_active_dt || Date.now())?.toISOString().split('T')[0],
     }
 
     const handleSubmit = async (values: FormType) => {

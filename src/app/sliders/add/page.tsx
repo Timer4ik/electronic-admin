@@ -51,8 +51,8 @@ const SliderAddPage = () => {
         photo: null,
         is_active: false,
         product_id: 0,
-        end_active_dt: Date.now(),
-        start_active_dt: Date.now(),
+        end_active_dt: new Date(Date.now())?.toISOString().split('T')[0],
+        start_active_dt: new Date(Date.now())?.toISOString().split('T')[0],
     }
 
     const handleSubmit = async (values: FormType) => {

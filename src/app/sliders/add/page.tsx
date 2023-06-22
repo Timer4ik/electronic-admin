@@ -57,6 +57,8 @@ const SliderAddPage = () => {
 
     const handleSubmit = async (values: FormType) => {
         try {
+            console.log(values?.photo?.file?.type);
+            
             if (values?.photo?.file?.type) {
                 let data = await createFile(values.photo)
 

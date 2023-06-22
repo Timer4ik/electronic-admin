@@ -10,9 +10,11 @@ import { categoryPropertiesApi } from '@/redux/services/categoryPropertiesApi'
 import { productsApi } from '@/redux/services/productsApi'
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
+import loaderReducer from "./slices/loaderSlice"
 
 export const store = configureStore({
   reducer: {
+    loader:loaderReducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     [filesApi.reducerPath]: filesApi.reducer,
     [propertiesApi.reducerPath]: propertiesApi.reducer,

@@ -10,11 +10,14 @@ import { FormikSelect } from '@/components/form/FormikSelect'
 import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
-import { object as YupObject, string as YupString } from 'yup';
+import { object as YupObject, string as YupString, number as YupNumber } from 'yup';
 import { useCreateFileMutation } from '@/redux/services/filesApi'
 import { useCreateProductMutation } from '@/redux/services/productsApi'
 import { useGetDevelopersQuery } from '@/redux/services/developersApi'
 import { SelectOption } from '@/components/ui/Select/Select'
+import { RootState } from '@/redux/store'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { setLoader } from '@/redux/slices/loaderSlice'
 
 interface FormType {
     name: string;
@@ -32,6 +35,9 @@ const CategoryEditPage = () => {
     const params = useParams()
     const router = useRouter()
 
+    const loaderIsLoading = useAppSelector((state: RootState) => state.loader.isLoading)
+    const dispatch = useAppDispatch()
+
     const { data: developers, isLoading: developersIsLoading } = useGetDevelopersQuery({})
     const { data: categories, isLoading: categoriesIsLoading } = useGetCategoriesQuery({})
 
@@ -46,6 +52,8 @@ const CategoryEditPage = () => {
             .min(2, 'Название категории должно иметь не меньше 2 символов')
             .max(50, 'Название категории не должно иметь больше 50 символов')
             .required('Название категории обязательно'),
+        developer_id: YupNumber().moreThan(0, "Выберите производителя товара"),
+        category_id: YupNumber().moreThan(0, "Выберите категорию товара"),
 
     });
 
@@ -72,7 +80,7 @@ const CategoryEditPage = () => {
 
                 values.file_id = data?.data?.file_id
             }
-
+            dispatch(setLoader(true))
             await createProduct({
                 name: values.name,
                 is_active: values.is_active,
@@ -83,6 +91,7 @@ const CategoryEditPage = () => {
                 price: values.price,
             })
             router.push("/products")
+            dispatch(setLoader(false))
         } catch (error) {
             console.log(error);
         }
@@ -94,9 +103,6 @@ const CategoryEditPage = () => {
                 <h1>Товары - Создание</h1>
             </Row>
             <Card>
-                {categoriesIsLoading && developersIsLoading &&
-                    <Loader />
-                }
                 {!categoriesIsLoading && !developersIsLoading &&
                     <>
                         <Row>
@@ -114,7 +120,7 @@ const CategoryEditPage = () => {
                             <Form>
                                 {activeTab == 0 && <>
                                     <Row>
-                                        <FormikField label='Введите название категории' name={'name'} />
+                                        <FormikField label='Введите название товара' name={'name'} />
                                     </Row>
                                     <Row>
                                         <FormikCheckbox label='Активность' name={'is_active'} />
@@ -142,7 +148,7 @@ const CategoryEditPage = () => {
                                         </FormikSelect>
                                     </Row>
                                     <Row>
-                                        <FormikField label='Цена' name='price' />
+                                        <FormikField mask={(e) => Number(e.target?.value?.match(/\d/g)?.join("")).toLocaleString() || "0"} label='Цена' name='price' />
                                     </Row>
 
                                 </>}
@@ -156,7 +162,7 @@ const CategoryEditPage = () => {
                         </Formik>
                     </>}
             </Card>
-
+            {(loaderIsLoading || categoriesIsLoading || developersIsLoading) && <Loader fixed />}
         </div>
 
     )

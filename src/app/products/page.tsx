@@ -17,7 +17,7 @@ export default function Home() {
 
     // pagination
     const [limit, setLimit] = useState(10)
-    const [currentPage, setCurrentPage] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
 
     // filter - search
     const [searchValue, setSearchValue] = useState<string>("")
@@ -160,7 +160,7 @@ export default function Home() {
                     </tbody>
                 </Table>
             </Row>
-            <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((products?.count ?? 0) / limit) || 0} />
+            <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={(Math.ceil((products?.count ?? 0) / limit)) || 0} />
         </Col>
     ) : null
 }

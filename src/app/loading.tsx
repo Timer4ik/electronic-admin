@@ -1,4 +1,6 @@
 'use client'
+import {Loader} from "@/components/ui/Loader/Loader"
 export default function Loading() {
-    return <p>Loading...</p>
+              
+    return <Loader fixed/>
 }

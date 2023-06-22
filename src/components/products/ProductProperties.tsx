@@ -61,7 +61,7 @@ const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
         !propertyValueIsLoading ? (
         <>
             <Row>
-                <h2>Фотографии товара</h2>
+                <h2>Характеристики товара</h2>
             </Row>
             <Row>
                 <Select

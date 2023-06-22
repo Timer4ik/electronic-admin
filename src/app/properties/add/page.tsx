@@ -55,7 +55,6 @@ const CategoryEditPage = () => {
                 <Row>
                     <Tabs>
                         <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                        <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
                     </Tabs>
                 </Row>
 

@@ -54,6 +54,8 @@ const CategoryEditPage = () => {
             .required('Название категории обязательно'),
         developer_id: YupNumber().moreThan(0, "Выберите производителя товара"),
         category_id: YupNumber().moreThan(0, "Выберите категорию товара"),
+        descr: YupString()
+            .max(1000, 'Описание не может содержать больше 1000 символов')
 
     });
 

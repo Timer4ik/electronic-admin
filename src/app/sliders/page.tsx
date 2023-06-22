@@ -1,7 +1,7 @@
 'use client'
 import useDebounce from "@/hooks/useDebounce";
 import { ISlider } from "@/types/models/types";
-import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
+import { Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
 import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,18 +13,24 @@ export default function Home() {
 
   // pagination
   const [limit, setLimit] = useState(10)
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
 
   // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
   const debouncedSearchValue = useDebounce(searchValue, 800)
+
+  // filter - isactive
+  const [isActive, setIsActive] = useState(false)
 
   // table data
   const { data: sliders } = useGetSlidersQuery({
     page: currentPage,
     limit: limit,
     extend: "file",
-    like: debouncedSearchValue || ""
+    like: debouncedSearchValue || "",
+    ...(isActive ? {
+      "filter[is_active]": isActive,
+    } : {}),
   })
 
   // menu  
@@ -50,12 +56,38 @@ export default function Home() {
         <h1>Слайдеры</h1>
         <Button color="green" onClick={() => router.push("/sliders/add")}>Добавить</Button>
       </RowBetween>
-      <RowBetween>
-        <Field
-          placeholder="Поиск по названию"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)} />
-      </RowBetween>
+      <Col>
+        <div style={{ display: "grid", gridGap: "10px", gridTemplateColumns: "1fr 1fr 1fr" }}>
+          <Field
+            label="Поиск"
+            placeholder="Поиск по названию"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)} />
+          {/* <Select
+            label="Выберите родительскую категорию"
+            onChange={(item) => setSelectedCategoryId(item)}
+            value={selectedCategoryId}
+          >
+            <SelectOption value={0}>Не выбрано</SelectOption>
+            {parentCategories?.data?.map(item => {
+              return <SelectOption key={item.category_id} value={item.category_id}>{item.name}</SelectOption>
+            })}
+          </Select> */}
+          {/*<Select
+            label="Выберите производителя"
+            onChange={(item) => setSelectedDeveloperId(item)}
+            value={selectedDeveloperId}
+          >
+            <SelectOption value={0}>Не выбрано</SelectOption>
+            {developers?.data?.map(item => {
+              return <SelectOption key={item.developer_id} value={item.developer_id}>{item.name}</SelectOption>
+            })}
+          </Select> */}
+        </div>
+        <Checkbox label="Активность"
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)} />
+      </Col>
       <Row>
         <Table>
           <thead>
@@ -102,7 +134,7 @@ export default function Home() {
           </tbody>
         </Table>
       </Row>
-      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((sliders?.count ?? 0) / limit) || 0} />
+      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={Math.ceil((sliders?.count ?? 0) / limit) || 0} />
     </Col >
   )
 }

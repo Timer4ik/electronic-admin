@@ -2,11 +2,12 @@
 import { useDeleteCategoryMutation, useGetCategoriesQuery, useUpdateCategoryMutation } from "@/redux/services/categoriesApi";
 import useDebounce from "@/hooks/useDebounce";
 import { ICategory } from "@/types/models/types";
-import { Button, Col, Dropdown, Field, Row, RowBetween, Table, TableMenuIcon } from "@/components/ui";
+import { Button, Checkbox, Col, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon } from "@/components/ui";
 import Paginator from "@/components/ui/Paginator/Paginator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { SelectOption } from "@/components/ui/Select/Select";
 
 export default function Home() {
 
@@ -14,11 +15,18 @@ export default function Home() {
 
   // pagination
   const [limit, setLimit] = useState(10)
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
 
   // filter - search
   const [searchValue, setSearchValue] = useState<string>("")
   const debouncedSearchValue = useDebounce(searchValue, 800)
+
+  // filter - isactive
+  const [isActive, setIsActive] = useState(false)
+
+  // filter - select category
+  const { data: parentCategories } = useGetCategoriesQuery({})
+  const [selectedCategoryId, setSelectedCategoryId] = useState<any>(0)
 
   // table data
   const { categories } = useGetCategoriesQuery({
@@ -26,7 +34,13 @@ export default function Home() {
     page: currentPage,
     extendParent: "true",
     extend: "file",
-    like: debouncedSearchValue || ""
+    like: debouncedSearchValue || "",
+    ...(isActive ? {
+      "filter[is_active]": isActive,
+    } : {}),
+    ...(selectedCategoryId ? {
+      "filter[parent_id]": selectedCategoryId,
+    } : {}),
   }, {
     selectFromResult({ data }) {
       return {
@@ -51,18 +65,44 @@ export default function Home() {
     setCurrentPage(page)
   }
 
-  return (
+  return categories?.data && parentCategories?.data ? (
     <Col>
       <RowBetween>
         <h1>Категории товаров</h1>
         <Button color="green" onClick={() => router.push("/categories/add")}>Добавить</Button>
       </RowBetween>
-      <RowBetween>
-        <Field
-          placeholder="Поиск по названию"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)} />
-      </RowBetween>
+      <Col>
+        <div style={{ display: "grid", gridGap: "10px", gridTemplateColumns: "1fr 1fr" }}>
+          <Field
+            label="Поиск"
+            placeholder="Поиск по названию"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)} />
+          <Select
+            label="Выберите родительскую категорию"
+            onChange={(item) => setSelectedCategoryId(item)}
+            value={selectedCategoryId}
+          >
+            <SelectOption value={0}>Не выбрано</SelectOption>
+            {parentCategories?.data?.map(item => {
+              return <SelectOption key={item.category_id} value={item.category_id}>{item.name}</SelectOption>
+            })}
+          </Select>
+          {/*<Select
+            label="Выберите производителя"
+            onChange={(item) => setSelectedDeveloperId(item)}
+            value={selectedDeveloperId}
+          >
+            <SelectOption value={0}>Не выбрано</SelectOption>
+            {developers?.data?.map(item => {
+              return <SelectOption key={item.developer_id} value={item.developer_id}>{item.name}</SelectOption>
+            })}
+          </Select> */}
+        </div>
+        <Checkbox label="Активность"
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)} />
+      </Col>
       <Row>
         <Table>
           <thead>
@@ -113,7 +153,7 @@ export default function Home() {
           </tbody>
         </Table>
       </Row>
-      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={((categories?.count ?? 0) / limit) || 0} />
+      <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={Math.ceil((categories?.count ?? 0) / limit) || 0} />
     </Col >
-  )
+  ) : null
 }

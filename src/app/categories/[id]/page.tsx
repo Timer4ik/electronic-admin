@@ -17,7 +17,7 @@ import { SelectOption } from '@/components/ui/Select/Select'
 interface FormType {
     name: string;
     photo: any;
-    parent_category_id:number;
+    parent_category_id: number;
     is_active: boolean;
     desc: string;
     is_end: boolean;
@@ -43,6 +43,8 @@ const CategoryEditPage = () => {
             .min(2, 'Название категории должно иметь не меньше 2 символов')
             .max(50, 'Название категории не должно иметь больше 50 символов')
             .required('Название категории обязательно'),
+        desc: YupString()
+            .max(1000, 'Описание не может содержать больше 1000 символов')
     });
 
     const initialValues = useMemo((): FormType => {
@@ -95,7 +97,7 @@ const CategoryEditPage = () => {
     return (
         <div>
             <Row>
-                <h1>Категории товаров - Создание</h1>
+                <h1>Категории товаров - {category?.data.name}({category?.data.category_id})</h1>
             </Row>
             <Card>
                 {isLoading && categoryIsLoading &&
@@ -133,7 +135,7 @@ const CategoryEditPage = () => {
                                                     label='Выберите родительскую категорию'
                                                     name={'parent_category_id'}
                                                 >
-                                                    <SelectOption  value={0}>Не выбрано</SelectOption>
+                                                    <SelectOption value={0}>Не выбрано</SelectOption>
                                                     {categories?.data.map(cat => {
                                                         return (
                                                             <SelectOption key={cat.category_id} value={cat.category_id}>{cat.name}</SelectOption>

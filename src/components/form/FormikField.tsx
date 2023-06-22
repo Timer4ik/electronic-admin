@@ -7,11 +7,12 @@ interface FormikField {
     label: string
     type?: string
     mask?: (e: ChangeEvent<HTMLInputElement>) => string
+    validate?:(values:string)=>string
 }
 
-export const FormikField: FC<FormikField> = ({ label, name, type, mask }) => {
+export const FormikField: FC<FormikField> = ({ label, name, type, mask,validate }) => {
 
-    const [field, meta, helpers] = useField({ name })
+    const [field, meta, helpers] = useField({ name,validate })
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
         let value = mask ? mask(e) : e.target.value
         
@@ -20,7 +21,8 @@ export const FormikField: FC<FormikField> = ({ label, name, type, mask }) => {
 
     return (
         <div>
-            <Field type={type} label={label} value={field.value} isInvalid={!!meta.error}
+            <Field type={type} label={label} value={field.value} 
+            isInvalid={!!meta.error}
                 onChange={handleOnChange} />
             {meta.error && <ErrorText>{meta.error}</ErrorText>}
         </div>

@@ -93,7 +93,6 @@ const SliderAddPage = () => {
                 <Row>
                     <Tabs>
                         <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                        <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
                     </Tabs>
                 </Row>
 
@@ -121,10 +120,10 @@ const SliderAddPage = () => {
                                 <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
                             </Row>
                             <Row>
-                                <FormikField type="date" label='Конец активности' name={'end_active_dt'} />
+                                <FormikField type="date" label='Начало активности' name={'start_active_dt'} />
                             </Row>
                             <Row>
-                                <FormikField type="date" label='Начало активности слайдера' name={'start_active_dt'} />
+                                <FormikField type="date" label='Конец активности' name={'end_active_dt'} />
                             </Row>
                         </>}
                         <Button type='submit'>Сохранить</Button>

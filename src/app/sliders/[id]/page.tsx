@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Button, Card, Row, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
@@ -50,10 +50,9 @@ const SliderEditPage = () => {
             .min(2, 'Название должно иметь не меньше 2 символов')
             .max(50, 'Название не должно иметь больше 50 символов')
             .required('Обязательное поле'),
-
     });
 
-    const initialValues: FormType = {
+    const initialValues: FormType = useMemo(() => ({
         title: slider?.data.title || "",
         text: slider?.data.text || "",
         photo: {
@@ -67,7 +66,7 @@ const SliderEditPage = () => {
         product_id: slider?.data.product_id || 0,
         end_active_dt: new Date(slider?.data.end_active_dt || Date.now())?.toISOString().split('T')[0],
         start_active_dt: new Date(slider?.data.start_active_dt || Date.now())?.toISOString().split('T')[0],
-    }
+    }), [slider])
 
     const handleSubmit = async (values: FormType) => {
         try {
@@ -106,7 +105,6 @@ const SliderEditPage = () => {
                 <Row>
                     <Tabs>
                         <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
-                        <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
                     </Tabs>
                 </Row>
 
@@ -133,10 +131,10 @@ const SliderEditPage = () => {
                                 <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
                             </Row>
                             <Row>
-                                <FormikField type="date" label='Конец активности' name={'end_active_dt'} />
+                                <FormikField type="date" label='Начало активности' name={'start_active_dt'} />
                             </Row>
                             <Row>
-                                <FormikField type="date" label='Начало активности слайдера' name={'start_active_dt'} />
+                                <FormikField type="date" label='Конец активности' name={'end_active_dt'} />
                             </Row>
                         </>}
                         <Button type='submit'>Сохранить</Button>

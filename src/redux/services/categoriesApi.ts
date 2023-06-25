@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 // Define a service using a base URL and expected endpoints
 export const categoriesApi = createApi({
     reducerPath: 'categoriesApi',
-    baseQuery: fetchBaseQuery({ baseUrl: "http://26.13.70.202:5000/api" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
     tagTypes: ["Categories"],
     endpoints: (build) => ({
         getCategories: build.query<{ data: ICategory[], message: string, count: number, page: string }, any>({

@@ -22,7 +22,7 @@ const initialState: LoaderState = {
 export const login = createAsyncThunk<LoginResponseData, { email: string, password: string }>(
     'api/login',
     async ({ email, password }, { rejectWithValue }) => {
-        const response = await fetch(`http://26.13.70.202:5000/api/auth/login`, {
+        const response = await fetch(`http://localhost:5000/api/auth/login`, {
             body: JSON.stringify({
                 email, password
             }),
@@ -46,7 +46,7 @@ export const checkIsLogin = createAsyncThunk<LoginResponseData, string>(
         if (!token) {
             return rejectWithValue(null)
         }
-        const response = await fetch(`http://26.13.70.202:5000/api/auth/me`, {
+        const response = await fetch(`http://localhost:5000/api/auth/me`, {
             headers: {
                 Authorization: "Bearer " + token
             }

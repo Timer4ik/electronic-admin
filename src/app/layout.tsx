@@ -1,6 +1,5 @@
 import { ReactNode } from "react"
 
-import { Header, Aside, Footer } from "@/components/layout"
 
 import Providers from "@/redux/provider"
 
@@ -32,13 +31,9 @@ export default function RootLayout({
       </head>
 
       <body>
-        <Aside />
-        <Header />
-        <main className="main">
-          <Providers>
-            {children}
-          </Providers>
-        </main>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

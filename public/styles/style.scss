@@ -130,3 +130,13 @@ body {
 }
 
 @import "ui/index.scss";
+.main-login {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    .login {
+        min-width: 600px;
+    }
+}

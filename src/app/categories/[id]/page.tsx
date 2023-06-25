@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from 'react'
 import { useUpdateCategoryMutation, useGetCategoriesQuery, useGetCategoryByIdQuery } from '@/redux/services/categoriesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Row, Loader, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Row, Loader, Tabs, TabsItem, Stack } from '@/components/ui'
 import { Form, Formik } from 'formik'
 import { object as YupObject, string as YupString } from 'yup';
 import { FormikSelect } from '@/components/form/FormikSelect'
@@ -96,41 +96,31 @@ const CategoryEditPage = () => {
 
     return (
         <div>
-            <Row>
+            <Stack flexDirection='column' gap={3}>
                 <h1>Категории товаров - {category?.data.name}({category?.data.category_id})</h1>
-            </Row>
-            <Card>
-                {isLoading && categoryIsLoading &&
-                    <Loader />
-                }
-                {!isLoading && !categoryIsLoading && category &&
-                    <>
-                        <Row>
+                <Card>
+                    {isLoading && categoryIsLoading &&
+                        <Loader />
+                    }
+                    {!isLoading && !categoryIsLoading && category &&
+                        <Stack flexDirection='column' gap={3}>
                             <Tabs>
                                 <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
                                 <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
                             </Tabs>
-                        </Row>
 
-                        <Formik
-                            initialValues={initialValues}
-                            onSubmit={handleSubmit}
-                            validationSchema={schema}
-                        >
-                            {({ values }) => {
-                                return <>
-                                    <Form>
-                                        {activeTab == 0 && <>
-                                            <Row>
+                            <Formik
+                                initialValues={initialValues}
+                                onSubmit={handleSubmit}
+                                validationSchema={schema}
+                            >
+                                {({ values }) => {
+                                    return <>
+                                        <Form>
+                                            {activeTab == 0 && <Stack flexDirection='column' gap={3}>
                                                 <h2>Основная информация</h2>
-                                            </Row>
-                                            <Row>
                                                 <FormikField label='Введите название категории' name={'name'} />
-                                            </Row>
-                                            <Row>
                                                 <FormikCheckbox label='Активность' name={'is_active'} />
-                                            </Row>
-                                            <Row>
                                                 <FormikSelect
                                                     label='Выберите родительскую категорию'
                                                     name={'parent_category_id'}
@@ -142,33 +132,27 @@ const CategoryEditPage = () => {
                                                         )
                                                     })}
                                                 </FormikSelect>
-                                            </Row>
-                                            <Row>
                                                 <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
-                                            </Row>
-                                        </>}
-                                        {activeTab == 1 && <>
-                                            <Row>
+                                            </Stack>}
+                                            {activeTab == 1 && <Stack gap={3} flexDirection='column'>
                                                 <h2>Дополнительные данные</h2>
-                                            </Row>
-                                            <Row>
                                                 <FormikTextarea label='Описание категории' name={'desc'} />
-                                            </Row>
-                                            <Row>
                                                 <FormikCheckbox label='Конечная категория?' name={'is_end'} />
-                                            </Row>
-                                            {/*  */}
-                                            {values.is_end && category && <>
-                                                <CategoryProperties category={category.data} />
-                                            </>}
-                                        </>}
-                                        <Button type='submit'>Сохранить</Button>
-                                    </Form>
-                                </>
-                            }}
-                        </Formik>
-                    </>}
-            </Card>
+                                                {/*  */}
+                                                {values.is_end && category && <>
+                                                    <CategoryProperties category={category.data} />
+                                                </>}
+                                            </Stack>}
+                                            <Stack marginTop={2}>
+                                                <Button type='submit'>Сохранить</Button>
+                                            </Stack>
+                                        </Form>
+                                    </>
+                                }}
+                            </Formik>
+                        </Stack>}
+                </Card>
+            </Stack>
         </div>
     )
 }

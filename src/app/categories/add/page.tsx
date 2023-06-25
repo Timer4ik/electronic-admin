@@ -1,13 +1,12 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useCreateCategoryMutation, useGetCategoriesQuery } from '@/redux/services/categoriesApi'
 import { useParams, useRouter } from 'next/navigation'
-import { Button, Card, Row, Tabs, TabsItem } from '@/components/ui'
+import { Button, Card, Stack, Tabs, TabsItem } from '@/components/ui'
 import { Form, Formik } from 'formik'
 import { FormikField } from '@/components/form/FormikField'
 import { FormikCheckbox } from '@/components/form/FormikCheckbox'
 import { FormikSelect } from '@/components/form/FormikSelect'
-import { addNotSelectedOption } from '@/utils/addNotSelectedOption'
 import { FormikPhotoLoader } from '@/components/form/FormikPhotoLoader'
 import { FormikTextarea } from '@/components/form/FormikTextarea'
 import { object as YupObject, string as YupString } from 'yup';
@@ -87,36 +86,28 @@ const CategoryEditPage = () => {
 
   return (
     <div>
-      <Row>
+      <Stack flexDirection='column' gap={3}>
         <h1>Категории товаров - Создание</h1>
-      </Row>
-      <Card>
-        {isLoading &&
-          <Loader />
-        }
-        {!isLoading &&
-          <>
-            <Row>
+        <Card>
+          {isLoading &&
+            <Loader />
+          }
+          {!isLoading &&
+            <Stack flexDirection='column' gap={3}>
               <Tabs>
                 <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>
                 <TabsItem active={activeTab == 1} onClick={() => setActiveTab(1)}>Дополнительные данные</TabsItem>
               </Tabs>
-            </Row>
 
-            <Formik
-              initialValues={initialValues}
-              onSubmit={handleSubmit}
-              validationSchema={schema}
-            >
-              <Form>
-                {activeTab == 0 && <>
-                  <Row>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                validationSchema={schema}
+              >
+                <Form>
+                  {activeTab == 0 && <Stack flexDirection='column' gap={3}>
                     <FormikField label='Введите название категории' name={'name'} />
-                  </Row>
-                  <Row>
                     <FormikCheckbox label='Активность' name={'is_active'} />
-                  </Row>
-                  <Row>
                     <FormikSelect
                       label='Выберите родительскую категорию'
                       name={'parent_category_id'}
@@ -128,25 +119,20 @@ const CategoryEditPage = () => {
                         )
                       })}
                     </FormikSelect>
-                  </Row>
-                  <Row>
                     <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
-                  </Row>
-                </>}
-                {activeTab == 1 && <>
-                  <Row>
+                  </Stack>}
+                  {activeTab == 1 && <Stack gap={3} flexDirection='column'>
                     <FormikTextarea label='Описание категории' name={'desc'} />
-                  </Row>
-                  <Row>
                     <FormikCheckbox label='Конечная категория?' name={'is_end'} />
-                  </Row>
-                </>}
-                <Button type='submit'>Сохранить</Button>
-              </Form>
-            </Formik>
-          </>}
-      </Card>
-
+                  </Stack>}
+                  <Stack marginTop={2}>
+                    <Button type='submit'>Сохранить</Button>
+                  </Stack>
+                </Form>
+              </Formik>
+            </Stack>}
+        </Card>
+      </Stack>
     </div>
 
   )

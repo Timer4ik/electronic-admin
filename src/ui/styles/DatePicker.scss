@@ -1,12 +1,18 @@
 .datepicker {
-    display: block;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    position: relative;
+
     &__label {
+        display: flex;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    }
+
+    &__span {
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
         font-weight: 500;
         color: #16192C;
     }
+
     &__input:focus {
         color: #16192C;
         background-color: #FFF;
@@ -14,6 +20,7 @@
         outline: 0;
         box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08), 0 0 0 3px rgba(92, 96, 245, 0.25);
     }
+
     &__input {
         font-family: inherit;
         display: block;
@@ -32,5 +39,88 @@
         border-radius: 0.375rem;
         box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08);
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .react-calendar {
+        background-color: #FFF;
+        border-radius: 0.375rem;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 10px);
+        padding: 4px;
+        width: 100%;
+        max-width: 308px;
+        z-index: 5;
+
+        &__navigation {
+            display: flex;
+            justify-content: space-between;
+
+            &__label {
+                background: none;
+                border: none;
+                outline: none;
+                flex-grow: 0;
+            }
+
+            &__arrow {
+                background: none;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+
+        &__month-view__days__day {
+            &--neighboringMonth {
+                color: #969faf;
+            }
+        }
+
+        &__tile {
+            border-radius: 4px;
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 8px 0;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+                color: #fff;
+            }
+
+            &--now {
+                background-color: #10A662;
+                color: #fff;
+
+                &:hover {
+                    background-color: 10A662;
+                    color: #fff;
+                }
+            }
+
+            &--active {
+                background-color: #5c60f5;
+                color: #fff;
+
+                &:hover {
+                    background-color: #4a4dc4;
+                    color: #fff;
+                }
+            }
+        }
+
+        abbr {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+        }
     }
 }

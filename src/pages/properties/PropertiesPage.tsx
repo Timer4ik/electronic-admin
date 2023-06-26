@@ -24,8 +24,8 @@ export default function PropertiesPage() {
 
   // table data
   const { data: properties } = useFetchAllPropertiesQuery({
-    page: 0,
-    limit: 10,
+    limit,
+    page: currentPage,
     extend: "property_values",
     ...(isActive ? {
       "filter[is_active]": isActive,

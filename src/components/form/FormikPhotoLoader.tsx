@@ -12,7 +12,7 @@ export const FormikPhotoLoader: FC<FormikPhotoLoader> = ({ label, name }) => {
     const [field, meta, helpers] = useField({
         name,
         validate(value) {
-            const type = value?.file?.name.split(".")[value.file.name.split(".").length - 1]
+            const type = value?.file?.name?.split(".")[value.file.name?.split(".").length - 1]
             if (! value?.file?.name){
                 return
             }

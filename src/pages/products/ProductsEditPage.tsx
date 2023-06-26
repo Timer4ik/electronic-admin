@@ -22,7 +22,7 @@ import { setLoader } from '../../redux/slices/loaderSlice';
 interface FormType {
     name: string;
     descr: string;
-    price: number;
+    price: string;
     photo: any;
     developer_id: number;
     category_id: number;
@@ -75,7 +75,7 @@ const ProductsEditPage = () => {
         category_id: product?.data.category_id || 0,
         developer_id: product?.data.developer_id || 0,
         descr: product?.data.descr || "",
-        price: product?.data.price || 0,
+        price: (product?.data.price || 0).toLocaleString(),
 
         is_active: product?.data.is_active || false,
     }
@@ -101,7 +101,7 @@ const ProductsEditPage = () => {
                 developer_id: values.developer_id,
                 file_id: values.file_id,
                 descr: values.descr,
-                price: values.price,
+                price: +(values.price?.match(/\d/g)?.join("") || "0"),
             })
             dispatch(setLoader(false))
             navigate("/products")
@@ -147,7 +147,12 @@ const ProductsEditPage = () => {
                                         })}
                                     </FormikSelect>
                                     <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
-                                    <FormikField label='Цена' name='price' />
+                                    <FormikField label='Цена' name='price'
+                                        mask={(value) => {
+
+                                            return (+(value?.match(/\d/g)?.join("") || 0)).toLocaleString()
+
+                                        }} />
                                 </Stack>}
                                 {activeTab == 1 && <Stack flexDirection='column' gap={3}>
                                     <h2>Дополнительные данные</h2>

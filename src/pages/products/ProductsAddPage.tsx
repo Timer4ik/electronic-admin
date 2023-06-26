@@ -19,7 +19,7 @@ import { useCreateFileMutation } from '../../redux/services/filesApi';
 interface FormType {
     name: string;
     descr: string;
-    price: number;
+    price: string;
     photo: any;
     developer_id: number;
     category_id: number;
@@ -36,7 +36,7 @@ const ProductsAddPage = () => {
 
     const { data: developers, isLoading: developersIsLoading } = useGetDevelopersQuery({})
     const { data: categories, isLoading: categoriesIsLoading } = useGetCategoriesQuery({
-        "filter[is_end]":true
+        "filter[is_end]": true
     })
 
     const [createProduct] = useCreateProductMutation()
@@ -63,7 +63,7 @@ const ProductsAddPage = () => {
         category_id: 0,
         developer_id: 0,
         descr: "",
-        price: 0,
+        price: "0",
 
         is_active: false,
     }
@@ -81,6 +81,7 @@ const ProductsAddPage = () => {
                 values.file_id = data?.data?.file_id
             }
             dispatch(setLoader(true))
+
             await createProduct({
                 name: values.name,
                 is_active: values.is_active,
@@ -88,7 +89,7 @@ const ProductsAddPage = () => {
                 developer_id: values.developer_id,
                 file_id: values.file_id,
                 descr: values.descr,
-                price: values.price,
+                price: +(values.price?.match(/\d/g)?.join("") || "0"),
             })
             navigate("/products")
             dispatch(setLoader(false))
@@ -133,7 +134,11 @@ const ProductsAddPage = () => {
                                             return <SelectOption key={dev.developer_id} value={dev.developer_id}>{dev.name}</SelectOption>
                                         })}
                                     </FormikSelect>
-                                    <FormikField mask={(e) => Number(e.target?.value?.match(/\d/g)?.join("")).toLocaleString() || "0"} label='Цена' name='price' />
+                                    <FormikField mask={(value) => {
+
+                                        return (+(value?.match(/\d/g)?.join("") || 0)).toLocaleString()
+
+                                    }} label='Цена' name='price' />
 
                                 </Stack>}
                                 {activeTab == 1 && <Stack flexDirection='column' gap={3}>

@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { ICategory } from '../../../types/models/types'
 import { useFetchAllPropertiesQuery } from '../../../redux/services/propertiesApi'
 import { useCreateCategoryPropertyMutation, useDeleteCategoryPropertyMutation, useGetCategoryPropertiesQuery } from '../../../redux/services/categoryPropertiesApi'
-import { Button, Dropdown, Field, Row, RowBetween, Select, Table, TableMenuIcon } from '../../../ui'
+import { Button, Checkbox, Dropdown, Field, Row, RowBetween, Select, Stack, Table, TableMenuIcon } from '../../../ui'
 import { SelectOption } from '../../../ui/Select/Select'
 
 
@@ -26,6 +26,7 @@ const CategoryProperties: FC<Props> = ({ category }) => {
 
     const [selectedPropertyId, setSelectedPropertyId] = useState<any>(0)
     const [categoryPropertyName, setCategoryPropertyName] = useState("")
+    const [isFilter, setIsFilter] = useState(false)
 
     const handleCreateCategoryProperty = async () => {
         if (!category || selectedPropertyId <= 0) return
@@ -52,8 +53,8 @@ const CategoryProperties: FC<Props> = ({ category }) => {
             <Row>
                 <h2>Характеристики</h2>
             </Row>
-            <Row>
-                <RowBetween>
+            <Stack flexDirection='column' gap={2}>
+                <Stack justifyContent='space-between' alignItems='flex-end' gap={5}>
                     <Select
                         label='Выберите характеристику'
                         value={selectedPropertyId}
@@ -68,9 +69,12 @@ const CategoryProperties: FC<Props> = ({ category }) => {
                         })}
                     </Select>
                     <Field label='Наименование' value={categoryPropertyName} onChange={(e) => setCategoryPropertyName(e.target.value)} />
-                    <Button type='button' onClick={() => handleCreateCategoryProperty()}>Добавить</Button>
-                </RowBetween>
-            </Row>
+                </Stack>
+                <Stack justifyContent='space-between' alignItems='center' gap={5}>
+                    <Checkbox checked={isFilter} onChange={(e) => setIsFilter(e.target.checked)} label='Отображается ли на фильтре?' />
+                    <Button type='button' color='green' onClick={() => handleCreateCategoryProperty()}>Добавить</Button>
+                </Stack>
+            </Stack>
             <Row>
                 <Table>
                     <thead>

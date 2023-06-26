@@ -127,45 +127,48 @@ const ProductsEditPage = () => {
                             onSubmit={handleSubmit}
                             validationSchema={schema}
                         >
-                            <Form>
-                                {activeTab == 0 && <Stack flexDirection='column' gap={3}>
-                                    <h2>Основная информация</h2>
-                                    <FormikField label='Введите название товара' name={'name'} />
-                                    <FormikCheckbox label='Активность' name={'is_active'} />
-                                    <FormikSelect
-                                        label='Выберите категорию товара'
-                                        name={'category_id'}>
-                                        {categories?.data?.map(cat => {
-                                            return <SelectOption key={cat.category_id} value={cat.category_id}>{cat.name}</SelectOption>
-                                        })}
-                                    </FormikSelect>
-                                    <FormikSelect
-                                        label='Выберите производителя'
-                                        name={'developer_id'}>
-                                        {developers?.data?.map(dev => {
-                                            return <SelectOption key={dev.developer_id} value={dev.developer_id}>{dev.name}</SelectOption>
-                                        })}
-                                    </FormikSelect>
-                                    <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
-                                    <FormikField label='Цена' name='price'
-                                        mask={(value) => {
+                            {({ values }) => {
+                                return <Form>
+                                    {activeTab == 0 && <Stack flexDirection='column' gap={3}>
+                                        <h2>Основная информация</h2>
+                                        <FormikField label='Введите название товара' name={'name'} />
+                                        <FormikCheckbox label='Активность' name={'is_active'} />
+                                        <FormikSelect
+                                            label='Выберите категорию товара'
+                                            name={'category_id'}>
+                                            {categories?.data?.map(cat => {
+                                                return <SelectOption key={cat.category_id} value={cat.category_id}>{cat.name}</SelectOption>
+                                            })}
+                                        </FormikSelect>
+                                        <FormikSelect
+                                            label='Выберите производителя'
+                                            name={'developer_id'}>
+                                            {developers?.data?.map(dev => {
+                                                return <SelectOption key={dev.developer_id} value={dev.developer_id}>{dev.name}</SelectOption>
+                                            })}
+                                        </FormikSelect>
+                                        <FormikPhotoLoader label='Загрузите фотографию' name='photo' />
+                                        <FormikField label='Цена' name='price'
+                                            mask={(value) => {
 
-                                            return (+(value?.match(/\d/g)?.join("") || 0)).toLocaleString()
+                                                return (+(value?.match(/\d/g)?.join("") || 0)).toLocaleString()
 
-                                        }} />
-                                </Stack>}
-                                {activeTab == 1 && <Stack flexDirection='column' gap={3}>
-                                    <h2>Дополнительные данные</h2>
-                                    <FormikTextarea label='Описание' name='descr' />
-                                    <ProductPhotos product_id={product?.data?.product_id} />
-                                </Stack>}
-                                {activeTab == 2 && <>
-                                    <ProductProperties product_id={product?.data?.product_id} category_id={product?.data?.category_id} />
-                                </>}
-                                <Stack marginTop={3}>
-                                    <Button type='submit'>Сохранить</Button>
-                                </Stack>
-                            </Form>
+                                            }} />
+                                    </Stack>}
+                                    {activeTab == 1 && <Stack flexDirection='column' gap={3}>
+                                        <h2>Дополнительные данные</h2>
+                                        <FormikTextarea label='Описание' name='descr' />
+                                        <ProductPhotos product_id={product?.data?.product_id} />
+                                    </Stack>}
+                                    {activeTab == 2 && <>
+                                        <ProductProperties product_id={product?.data?.product_id} category_id={values.category_id} />
+                                    </>}
+                                    <Stack marginTop={3}>
+                                        <Button type='submit'>Сохранить</Button>
+                                    </Stack>
+                                </Form>
+                            }}
+
                         </Formik>
                     </Stack>}
             </Card>

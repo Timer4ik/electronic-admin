@@ -31,7 +31,7 @@ const ProductProperties: FC<Props> = ({ product_id, category_id }) => {
     const [selectedPropertyValue, setSelecterPropertyValue] = useState<IPropertyValue | null>(null)
 
     const { data: propertyValues, isLoading: propertyValueIsLoading } = useGetPropValuesQuery({
-        ...{ "filter[property_id]": selectedCategoryProperty?.category_property_id || 0 }
+        ...{ "filter[property_id]": selectedCategoryProperty?.property_id || 0 }
     })
 
     const handleDeleteProductPropertyValue = async (id: number) => {

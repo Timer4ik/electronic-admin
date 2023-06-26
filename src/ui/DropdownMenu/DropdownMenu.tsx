@@ -13,8 +13,8 @@ export const Dropdown: FC<Props> = ({ children }) => {
 
     const [isShow, setIsShow] = useState<boolean>(false)
 
-    useEffectOutsideClick("dropdown",() => {
-        if (isShow){
+    useEffectOutsideClick("dropdown", () => {
+        if (isShow) {
             setIsShow(false)
         }
     }, [isShow])
@@ -28,8 +28,9 @@ export const Dropdown: FC<Props> = ({ children }) => {
     const DropDownMenu = useCreateSlotById({ children, idx: 1 })
     return (
         <div className={isShow ? "dropdown active" : "dropdown"}>
-
-            <SlotButton className='dropdown-menu-button' onClick={handleClick} />
+            <div className='dropdown-menu-button'>
+                <SlotButton onClick={handleClick} />
+            </div>
             {isShow && <DropDownMenu className='dropdown-menu' />}
         </div>
     )

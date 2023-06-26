@@ -73,7 +73,10 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-
+        logout: (state) => {
+            localStorage.removeItem("token")
+            state.isAuth = false
+        },
     },
     extraReducers: {
         [checkIsLogin.fulfilled.type]: (state, action: PayloadAction<LoginResponseData>) => {
@@ -98,6 +101,6 @@ export const authSlice = createSlice({
     }
 })
 
-// export const { } = authSlice.actions
+export const { logout } = authSlice.actions
 
 export default authSlice.reducer

@@ -18,10 +18,13 @@
         font-weight: 500;
         font-size: 18px;
     }
-    &__user {
+    .header__user {
+        cursor: pointer;
         display: flex;
         align-items: center;
         @include reset-link;
+        min-width: 190px;
+        justify-content: flex-end;
     }
     &__username {
         margin-left: 10px;

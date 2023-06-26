@@ -1,23 +1,23 @@
-import { categoriesApi } from '@/redux/services/categoriesApi'
-import { filesApi } from '@/redux/services/filesApi'
-import { developersApi } from '@/redux/services/developersApi'
-import { propertiesApi } from '@/redux/services/propertiesApi'
-import { propValuesApi } from '@/redux/services/propValuesApi'
-import { productPropertyValuesApi } from '@/redux/services/productPropertyValuesApi'
-import { productPhotosApi } from '@/redux/services/productPhotosApi'
-import { slidersApi } from '@/redux/services/slidersApi'
-import { categoryPropertiesApi } from '@/redux/services/categoryPropertiesApi'
-import { productsApi } from '@/redux/services/productsApi'
-import { configureStore } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/query'
 import loaderReducer from "./slices/loaderSlice"
 import authReducer from './slices/authSlice'
+import { configureStore } from "@reduxjs/toolkit"
+import { categoriesApi } from "./services/categoriesApi"
+import { setupListeners } from "@reduxjs/toolkit/dist/query"
+import { filesApi } from "./services/filesApi"
+import { propertiesApi } from "./services/propertiesApi"
+import { categoryPropertiesApi } from "./services/categoryPropertiesApi"
+import { productPhotosApi } from "./services/productPhotosApi"
+import { developersApi } from "./services/developersApi"
+import { productsApi } from "./services/productsApi"
+import { propValuesApi } from "./services/propValuesApi"
+import { productPropertyValuesApi } from "./services/productPropertyValuesApi"
+import { slidersApi } from "./services/slidersApi"
 
 export const store = configureStore({
   reducer: {
-    loader:loaderReducer,
-    auth:authReducer,
-    [categoriesApi.reducerPath]: categoriesApi.reducer,
+    loader: loaderReducer,
+    auth: authReducer,
+   [categoriesApi.reducerPath]: categoriesApi.reducer,
     [filesApi.reducerPath]: filesApi.reducer,
     [propertiesApi.reducerPath]: propertiesApi.reducer,
     [categoryPropertiesApi.reducerPath]: categoryPropertiesApi.reducer,
@@ -28,10 +28,10 @@ export const store = configureStore({
     [productPropertyValuesApi.reducerPath]: productPropertyValuesApi.reducer,
     [slidersApi.reducerPath]: slidersApi.reducer,
   },
- 
+
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(categoriesApi.middleware)
+       .concat(categoriesApi.middleware)
       .concat(productsApi.middleware)
       .concat(propertiesApi.middleware)
       .concat(filesApi.middleware)
@@ -41,6 +41,7 @@ export const store = configureStore({
       .concat(developersApi.middleware)
       .concat(categoryPropertiesApi.middleware)
       .concat(propValuesApi.middleware)
+
 })
 
 setupListeners(store.dispatch)

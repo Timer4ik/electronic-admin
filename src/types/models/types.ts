@@ -77,11 +77,11 @@ export interface IProductPhoto {
 export interface IProductPropertyValue {
     product_property_value_id: number
     product_id: number
-    property_id: number
+    category_property_id: number
     property_value_id: number
     is_active: boolean
 
-    property?: IProperty
+    category_property?: ICategoryProperty
     product?: IProduct
     property_value?: IPropertyValue
 }

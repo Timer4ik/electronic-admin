@@ -1,0 +1,144 @@
+@import "./null.scss";
+@font-face {
+    font-family: "PT Sans";
+    src: url("../fonts/PTSans-Regular.ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "PT Sans";
+    src: url("../fonts/PTSans-Bold.ttf");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "PT Sans";
+    src: url("../fonts/PTSans-Italic.ttf");
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "PT Sans";
+    src: url("../fonts/PTSans-BoldItalic.ttf");
+    font-style: italic;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter-Regular.ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter-Medium.ttf");
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter-Bold.ttf");
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter-SemiBold.ttf");
+    font-style: normal;
+    font-weight: 600;
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: "PT Sans";
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+}
+
+#root {
+    display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+}
+
+body {
+    background-color: #F5F9FC;
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+}
+
+#root {
+    display: block;
+}
+
+.gray {
+    color: rgb(82, 95, 127);
+}
+
+.black-500 {
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+}
+
+.danger-hover:hover {
+    color: #f36 !important;
+}
+
+.error {
+    color: #16192C !important;
+    background-color: #fee !important;
+    border-color: #ff6464 !important;
+    outline: 0 !important;
+    box-shadow: 0px 1px 2px #ff646459, 0 0 0 3px #ff646459 !important;
+    transition: all 0.2s linear !important;
+}
+
+@import "./AdaptiveImage.scss";
+@import "./Button.scss";
+@import "./Card.scss";
+@import "./Checkbox.scss";
+@import "./Col.scss";
+@import "./DropdownMenu.scss";
+@import "./ErrorText.scss";
+@import "./Field.scss";
+@import "./FileLoader.scss";
+@import "./Loader.scss";
+@import "./Paginator.scss";
+@import "./PhotoLoader.scss";
+@import "./Row.scss";
+@import "./Select.scss";
+@import "./Table.scss";
+@import "./Tabs.scss";
+@import "./Textarea.scss";
+@import "./Stack.scss";

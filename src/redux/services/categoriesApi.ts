@@ -1,5 +1,5 @@
-import type { ICategory } from '@/types/models/types'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { ICategory } from '../../types/models/types'
 
 // Define a service using a base URL and expected endpoints
 export const categoriesApi = createApi({

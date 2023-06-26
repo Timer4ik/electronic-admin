@@ -1,6 +1,6 @@
 import { ChangeEvent, FC } from "react"
 import { useField, Formik, Form } from "formik"
-import { Textarea, Select, ErrorText } from "@/components/ui"
+import { Textarea, Select, ErrorText } from "../../ui"
 
 interface FormikTextarea {
     name: string

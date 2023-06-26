@@ -1,8 +1,8 @@
 'use client'
-import { ErrorText, Select } from '@/components/ui'
+import { ErrorText, Select } from '../../ui'
 import { useField } from 'formik'
 import React, { FC } from 'react'
-import { SelectProps } from '../ui/Select/Select'
+import { SelectProps } from '../../ui/Select/Select'
 
 
 interface FormikSelectProps extends Pick<SelectProps, "label" | "children"> {

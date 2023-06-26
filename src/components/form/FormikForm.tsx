@@ -1,10 +1,10 @@
 import React, { FC, ReactNode, useMemo } from 'react'
 import { useField, Formik, Form, FormikHelpers, FormikConfig, FormikValues } from "formik"
-import { Button, Row } from '@/components/ui'
 import { FormikField } from './FormikField'
 import { FormikCheckbox } from './FormikCheckbox'
 import { FormikSelect } from './FormikSelect'
 import { FormikPhotoLoader } from './FormikPhotoLoader'
+import { Button, Row } from '../../ui'
 
 
 

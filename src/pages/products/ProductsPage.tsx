@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { Button, Checkbox, Dropdown, Field, Select, Stack, Table, TableMenuIcon } from "../../ui";
+import { Button, Checkbox, Dropdown, Field, Loader, Select, Stack, Table, TableMenuIcon } from "../../ui";
 import { SelectOption } from "../../ui/Select/Select";
 import Paginator from "../../ui/Paginator/Paginator";
 import useDebounce from "../../ui/hooks/useDebounce";
@@ -27,15 +27,15 @@ export default function ProductsPage() {
 
     // filter - select category
 
-    const { data: categories } = useGetCategoriesQuery({})
+    const { data: categories, isLoading: isCategoriesLoading } = useGetCategoriesQuery({})
     const [selectedCategoryId, setSelectedCategoryId] = useState<any>(0)
     // filter - select developer
 
-    const { data: developers } = useGetDevelopersQuery({})
+    const { data: developers, isLoading: isDevelopersLoading } = useGetDevelopersQuery({})
     const [selectedDeveloperId, setSelectedDeveloperId] = useState<any>(0)
 
     // table data
-    const { data: products } = useGetProductsQuery({
+    const { data: products, isLoading: isProductsLoading } = useGetProductsQuery({
         limit,
         page: currentPage,
         extendParent: "true",
@@ -153,9 +153,9 @@ export default function ProductsPage() {
                             </tr>
                         )
                     })}
-
                 </tbody>
             </Table>
+            {(isProductsLoading || isCategoriesLoading || isDevelopersLoading) && <Loader fixed />}
             <Paginator onClick={handlePageChange} currentPage={currentPage} pageCount={(Math.ceil((products?.count ?? 0) / limit)) || 0} />
         </Stack>
     ) : null

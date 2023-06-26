@@ -98,10 +98,10 @@ const CategoryEditPage = () => {
             <Stack flexDirection='column' gap={3}>
                 <h1>Категории товаров - {category?.data.name}({category?.data.category_id})</h1>
                 <Card>
-                    {isLoading && categoryIsLoading &&
+                    {(isLoading || categoryIsLoading ) &&
                         <Loader />
                     }
-                    {!isLoading && !categoryIsLoading && category &&
+                    {!isLoading && !categoryIsLoading &&
                         <Stack flexDirection='column' gap={3}>
                             <Tabs>
                                 <TabsItem active={activeTab == 0} onClick={() => setActiveTab(0)}>Основная информация</TabsItem>

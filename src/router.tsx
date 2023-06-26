@@ -1,5 +1,6 @@
 import {
     createBrowserRouter,
+    redirect,
     RouterProvider,
 } from "react-router-dom";
 import CategoriesPage from './pages/categories/CategoriesPage';
@@ -19,25 +20,33 @@ import ProductsEditPage from "./pages/products/ProductsEditPage";
 import SlidersPage from "./pages/sliders/SlidersPage";
 import SlidersEditPage from "./pages/sliders/SlidersEditPage";
 import SlidersAddPage from "./pages/sliders/SlidersAddPage";
+import LoginPage from "./pages/login/LoginPage";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { useEffect } from "react";
+import { checkIsLogin } from "./redux/slices/authSlice";
 
-const router = createBrowserRouter([
+const privateRoutes = createBrowserRouter([
     {
         path: "/",
         element: <DefaultLayout />,
         children: [
             {
+                path:"",
+                element:<CategoriesPage />
+            },
+            {
                 path: "categories",
                 children: [
                     {
-                        path:"",
+                        path: "",
                         element: <CategoriesPage />
                     },
                     {
-                        path:":id",
+                        path: ":id",
                         element: <CategoriesEditPage />
                     },
                     {
-                        path:"add",
+                        path: "add",
                         element: <CategoriesAddPage />
                     },
                 ]
@@ -46,15 +55,15 @@ const router = createBrowserRouter([
                 path: "properties",
                 children: [
                     {
-                        path:"",
+                        path: "",
                         element: <PropertiesPage />
                     },
                     {
-                        path:":id",
+                        path: ":id",
                         element: <PropertiesEditPage />
                     },
                     {
-                        path:"add",
+                        path: "add",
                         element: <PropertiesAddPage />
                     },
                 ]
@@ -63,15 +72,15 @@ const router = createBrowserRouter([
                 path: "developers",
                 children: [
                     {
-                        path:"",
+                        path: "",
                         element: <DevelopersPage />
                     },
                     {
-                        path:":id",
+                        path: ":id",
                         element: <DeveloperEditPage />
                     },
                     {
-                        path:"add",
+                        path: "add",
                         element: <DevelopersAddPage />
                     },
                 ]
@@ -80,15 +89,15 @@ const router = createBrowserRouter([
                 path: "products",
                 children: [
                     {
-                        path:"",
+                        path: "",
                         element: <ProductsPage />
                     },
                     {
-                        path:":id",
+                        path: ":id",
                         element: <ProductsEditPage />
                     },
                     {
-                        path:"add",
+                        path: "add",
                         element: <ProductsAddPage />
                     },
                 ]
@@ -97,15 +106,15 @@ const router = createBrowserRouter([
                 path: "sliders",
                 children: [
                     {
-                        path:"",
+                        path: "",
                         element: <SlidersPage />
                     },
                     {
-                        path:":id",
+                        path: ":id",
                         element: <SlidersEditPage />
                     },
                     {
-                        path:"add",
+                        path: "add",
                         element: <SlidersAddPage />
                     },
                 ]
@@ -114,11 +123,24 @@ const router = createBrowserRouter([
     },
 ]);
 
+const publicRoutes = createBrowserRouter([
+    {
+        path: "/",
+        element: <LoginPage />
+    }
+])
+
 const Router = () => {
+
+    const { isAuth } = useAppSelector(state => state.auth)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+       dispatch(checkIsLogin(""))
+    },[checkIsLogin,dispatch])
+
     return (
-        <Providers>
-            <RouterProvider router={router} />
-        </Providers>
+        <RouterProvider router={isAuth ? privateRoutes : publicRoutes} />
     )
 }
 

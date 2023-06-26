@@ -40,44 +40,49 @@ export const login = createAsyncThunk<LoginResponseData, { email: string, passwo
     }
 )
 export const checkIsLogin = createAsyncThunk<LoginResponseData, string>(
-    'api/login',
+    'api/checkIsLogin',
     async (_, { rejectWithValue }) => {
         const token = localStorage.getItem("token")
+
         if (!token) {
+
             return rejectWithValue(null)
         }
+
         const response = await fetch(`http://localhost:5000/api/auth/me`, {
             headers: {
-                Authorization: "Bearer " + token
+                Authorization: "Bearer " + JSON.parse(token)
             }
         })
-        const data: { data: Omit<LoginResponseData, "token"> } = await response.json()
+        const data: Omit<LoginResponseData, "token"> = await response.json()
+
         if (response.status < 200 || response.status >= 300) {
+
             return rejectWithValue(null)
         }
 
         return {
-            ...data.data,
-            message: data.data.message,
-            token: token,
+            ...data,
+            message: data.message,
+            token: JSON.parse(token),
         }
     }
 )
 
 export const authSlice = createSlice({
-    name: 'loader',
+    name: 'auth',
     initialState,
     reducers: {
 
     },
     extraReducers: {
-        [checkIsLogin.rejected.type]: (state, action: PayloadAction<LoginResponseData>) => {
-            localStorage.removeItem("token")
-            state.isAuth = false
-        },
         [checkIsLogin.fulfilled.type]: (state, action: PayloadAction<LoginResponseData>) => {
             localStorage.setItem("token", JSON.stringify(action.payload.token))
             state.isAuth = true
+        },
+        [checkIsLogin.rejected.type]: (state, action: PayloadAction<LoginResponseData>) => {
+            localStorage.removeItem("token")
+            state.isAuth = false
         },
         [login.fulfilled.type]: (state, action: PayloadAction<LoginResponseData>) => {
             localStorage.setItem("token", JSON.stringify(action.payload.token))

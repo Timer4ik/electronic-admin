@@ -5,6 +5,7 @@ import "./ui/styles/index.scss"
 import "./styles/style.scss"
 
 import Router from './router';
+import Providers from './redux/provider';
 
 
 const root = ReactDOM.createRoot(
@@ -12,5 +13,7 @@ const root = ReactDOM.createRoot(
 )
 
 root.render(
-  <Router />
+  <Providers>
+    <Router />
+  </Providers>
 );

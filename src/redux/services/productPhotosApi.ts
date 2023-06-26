@@ -34,7 +34,7 @@ export const productPhotosApi = createApi({
             },
             invalidatesTags: ['ProductPhotos'],
         }),
-        updateProductPhoto: build.mutation<any, IProductPhoto>({
+        updateProductPhoto: build.mutation<any, Partial<IProductPhoto>>({
             query: (product) => {
                 return ({
                     url: `/product-photos/${product.product_photo_id}`,

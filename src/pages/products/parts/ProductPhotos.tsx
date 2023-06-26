@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { useCreateProductPhotoMutation, useDeleteProductPhotoByIdMutation, useGetProductPhotosQuery } from '../../../redux/services/productPhotosApi'
+import { useCreateProductPhotoMutation, useDeleteProductPhotoByIdMutation, useGetProductPhotosQuery, useUpdateProductPhotoMutation } from '../../../redux/services/productPhotosApi'
 import { useCreateFileMutation } from '../../../redux/services/filesApi'
 import { AdaptiveImage, Button, Col, Dropdown, Field, FileLoader, PhotoLoader, Stack, Table, TableMenuIcon } from '../../../ui'
 
@@ -14,6 +14,7 @@ const ProductPhotos: FC<Props> = ({ product_id }) => {
         "extend": "file"
     })
     const [createFile] = useCreateFileMutation()
+    const [updateProductPhoto] = useUpdateProductPhotoMutation()
     const [createProductPhoto] = useCreateProductPhotoMutation()
     const [deleteProductPhoto] = useDeleteProductPhotoByIdMutation()
 
@@ -51,6 +52,13 @@ const ProductPhotos: FC<Props> = ({ product_id }) => {
             name: photoName,
             file_id,
             product_id,
+        })
+    }
+
+    const changeOrder = async (value: number, id: number) => {
+        await updateProductPhoto({
+            product_photo_id: id,
+            name: value?.toString() || "0",
         })
     }
 
@@ -102,8 +110,8 @@ const ProductPhotos: FC<Props> = ({ product_id }) => {
                                 <Stack gap={3} alignItems='center'>
                                     <h1>{item.name || 0}</h1>
                                     <Stack flexDirection='column'>
-                                        <Button type='button' color='standard' size={1}>+</Button>
-                                        <Button type='button' color='standard' size={1}>-</Button>
+                                        <Button type='button' color='standard' onClick={() => changeOrder(+(item?.name || 0) + 1, item.product_photo_id)} size={1}>+</Button>
+                                        <Button type='button' color='standard' onClick={() => changeOrder(+(item?.name || 0) - 1, item.product_photo_id)} size={1}>-</Button>
                                     </Stack>
                                 </Stack>
                             </td>

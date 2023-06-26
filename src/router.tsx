@@ -127,7 +127,11 @@ const publicRoutes = createBrowserRouter([
     {
         path: "/",
         element: <LoginPage />
-    }
+    },
+    {
+        path: "/*",
+        element: <LoginPage />
+    },
 ])
 
 const Router = () => {

@@ -9,6 +9,21 @@
     border-radius: 0.85rem;
     // color: #525F7F;
     box-shadow: 0px 3px 3px -1px rgba(10, 22, 70, 0.1), 0px 0px 1px 0px rgba(10, 22, 70, 0.06);
+    .card-padding-1 {
+        padding: 10px;
+    }
+    .card-padding-2 {
+        padding: 20px;
+    }
+    .card-padding-3 {
+        padding: 30px;
+    }
+    .card-padding-4 {
+        padding: 40px;
+    }
+    .card-padding-5 {
+        padding: 50px;
+    }
 }
 
 .card__body {

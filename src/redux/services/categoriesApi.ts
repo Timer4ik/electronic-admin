@@ -10,7 +10,10 @@ export const categoriesApi = createApi({
         getCategories: build.query<{ data: ICategory[], message: string, count: number, page: string }, any>({
             query: (params) => ({
                 url: `/categories`,
-                params: params
+                params: params,
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("token") || "")}`
+                }
             }),
             providesTags: (result, error, arg) =>
                 result
@@ -21,6 +24,9 @@ export const categoriesApi = createApi({
         getCategoryById: build.query<{ data: ICategory, message: string }, number>({
             query: (id) => ({
                 url: `/categories/${id}?extend=file`,
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("token") || "")}`
+                }
             }),
             providesTags: (result, error, arg) => [{ type: 'Categories' as const, id: result?.data?.category_id }],
         }),
@@ -30,7 +36,10 @@ export const categoriesApi = createApi({
                 return ({
                     url: `/categories/${category.category_id}`,
                     method: "PUT",
-                    body: category
+                    body: category,
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("token") || "")}`
+                    }
                 })
             },
             invalidatesTags: ['Categories'],
@@ -41,7 +50,10 @@ export const categoriesApi = createApi({
                 return ({
                     url: `/categories`,
                     method: "POST",
-                    body: category
+                    body: category,
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("token") || "")}`
+                    }
                 })
             },
             invalidatesTags: ['Categories'],
@@ -51,6 +63,9 @@ export const categoriesApi = createApi({
                 return ({
                     url: `/categories/${id}`,
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("token") || "")}`
+                    }
                 })
             },
             invalidatesTags: ['Categories'],

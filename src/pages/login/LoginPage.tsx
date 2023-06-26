@@ -4,23 +4,22 @@ import { Formik, Form } from 'formik'
 import { useAppDispatch } from '../../redux/hooks'
 import { login } from '../../redux/slices/authSlice'
 import { FormikField } from '../../components/form/FormikField'
+import { Header } from '../../layouts/default/Header'
+import { Aside } from '../../layouts/default/Aside'
 
 const LoginPage = () => {
 
     const dispatch = useAppDispatch()
 
     return (
-        <div
-            style={{
-                margin:"300px auto",
-                marginTop: "300px",
-                width: "600px",
-                display: "flex",
-                justifyContent: "center",
-                alignContent: "center"
-            }}>
-            <Card>
-                <Stack flexDirection='column' alignItems='center' gap={3} >
+        <div className='auth-page'>
+            <aside className="aside aside-short">
+                <div className="aside__logo">
+                    <img width={250} height={100} src="/img/header/logo.svg" alt="" />
+                </div>
+            </aside>
+            <Card padding={5}>
+                <Stack flexDirection='column' gap={3} >
                     <h1>Авторизация</h1>
                     <Formik
                         initialValues={{
@@ -42,7 +41,10 @@ const LoginPage = () => {
                             <Stack flexDirection='column' gap={3}>
                                 <FormikField label='Введите email' name="email" />
                                 <FormikField label='Введите пароль' name="password" />
+                            </Stack>
+                            <Stack marginTop={3} justifyContent='space-between' alignItems='center'>
                                 <Button>Войти</Button>
+                                <a href="">Забыли пароль?</a>
                             </Stack>
                         </Form>
                     </Formik>

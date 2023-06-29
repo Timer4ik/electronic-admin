@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { useField, Formik, Form } from "formik"
-import { AdaptiveImage, Col, ErrorText, Field, PhotoLoader, Row, Select } from "../../ui"
+import { AdaptiveImage, Col, ErrorText, Field, PhotoLoader, Row, Select, Stack } from "../../ui"
 
 interface FormikPhotoLoader {
     name: string
@@ -42,13 +42,13 @@ export const FormikPhotoLoader: FC<FormikPhotoLoader> = ({ label, name }) => {
 
     return (
         <>
-            <Row>
+            <Stack flex={"same-all"} gap={5}>
                 <PhotoLoader label={label} onChange={handleOnFileChange} isInvalid={!!meta.error} />
-                <Col>
+                <Stack flexDirection="column" gap={2}>
                     {!!field?.value?.url && !meta.error && <Field noModify label={field?.value.file?.name} value={Math.round(field?.value.file?.size / 1024) + " кб"} />}
                     {!!field?.value?.url && !meta.error && <AdaptiveImage src={field?.value?.url} />}
-                </Col>
-            </Row>
+                </Stack>
+            </Stack>
             {meta.error && <ErrorText>{meta.error}</ErrorText>}
         </>
 

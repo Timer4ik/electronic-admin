@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 
-interface Props extends Pick<React.HTMLAttributes<HTMLDivElement>,"style">{
+interface Props extends Pick<React.HTMLAttributes<HTMLDivElement>, "style"> {
     children: React.ReactNode
     flexDirection?: "column" | "row"
     gap?: 1 | 2 | 3 | 4 | 5
@@ -10,9 +10,10 @@ interface Props extends Pick<React.HTMLAttributes<HTMLDivElement>,"style">{
     marginBottom?: 1 | 2 | 3 | 4 | 5
     justifyContent?: "space-between" | "center"
     alignItems?: "center" | "flex-end"
+    flex?: "same-all" | "stretch-all"
 }
 
-export const Stack: FC<Props> = ({ children, style, alignItems, flexDirection, gap, marginX, marginY, marginBottom, justifyContent, marginTop }) => {
+export const Stack: FC<Props> = ({ children, style, alignItems, flexDirection, gap, flex, marginX, marginY, marginBottom, justifyContent, marginTop }) => {
 
     const gapStyle = gap ? " stack-gap-" + gap : ""
     const flexDirectionStyle = flexDirection ? " stack-" + flexDirection : " stack-row"
@@ -22,11 +23,12 @@ export const Stack: FC<Props> = ({ children, style, alignItems, flexDirection, g
     const marginBottomStyle = marginBottom ? " stack-marginBottom-" + marginBottom : ""
     const justifyContentStyle = justifyContent ? " stack-" + justifyContent : ""
     const alignItemsStyle = alignItems ? " stack-align-items-" + alignItems : ""
+    const flexStyle = flex !== undefined ? " stack-flex-" + flex : ""
 
 
 
     return (
-        <div style={style} className={'stack' + alignItemsStyle + justifyContentStyle + flexDirectionStyle + gapStyle + marginXStyle + marginYStyle + marginBottomStyle + marginTopStyle}>
+        <div style={style} className={'stack' + flexStyle + alignItemsStyle + justifyContentStyle + flexDirectionStyle + gapStyle + marginXStyle + marginYStyle + marginBottomStyle + marginTopStyle}>
             {children}
         </div>
     )

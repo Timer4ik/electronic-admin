@@ -38,7 +38,7 @@ export default function ProductsPage() {
     const { data: products, isLoading: isProductsLoading } = useGetProductsQuery({
         limit,
         page: currentPage,
-        extend: "file,category,developer,parent",
+        extend: "file,category,developer",
         like: debouncedSearchValue || "",
         ...(isActive ? {
             "filter[is_active]": isActive,

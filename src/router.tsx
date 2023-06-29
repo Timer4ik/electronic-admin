@@ -24,6 +24,10 @@ import LoginPage from "./pages/login/LoginPage";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useEffect } from "react";
 import { checkIsLogin } from "./redux/slices/authSlice";
+import ShopsPage from "./pages/shops/ShopsPage";
+import ShopsAddPage from "./pages/shops/ShopsAddPage";
+import ExamplePage from "./pages/example/ExamplePage";
+import ShopsEditPage from "./pages/shops/ShopsEditPage";
 
 const privateRoutes = createBrowserRouter([
     {
@@ -118,6 +122,27 @@ const privateRoutes = createBrowserRouter([
                         element: <SlidersAddPage />
                     },
                 ]
+            },
+            {
+                path: "shops",
+                children: [
+                    {
+                        path: "",
+                        element: <ShopsPage />
+                    },
+                    {
+                        path: ":id",
+                        element: <ShopsEditPage />
+                    },
+                    {
+                        path: "add",
+                        element: <ShopsAddPage />
+                    },
+                ]
+            },
+            {
+                path: "example",
+                element:<ExamplePage/>
             },
         ]
     },

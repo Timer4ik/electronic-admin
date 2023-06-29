@@ -96,5 +96,24 @@ export interface ISlider {
     start_active_dt?: any
     end_active_dt?: any
 
-    file?:IFile
+    file?: IFile
+}
+
+export interface IShopProduct {
+    shop_product: number
+    product_id: number
+    shop_id: number
+    is_active: boolean
+    is_sold: boolean
+}
+export interface IShop {
+    shop_id: number
+    file_id?: number
+    address: string
+    cords: string
+    openFrom: string
+    openTo: string
+    is_active:boolean
+
+    file?: IFile
 }

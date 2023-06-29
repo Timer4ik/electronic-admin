@@ -1,6 +1,17 @@
 .stack {
     display: flex;
     flex-direction: row;
+    &-flex-stretch-all {
+        >* {
+            flex: 1;
+        }
+    }
+    &-flex-same-all {
+        >* {
+            flex: 1 1 0;
+            width: 0;
+        }
+    }
     &-marginX-1 {
         margin-left: 10px;
         margin-right: 10px;

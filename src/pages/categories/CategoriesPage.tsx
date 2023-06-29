@@ -29,8 +29,7 @@ export default function CategoriesPage() {
   const { categories } = useGetCategoriesQuery({
     limit,
     page: currentPage,
-    extendParent: "true",
-    extend: "file",
+    extend: "file,parent",
     like: debouncedSearchValue || "",
     ...(isActive ? {
       "filter[is_active]": isActive,

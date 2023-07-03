@@ -21,6 +21,15 @@
 
 ```
 
+## Использованные технологии
+
+В приложении использовались следующие технологии
+- ReactJS + Typescript + Redux toolkit, Rtk query
+- Formik js + yup
+- Yandex map api
+
+Также для разработки использовался самописный очень простой ui kit
+
 ## Как запустить проект
 
 Для начала необходимо создать в postgreSQL бд под названием "electronic" и загрузить туда дамб базы данных, который находится в проекте [electronic.backend](https://github.com/Timer4ik/electronic.backend)

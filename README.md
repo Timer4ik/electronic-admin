@@ -4,7 +4,7 @@
 ## Обзор проекта
 
 Проект electronic представляет из себя несколько частей
-- Сайт [electronic-ssr.frontend](https://github.com/Timer4ik/electronic-ssr.frontend) next js + typescript + redux tookit 
+- Сайт [electronic-public.frontend](https://github.com/Timer4ik/electronic-public.frontend) next js + typescript + redux tookit 
 - Админ панель [electronic-admin.frontend](https://github.com/Timer4ik/electronic-admin) для добавления контента на сайт react js + typescript + redux tookit,rtk query
 - Бэкэнд [electronic.backend](https://github.com/Timer4ik/electronic.backend) написанный на node js + express + sequelizу (postgresSQL)
 
@@ -40,5 +40,5 @@
 После нужно сконфигурировать бэк в файле db.js под свою субд
 
 После чего можно запустить проекты
-- Сайт [electronic-ssr.frontend](https://github.com/Timer4ik/electronic-ssr.frontend)
+- Сайт [electronic-public.frontend](https://github.com/Timer4ik/electronic-public.frontend)
 - Админ [electronic-admin.frontend](https://github.com/Timer4ik/electronic-admin)

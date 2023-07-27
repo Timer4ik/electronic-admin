@@ -6,6 +6,7 @@ import { Button, Checkbox, Dropdown, Field, RowBetween, Select, Stack, Table, Ta
 import { SelectOption } from "../../ui/Select/Select"
 import { useNavigate } from "react-router-dom"
 import Paginator from "../../ui/Paginator/Paginator"
+import { DatePicker } from "../../ui/DatePicker/DatePicker"
 
 export default function CategoriesPage() {
 
@@ -84,6 +85,7 @@ export default function CategoriesPage() {
               return <SelectOption key={item.category_id} value={item.category_id}>{item.name}</SelectOption>
             })}
           </Select>
+          <DatePicker></DatePicker>
         </div>
         <Checkbox label="Активность"
           checked={isActive}
